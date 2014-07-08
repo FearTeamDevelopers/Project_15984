@@ -144,7 +144,7 @@ class Admin_Controller_User extends Controller
     }
     
     /**
-     * @before _secured, _publisher
+     * @before _secured, _member
      */
     public function updateProfile()
     {
