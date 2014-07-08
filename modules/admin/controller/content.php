@@ -11,7 +11,7 @@ class Admin_Controller_Content extends Controller
 {
 
     /**
-     * @before _secured, _publisher
+     * @before _secured, _member
      */
     public function index()
     {
@@ -39,8 +39,7 @@ class Admin_Controller_Content extends Controller
             $this->checkToken();
 
             $content = new App_Model_PageContent(array(
-                'sectionId' => RequestMethods::post('section'),
-                'pageName' => RequestMethods::post('page', ''),
+                'pageName' => RequestMethods::post('page'),
                 'body' => RequestMethods::post('text', ''),
                 'bodyEn' => RequestMethods::post('texten', '')
             ));
@@ -64,11 +63,7 @@ class Admin_Controller_Content extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
-        $sections = App_Model_Section::all(array(
-                    'active = ?' => true
-                        ), array('id', 'title')
-        );
-
+       
         $content = App_Model_PageContent::first(array(
                     'id = ?' => $id
         ));
@@ -78,14 +73,12 @@ class Admin_Controller_Content extends Controller
             self::redirect('/admin/content/');
         }
         
-        $view->set('sections', $sections)
-                ->set('content', $content);
+        $view->set('content', $content);
 
         if (RequestMethods::post('submitEditContent')) {
             $this->checkToken();
             
-            $content->sectionId = RequestMethods::post('section');
-            $content->pageName = RequestMethods::post('page', '');
+            $content->pageName = RequestMethods::post('page');
             $content->body = RequestMethods::post('text', '');
             $content->bodyEn = RequestMethods::post('texten', '');
             $content->active = RequestMethods::post('active');
