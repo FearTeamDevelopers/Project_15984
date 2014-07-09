@@ -8,7 +8,13 @@ use THCFrame\Security\UserInterface;
  *
  * @author Tomy
  */
-class App_Model_User extends Model implements UserInterface {
+class App_Model_User extends Model implements UserInterface
+{
+
+    /**
+     * @readwrite
+     */
+    protected $_alias = 'us';
 
     /**
      * @column
@@ -42,7 +48,7 @@ class App_Model_User extends Model implements UserInterface {
      * @label password
      */
     protected $_password;
-    
+
     /**
      * @column
      * @readwrite
@@ -53,7 +59,7 @@ class App_Model_User extends Model implements UserInterface {
      * @validate min(45), max(50)
      */
     protected $_salt;
-    
+
     /**
      * @column
      * @readwrite
@@ -96,14 +102,14 @@ class App_Model_User extends Model implements UserInterface {
      * @label last name
      */
     protected $_lastname;
-    
+
     /**
      * @column
      * @readwrite
      * @type datetime
      */
     protected $_lastLogin;
-    
+
     /**
      * @column
      * @readwrite
@@ -121,7 +127,8 @@ class App_Model_User extends Model implements UserInterface {
     /**
      * 
      */
-    public function preSave() {
+    public function preSave()
+    {
         $primary = $this->getPrimaryColumn();
         $raw = $primary['raw'];
 
@@ -137,7 +144,8 @@ class App_Model_User extends Model implements UserInterface {
      * @param type $value
      * @throws \THCFrame\Security\Exception\Role
      */
-    public function setRole($value) {
+    public function setRole($value)
+    {
         $role = strtolower(substr($value, 0, 5));
         if ($role != 'role_') {
             throw new \THCFrame\Security\Exception\Role(sprintf('Role %s is not valid', $value));
@@ -149,7 +157,8 @@ class App_Model_User extends Model implements UserInterface {
     /**
      * 
      */
-    public function isActive() {
+    public function isActive()
+    {
         return (boolean) $this->_active;
     }
 
@@ -157,7 +166,8 @@ class App_Model_User extends Model implements UserInterface {
      * 
      * @return type
      */
-    public function getWholeName() {
+    public function getWholeName()
+    {
         return $this->_firstname . ' ' . $this->_lastname;
     }
 
@@ -165,7 +175,8 @@ class App_Model_User extends Model implements UserInterface {
      * 
      * @return type
      */
-    public function __toString() {
+    public function __toString()
+    {
         $str = "Id: {$this->_id} <br/>Email: {$this->_email} <br/> Name: {$this->_firstname} {$this->_lastname}";
         return $str;
     }

@@ -7,7 +7,13 @@ use THCFrame\Model\Model;
  *
  * @author Tomy
  */
-class App_Model_Product extends Model {
+class App_Model_Product extends Model
+{
+
+    /**
+     * @readwrite
+     */
+    protected $_alias = 'pr';
 
     /**
      * @column
@@ -25,9 +31,9 @@ class App_Model_Product extends Model {
      * @validate required
      * @label sizeId
      */
-    protected $sizeId;
+    protected $_sizeId;
 
-     /**
+    /**
      * @column
      * @readwrite
      * @type boolean
@@ -47,7 +53,7 @@ class App_Model_Product extends Model {
      * @label url key
      */
     protected $_urlKey;
-    
+
     /**
      * @column
      * @readwrite
@@ -57,7 +63,8 @@ class App_Model_Product extends Model {
      * @label productCode
      */
     protected $_productCode;
-      /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -67,8 +74,8 @@ class App_Model_Product extends Model {
      * @label title
      */
     protected $_title;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -77,7 +84,8 @@ class App_Model_Product extends Model {
      * @validate required, alphanumeric, max(2048)
      * @label description
      */
-    protected $_Description;
+    protected $_description;
+
     /**
      * @column
      * @readwrite
@@ -87,6 +95,7 @@ class App_Model_Product extends Model {
      * @label basic price
      */
     protected $_basicPrice;
+
     /**
      * @column
      * @readwrite
@@ -96,6 +105,7 @@ class App_Model_Product extends Model {
      * @label regular price
      */
     protected $_regularPrice;
+
     /**
      * @column
      * @readwrite
@@ -105,6 +115,7 @@ class App_Model_Product extends Model {
      * @label current price
      */
     protected $_currentPrice;
+
     /**
      * @column
      * @readwrite
@@ -114,6 +125,7 @@ class App_Model_Product extends Model {
      * @label old price one
      */
     protected $_priceOldOne;
+
     /**
      * @column
      * @readwrite
@@ -123,8 +135,8 @@ class App_Model_Product extends Model {
      * @label old price two
      */
     protected $_priceOldTwo;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type integer
@@ -133,8 +145,8 @@ class App_Model_Product extends Model {
      * @label discount
      */
     protected $_discount;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -144,7 +156,7 @@ class App_Model_Product extends Model {
      * @label discount From
      */
     protected $_discountFrom;
-    
+
     /**
      * @column
      * @readwrite
@@ -155,8 +167,8 @@ class App_Model_Product extends Model {
      * @label discount to
      */
     protected $_discountTo;
-    
-         /**
+
+    /**
      * @column
      * @readwrite
      * @type integer
@@ -165,7 +177,7 @@ class App_Model_Product extends Model {
      * @label ean
      */
     protected $_eanCode;
-    
+
     /**
      * @column
      * @readwrite
@@ -176,7 +188,7 @@ class App_Model_Product extends Model {
      * @label measure unit
      */
     protected $_mu;
-    
+
     /**
      * @column
      * @readwrite
@@ -186,7 +198,7 @@ class App_Model_Product extends Model {
      * @label weight
      */
     protected $_weight;
-    
+
     /**
      * @column
      * @readwrite
@@ -196,8 +208,8 @@ class App_Model_Product extends Model {
      * @validate max(3)
      */
     protected $_isInAction;
-    
-      /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -207,8 +219,8 @@ class App_Model_Product extends Model {
      * @label new from
      */
     protected $_newFrom;
-    
-      /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -218,8 +230,8 @@ class App_Model_Product extends Model {
      * @label new to
      */
     protected $_newTo;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type text
@@ -240,74 +252,74 @@ class App_Model_Product extends Model {
      * @label photo path
      */
     protected $_imgMain;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type text
      * @length 150
      * 
-     * @validate required, alphanumeric, max(150)
+     * @validate alphanumeric, max(150)
      * @label meta title
      */
     protected $_metaTitle;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 150
-     * 
-     * @validate required, alphanumeric, max(150)
-     * @label meta keywords
-     */
-    protected $_metaKeywords;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 256
-     * 
-     * @validate required, alphanumeric, max(2048)
-     * @label meta description
-     */
-    protected $_metaDescription;
-    
-     /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 150
-     * 
-     * @validate required, alphanumeric, max(150)
-     * @label rss feed title
-     */
-    protected $_rssFeedTitle;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 256
-     * 
-     * @validate required, alphanumeric, max(2048)
-     * @label rss feed description
-     */
-    protected $_rssFeedDescription;
-    
+
     /**
      * @column
      * @readwrite
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
+     * @validate alphanumeric, max(250)
+     * @label meta keywords
+     */
+    protected $_metaKeywords;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 256
+     * 
+     * @validate alphanumeric, max(2048)
+     * @label meta description
+     */
+    protected $_metaDescription;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 150
+     * 
+     * @validate alphanumeric, max(150)
+     * @label rss feed title
+     */
+    protected $_rssFeedTitle;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 256
+     * 
+     * @validate alphanumeric, max(2048)
+     * @label rss feed description
+     */
+    protected $_rssFeedDescription;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 250
+     * 
+     * @validate path, max(250)
      * @label rss feed img
      */
     protected $_rssFeedImg;
-    
-     /**
+
+    /**
      * @column
      * @readwrite
      * @type boolean
@@ -316,7 +328,7 @@ class App_Model_Product extends Model {
      * @validate max(3)
      */
     protected $_deleted;
-    
+
     /**
      * @column
      * @readwrite
@@ -334,7 +346,8 @@ class App_Model_Product extends Model {
     /**
      * 
      */
-    public function preSave() {
+    public function preSave()
+    {
         $primary = $this->getPrimaryColumn();
         $raw = $primary['raw'];
 
@@ -348,8 +361,46 @@ class App_Model_Product extends Model {
     /**
      * 
      */
-    public function isActive() {
+    public function isActive()
+    {
         return (boolean) $this->_active;
     }
 
+    /**
+     * 
+     * @return type
+     */
+    public function getUnlinkPath($type = true)
+    {
+        if ($type) {
+            if (file_exists(APP_PATH . $this->_imgMain)) {
+                return APP_PATH . $this->_imgMain;
+            } elseif (file_exists('.' . $this->_imgMain)) {
+                return '.' . $this->_imgMain;
+            } elseif (file_exists('./' . $this->_imgMain)) {
+                return './' . $this->_imgMain;
+            }
+        } else {
+            return $this->_imgMain;
+        }
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    public function getUnlinkThumbPath($type = true)
+    {
+        if ($type) {
+            if (file_exists(APP_PATH . $this->_imgThumb)) {
+                return APP_PATH . $this->_imgThumb;
+            } elseif (file_exists('.' . $this->_imgThumb)) {
+                return '.' . $this->_imgThumb;
+            } elseif (file_exists('./' . $this->_imgThumb)) {
+                return './' . $this->_imgThumb;
+            }
+        } else {
+            return $this->_imgThumb;
+        }
+    }
 }

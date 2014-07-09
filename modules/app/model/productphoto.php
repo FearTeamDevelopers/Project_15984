@@ -7,12 +7,13 @@ use THCFrame\Model\Model;
  *
  * @author Tomy
  */
-class App_Model_Productphoto extends Model {
+class App_Model_Productphoto extends Model
+{
 
     /**
      * @readwrite
      */
-    protected $_alias = 'ph';
+    protected $_alias = 'pp';
 
     /**
      * @column
@@ -48,7 +49,7 @@ class App_Model_Productphoto extends Model {
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
+     * @validate required, path, max(250)
      * @label thum path
      */
     protected $_imgThumb;
@@ -59,7 +60,7 @@ class App_Model_Productphoto extends Model {
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
+     * @validate required, path, max(250)
      * @label photo path
      */
     protected $_imgMain;
@@ -81,7 +82,8 @@ class App_Model_Productphoto extends Model {
     /**
      * 
      */
-    public function preSave() {
+    public function preSave()
+    {
         $primary = $this->getPrimaryColumn();
         $raw = $primary['raw'];
 
@@ -96,7 +98,8 @@ class App_Model_Productphoto extends Model {
      * 
      * @return type
      */
-    public function getFormatedSize($unit = 'kb') {
+    public function getFormatedSize($unit = 'kb')
+    {
         $bytes = floatval($this->_size);
 
         $units = array(
@@ -116,17 +119,18 @@ class App_Model_Productphoto extends Model {
      * 
      * @return type
      */
-    public function getUnlinkPath($type = true) {
+    public function getUnlinkPath($type = true)
+    {
         if ($type) {
-            if (file_exists(APP_PATH . $this->_path)) {
-                return APP_PATH . $this->_path;
-            } elseif (file_exists('.' . $this->_path)) {
-                return '.' . $this->_path;
-            } elseif (file_exists('./' . $this->_path)) {
-                return './' . $this->_path;
+            if (file_exists(APP_PATH . $this->_imgMain)) {
+                return APP_PATH . $this->_imgMain;
+            } elseif (file_exists('.' . $this->_imgMain)) {
+                return '.' . $this->_imgMain;
+            } elseif (file_exists('./' . $this->_imgMain)) {
+                return './' . $this->_imgMain;
             }
         } else {
-            return $this->_path;
+            return $this->_imgMain;
         }
     }
 
@@ -134,17 +138,18 @@ class App_Model_Productphoto extends Model {
      * 
      * @return type
      */
-    public function getUnlinkThumbPath($type = true) {
+    public function getUnlinkThumbPath($type = true)
+    {
         if ($type) {
-            if (file_exists(APP_PATH . $this->_thumbPath)) {
-                return APP_PATH . $this->_thumbPath;
-            } elseif (file_exists('.' . $this->_thumbPath)) {
-                return '.' . $this->_thumbPath;
-            } elseif (file_exists('./' . $this->_thumbPath)) {
-                return './' . $this->_thumbPath;
+            if (file_exists(APP_PATH . $this->_imgThumb)) {
+                return APP_PATH . $this->_imgThumb;
+            } elseif (file_exists('.' . $this->_imgThumb)) {
+                return '.' . $this->_imgThumb;
+            } elseif (file_exists('./' . $this->_imgThumb)) {
+                return './' . $this->_imgThumb;
             }
         } else {
-            return $this->_thumbPath;
+            return $this->_imgThumb;
         }
     }
 

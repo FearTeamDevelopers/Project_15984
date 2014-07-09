@@ -11,6 +11,11 @@ class App_Model_News extends Model
 {
 
     /**
+     * @readwrite
+     */
+    protected $_alias = 'nw';
+
+    /**
      * @column
      * @readwrite
      * @primary
@@ -60,7 +65,7 @@ class App_Model_News extends Model
      * @label title
      */
     protected $_title;
-    
+
     /**
      * @column
      * @readwrite
@@ -90,7 +95,7 @@ class App_Model_News extends Model
      * @readwrite
      */
     protected $_fbLikeUrl;
-    
+
     /**
      * 
      */

@@ -7,7 +7,13 @@ use THCFrame\Model\Model;
  *
  * @author Tomy
  */
-class App_Model_Recommendedproduct extends Model {
+class App_Model_Recommendedproduct extends Model
+{
+
+    /**
+     * @readwrite
+     */
+    protected $_alias = 'rp';
 
     /**
      * @column
@@ -16,16 +22,6 @@ class App_Model_Recommendedproduct extends Model {
      * @type auto_increment
      */
     protected $_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type boolean
-     * @index
-     * 
-     * @validate max(3)
-     */
-    protected $_active;
 
     /**
      * @column
@@ -62,20 +58,15 @@ class App_Model_Recommendedproduct extends Model {
     protected $_modified;
 
     /**
-     * @readwrite
-     */
-    protected $_fbLikeUrl;
-
-    /**
      * 
      */
-    public function preSave() {
+    public function preSave()
+    {
         $primary = $this->getPrimaryColumn();
         $raw = $primary['raw'];
 
         if (empty($this->$raw)) {
             $this->setCreated(date('Y-m-d H:i:s'));
-            $this->setActive(true);
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }

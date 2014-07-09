@@ -90,7 +90,7 @@ class Admin_Controller_Category extends Controller
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
-            $category->parentId = RequestMethods::post('partner', 0);
+            $category->parentId = RequestMethods::post('parent', 0);
             $category->title = RequestMethods::post('title');
             $category->urlKey = $urlKey;
             $category->isGrouped = RequestMethods::post('group', 0);

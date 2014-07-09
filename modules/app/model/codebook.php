@@ -12,6 +12,11 @@ class App_Model_Codebook extends Model
 {
 
     /**
+     * @readwrite
+     */
+    protected $_alias = 'cb';
+
+    /**
      * @column
      * @readwrite
      * @primary
@@ -19,7 +24,7 @@ class App_Model_Codebook extends Model
      */
     protected $_id;
 
-     /**
+    /**
      * @column
      * @readwrite
      * @type boolean
@@ -39,7 +44,7 @@ class App_Model_Codebook extends Model
      * @label type
      */
     protected $_type;
-    
+
     /**
      * @column
      * @readwrite
@@ -55,9 +60,9 @@ class App_Model_Codebook extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 50
+     * @length 250
      * 
-     * @validate required, alphanumeric, max(50)
+     * @validate required, alphanumeric, max(250)
      * @label value
      */
     protected $_value;
@@ -71,7 +76,7 @@ class App_Model_Codebook extends Model
      * @validate required, alphanumeric, max(2048)
      * @label description
      */
-    protected $_Description;
+    protected $_description;
 
     /**
      * @column
@@ -102,5 +107,4 @@ class App_Model_Codebook extends Model
         $this->setModified(date('Y-m-d H:i:s'));
     }
 
-    
 }

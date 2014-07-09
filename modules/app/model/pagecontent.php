@@ -11,6 +11,11 @@ class App_Model_PageContent extends Model
 {
 
     /**
+     * @readwrite
+     */
+    protected $_alias = 'co';
+
+    /**
      * @column
      * @readwrite
      * @primary

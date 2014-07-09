@@ -14,12 +14,7 @@ class Admin_Controller_News extends Controller
     private function _getPhotos()
     {
         $photoQuery = App_Model_Photo::getQuery(
-                        array('ph.id', 'ph.thumbPath', 'ph.path'))
-                ->join('tb_photosection', 'phs.photoId = ph.id', 'phs', 
-                        array('phs.photoId', 'phs.sectionId'))
-                ->join('tb_section', 'phs.sectionId = s.id', 's', 
-                        array('s.urlKey'))
-                ->where('s.urlKey = ?', 'news')
+                        array('ph.id', 'ph.imgThumb', 'ph.imgMain'))
                 ->order('ph.created', 'DESC');
 
         $photos = App_Model_Photo::initialize($photoQuery);

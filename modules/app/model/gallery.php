@@ -7,7 +7,13 @@ use THCFrame\Model\Model;
  *
  * @author Tomy
  */
-class App_Model_Gallery extends Model {
+class App_Model_Gallery extends Model
+{
+
+    /**
+     * @readwrite
+     */
+    protected $_alias = 'gl';
 
     /**
      * @column
@@ -31,9 +37,9 @@ class App_Model_Gallery extends Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 150
      * 
-     * @validate required, alphanumeric, max(100)
+     * @validate required, alphanumeric, max(150)
      * @label title
      */
     protected $_title;
@@ -47,7 +53,7 @@ class App_Model_Gallery extends Model {
      * @validate required, alphanumeric, max(2048)
      * @label description
      */
-    protected $_Description;
+    protected $_description;
 
     /**
      * @column
@@ -66,7 +72,8 @@ class App_Model_Gallery extends Model {
     /**
      * 
      */
-    public function preSave() {
+    public function preSave()
+    {
         $primary = $this->getPrimaryColumn();
         $raw = $primary['raw'];
 

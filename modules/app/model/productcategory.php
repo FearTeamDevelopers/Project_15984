@@ -11,14 +11,17 @@ class App_Model_Productcategory extends Model
 {
 
     /**
+     * @readwrite
+     */
+    protected $_alias = 'pc';
+
+    /**
      * @column
      * @readwrite
      * @primary
      * @type auto_increment
      */
     protected $_id;
-
-   
 
     /**
      * @column
@@ -64,7 +67,6 @@ class App_Model_Productcategory extends Model
 
         if (empty($this->$raw)) {
             $this->setCreated(date('Y-m-d H:i:s'));
-            $this->setActive(true);
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }

@@ -12,6 +12,11 @@ class App_Model_Category extends Model
 {
 
     /**
+     * @readwrite
+     */
+    protected $_alias = 'ct';
+
+    /**
      * @column
      * @readwrite
      * @primary
@@ -72,14 +77,14 @@ class App_Model_Category extends Model
      * @label rank
      */
     protected $_rank;
-    
+
     /**
      * @column
      * @readwrite
      * @type boolean
      */
     protected $_isGrouped;
-    
+
     /**
      * @column
      * @readwrite
@@ -90,7 +95,7 @@ class App_Model_Category extends Model
      * @label text
      */
     protected $_mainText;
-    
+
     /**
      * @column
      * @readwrite
@@ -101,18 +106,18 @@ class App_Model_Category extends Model
      * @label meta title
      */
     protected $_metaTitle;
-    
+
     /**
      * @column
      * @readwrite
      * @type text
-     * @length 150
+     * @length 250
      * 
-     * @validate required, alphanumeric, max(150)
+     * @validate required, alphanumeric, max(250)
      * @label meta keywords
      */
     protected $_metaKeywords;
-    
+
     /**
      * @column
      * @readwrite
@@ -160,10 +165,10 @@ class App_Model_Category extends Model
     public function getChildrens()
     {
         return self::all(
-                array('active = ?' => true, 'parentId = ?' => $this->getId())
+                        array('active = ?' => true, 'parentId = ?' => $this->getId())
         );
     }
-    
+
     /**
      * 
      * @param type $id
@@ -172,7 +177,8 @@ class App_Model_Category extends Model
     public static function fetchChildrens($id)
     {
         $section = new self(array('id' => $id));
-        
+
         return $section->getChildrens();
     }
+
 }
