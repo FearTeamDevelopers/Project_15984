@@ -312,51 +312,46 @@ class Admin_Controller_Product extends Controller
     /**
      * @before _secured, _member
      */
-    public function processRecomend()
+    public function processRecommend($id)
     {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
         
-        if (!$this->hasAccessToProject($id)) {
-            $view->warningMessage('You dont have access to this project');
-            self::redirect('/');
-        }
-
-        if (RequestMethods::post('performProjectUserAction')) {
+        if (RequestMethods::post('performRecomendedAction')) {
             $this->checkToken();
             
             $errors = array();
-            $uids = RequestMethods::post('projectusersids');
+            $uids = RequestMethods::post('productsids');
 
-            $status = App_Model_ProjectUser::deleteAll(array('projectId = ?' => $id));
+            $status = App_Model_Recommendedproduct::deleteAll(array('productId = ?' => $id));
 
             if ($status != -1) {
                 if ($uids[0] == '') {
-                    self::redirect('/project');
+                    self::redirect('/admin/product/');
                 }
                 
-                $assignedIds = array();
-                foreach ($uids as $userId) {
-                    $projectUser = new App_Model_ProjectUser(array(
-                        'userId' => $userId,
-                        'projectId' => $id
+                $recomIds = array();
+                foreach ($uids as $recomId) {
+                    $recomProduct = new App_Model_Recommendedproduct(array(
+                        'recommendedId' => $recomId,
+                        'productId' => $id
                     ));
 
-                    if ($projectUser->validate()) {
-                        $projectUser->save();
-                        $assignedIds[] = $userId;
+                    if ($recomProduct->validate()) {
+                        $recomProduct->save();
+                        $recomIds[] = $recomId;
                     } else {
-                        $errors[] = $projectUser->getErrors();
+                        $errors[] = $recomProduct->getErrors();
                     }
                 }
 
                 if (empty($errors)) {
-                    $view->successMessage('Project has been successfully updated');
-                    Event::fire('app.log', array('success', 'Assign user: ' . join(', ', $assignedIds). ' to project: '.$id));
-                    self::redirect('/project/detail/' . $id . '#assignedUsers');
+                    $view->successMessage('Product has been successfully updated');
+                    Event::fire('app.log', array('success', 'Recommended products: ' . join(', ', $recomIds). ' to product: '.$id));
+                    self::redirect('/product/detail/' . $id);
                 } else {
-                    Event::fire('app.log', array('fail', 'Assign user: ' . join(', ', $assignedIds). ' to project: '.$id));
-                    $view->errorMessage('An error occured while assignt user to the project');
+                    Event::fire('app.log', array('fail', 'Recommended products: ' . join(', ', $recomIds). ' to product: '.$id));
+                    $view->errorMessage('An error occured while saving recommended products');
                 }
             }
         }
@@ -431,7 +426,149 @@ class Admin_Controller_Product extends Controller
      */
     public function massAction()
     {
-        
+        $view = $this->getActionView();
+        $errors = array();
+        $errorsIds = array();
+
+        if (RequestMethods::post('performProductAction')) {
+            $this->checkToken();
+            $ids = RequestMethods::post('productsids');
+            $action = RequestMethods::post('action');
+
+            switch ($action) {
+                case 'delete':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->deleted = true;
+                            
+                            if ($product->validate()) {
+                                $product->save();
+                            }else{
+                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
+                        }
+                    }
+
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
+                        $view->successMessage('Products have been deleted successfully');
+                    } else {
+                        Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join(PHP_EOL, $errors);
+                        $view->longFlashMessage($message);
+                    }
+
+                    self::redirect('/admin/product/');
+                    break;
+                
+                case 'overprice':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    
+                    $val = RequestMethods::post('price');
+                    
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            if($val > 0 && $val < 1){
+                                $product->priceOldTwo = $product->priceOldOne;
+                                $product->priceOldOne = $product->currentPrice;
+                                $product->currentPrice = $product->currentPrice + ($product->currentPrice * $val);
+                            }else{
+                                $product->priceOldTwo = $product->priceOldOne;
+                                $product->priceOldOne = $product->currentPrice;
+                                $product->currentPrice = $product->currentPrice + $val;
+                            }
+                            
+                            if ($product->validate()) {
+                                $product->save();
+                            }else{
+                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
+                        }
+                    }
+
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
+                        $view->successMessage('Products have been saved successfully');
+                    } else {
+                        Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join(PHP_EOL, $errors);
+                        $view->longFlashMessage($message);
+                    }
+
+                    self::redirect('/admin/product/');
+                    break;
+                case 'activate':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->active = true;
+                            
+                            if ($product->validate()) {
+                                $product->save();
+                            }else{
+                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
+                        }
+                    }
+
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
+                        $view->successMessage('Products have been activated successfully');
+                    } else {
+                        Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join(PHP_EOL, $errors);
+                        $view->longFlashMessage($message);
+                    }
+
+                    self::redirect('/admin/product/');
+                    break;
+                case 'deactivate':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->active = false;
+                            
+                            if ($product->validate()) {
+                                $product->save();
+                            }else{
+                                $errors[] = 'An error occured while deactivating ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
+                        }
+                    }
+
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
+                        $view->successMessage('Products have been deactivated successfully');
+                    } else {
+                        Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join(PHP_EOL, $errors);
+                        $view->longFlashMessage($message);
+                    }
+
+                    self::redirect('/admin/product/');
+                    break;
+                default:
+                    self::redirect('/admin/product/');
+                    break;
+            }
+        }
     }
 
 }

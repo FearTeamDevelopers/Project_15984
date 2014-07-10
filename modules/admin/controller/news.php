@@ -13,11 +13,7 @@ class Admin_Controller_News extends Controller
      */
     private function _getPhotos()
     {
-        $photoQuery = App_Model_Photo::getQuery(
-                        array('ph.id', 'ph.imgThumb', 'ph.imgMain'))
-                ->order('ph.created', 'DESC');
-
-        $photos = App_Model_Photo::initialize($photoQuery);
+        $photos = App_Model_Photo::all(array('active = ?' => true));
 
         return $photos;
     }
