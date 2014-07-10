@@ -1,31 +1,37 @@
-<article class="grid_12">
-    <h1 class="left">Gallery</h1>
-    <a class="button-orange right" href="/admin/gallery/add/">+ Add Gallery</a>
-    <div class="clear"></div><br/><br/>
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Gallery List</a></li>
+    <li><a href="/admin/gallery/add/">Add Gallery</a></li>
+</ul><!--maintabmenu-->
 
-{if !empty($collections)}
-<table class="stdtable">
-    <thead>
-    <th>Title</th>
-    <th>Active</th>
-    <th>Created</th>
-    <th>Manage</th>
-</thead>
-<tbody>
-    {foreach $col in $collections}
-    <tr>
-        <td>{echo $col->getTitle()}</td>
-        <td>{echo $col->getActive()}</td>
-        <td>{echo $col->getCreated()}</td>
-        <td>
-            <a class="button-edit" href="/admin/gallery/edit/{echo $col->id}" >Edit</a>
-            <a class="button-edit" href="/admin/gallery/addPhoto/{echo $col->id}" >Add Photo</a>
-            {if $isAdmin}<a class="button-delete" href="/admin/gallery/delete/{echo $col->id}" >Delete</a>{/if}
-        </td>
-    </tr>
-    {/foreach}
-</tbody>
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Gallery List</span></h2>
+    </div><!--contenttitle-->
 
-</table>
-{/if}
-</article>
+    <table class="stdtable">
+        <thead>
+        <th>Title</th>
+        <th>Active</th>
+        <th>Created</th>
+        <th>Manage</th>
+        </thead>
+        <tbody>
+            {if !empty($collections)}
+            {foreach $col in $collections}
+            <tr>
+                <td>{echo $col->getTitle()}</td>
+                <td>{echo $col->getActive()}</td>
+                <td>{echo $col->getCreated()}</td>
+                <td>
+                    <a class="btn btn_image2" class="button-edit" href="/admin/gallery/detail/{echo $col->id}" >
+                        Enter gallery
+                    </a>
+                </td>
+            </tr>
+            {/foreach}
+            {/if}
+        </tbody>
+
+    </table>
+
+</div>

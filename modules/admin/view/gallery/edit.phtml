@@ -1,27 +1,26 @@
-<article class="grid_12">
-    <h1>Add Gallery</h1>
-
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Gallery List</a></li>
+    <li><a href="/admin/gallery/add/">Add Gallery</a></li>
+    <li><a href="/admin/gallery/detail/{echo $gallery->id}">Gallery Detail</a></li>
+    <li class="current"><a href="#">Edit Gallery</a></li>
+    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $gallery->id}">Delete Gallery</a></li>{/if}
+</ul><!--maintabmenu-->
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Add Gallery</span></h2>
+    </div><!--contenttitle-->
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
             <label>Title</label>
             <span class="field">
-                <input type="text" name="title" value="{echo $gallery->title}" />
+                <input class="longinput" type="text" name="title" value="{echo $gallery->title}" />
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
             </span>
         </p>
         <p>
-            <label>Active</label>
-            <span class="field">
-                <input type="text" name="active" value="{echo $gallery->active}" />
-                {if isset($errors["active"])}
-                <label class="error">{echo join("<br/>", $errors["active"])}</label>
-                {/if}
-            </span>
-        </p>
-         <p>
             <label>Description<small>Max. 5000 characters</small></label>
             <span class="field">
                 <textarea rows="20" name="description" id="ckeditor">{echo $gallery->description}</textarea>
@@ -32,9 +31,9 @@
                 <button id="news-clear-text">Clear</button>
             </span>
         </p>
-         <p class="stdformbutton">
+        <p class="stdformbutton">
             <input name="submitEditCollection" type="submit" value="Save" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>
-</article>
+</div>

@@ -1,7 +1,11 @@
-<article class="grid_12">
-    <h1 class="left">News</h1>
-    <a class="button-orange right" href="/admin/category/add/">+ Add Category</a>
-    <div class="clear"></div><br/><br/>
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Category List</a></li>
+    <li><a href="/admin/category/add/">Add Category</a></li>
+</ul><!--maintabmenu-->
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Category informations</span></h2>
+    </div><!--contenttitle-->
 
     {if !empty($categories)}
     <table class="stdtable">
@@ -26,4 +30,4 @@
         </tbody>
     </table>
     {/if}
-</article>
+</div>

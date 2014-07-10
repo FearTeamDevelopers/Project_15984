@@ -1,34 +1,68 @@
-<article class="grid_12">
-    <h1 class="left">News</h1>
-    <a class="button-orange right" href="/admin/news/add/">+ Add News</a>
-    <div class="clear"></div><br/><br/>
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">News list</a></li>
+    <li><a href="/admin/news/add/">Add News</a></li>
+</ul><!--maintabmenu-->
 
-    {if !empty($news)}       
-        <table class="stdtable">
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="image"><span>News List</span></h2>
+    </div><!--contenttitle-->
+    
+    <form method="post" class="massActionForm" action="/admin/news/massAction/">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+            <colgroup>
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" />
+            </colgroup>
             <thead>
-                <th>Title</th>
-                <th>Url Key</th>
-                <th>Author</th>
-                <th>Active</th>
-                <th>Created</th>
-                <th>Manage</th>
+                <tr>
+                    <th class="head0 width50"><input type="checkbox" class="checkall" /></th>
+                    <td class="head1">Title</td>
+                    <td class="head0">Url Key</td>
+                    <td class="head1">Author</td>
+                    <td class="head0">Created</td>
+                    <td class="head1">&nbsp;</td>
+                </tr>
             </thead>
             <tbody>
-                {foreach $new in $news}
-                    <tr>
-                        <td>{echo $new->getTitle()}</td>
-                        <td>{echo $_news->getUrlKey()}</td>
-                        <td>{echo $new->getAuthor()}</td>
-                        <td>{echo $new->getActive()}</td>
-                        <td>{echo $new->getCreated()}</td>
-                        <td>
-                            <a class="button-edit" href="/admin/news/edit/{echo $new->id}" >Edit</a>
-                            {if $isAdmin}<a class="button-delete" href="/admin/news/delete/{echo $new->id}" >Delete</a>{/if}
-                        </td>
-
-                    </tr>
-                {/foreach}
+                {if !empty($news)}
+                    {foreach $_news in $news}
+                        {if ($_news->active)}
+                            <tr class="rowActive">
+                        {/if} 
+                        {else}
+                            <tr>
+                        {/else}
+                            <td class="center">
+                                <input type="checkbox" name="newsids[]" value="{echo $_news->getId()}" />
+                            </td>
+                            <td>{echo $_news->getTitle()}</td>
+                            <td>{echo $_news->getUrlKey()}</td>
+                            <td>{echo $_news->getAuthor()}</td>
+                            <td>{echo $_news->getCreated()}</td>
+                            <td>
+                                <a href="/admin/news/edit/{echo $_news->id}" class="btn btn3 btn_pencil" title="Edit"></a>
+                                {if $isAdmin}<a href="/admin/news/delete/{echo $_news->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                            </td>
+                        </tr>
+                    {/foreach}
+                {/if}
             </tbody>
         </table>
-    {/if}
-</article>
+        {if $isAdmin}
+        <div class="tableoptions">
+            Selected:
+            <select class="radius3" name="action">
+                <option value="activate">Activate</option>
+                <option value="deactivate">Deactivate</option>
+                <option value="delete">Delete</option>
+            </select> &nbsp;
+            <input class="radius3" type="submit" name="performNewsAction" value="Execute"/>
+        </div><!--tableoptions-->
+        {/if}
+    </form>
+</div>
+<br clear="all"/><br />

@@ -1,0 +1,43 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Gallery List</a></li>
+    <li><a href="/admin/gallery/add/">Add Gallery</a></li>
+    <li><a href="/admin/gallery/detail/{echo $gallery->id}">Gallery Detail</a></li>
+    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Edit Gallery</a></li>
+    <li class="current"><a href="#">Delete Gallery</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Delete Collection</span></h2>
+    </div><!--contenttitle-->
+    
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="tk" value="{echo $token}" />
+        <p>
+            <label>Title</label>
+            <span class="field">{echo $gallery->title}</span>
+        </p>
+        <p>
+            <label>Photo count</label>
+            <span class="field">{echo $photocount}</span>
+        </p>
+        <p>
+            <label>Created</label>
+            <span class="field">{echo $gallery->created}</span>
+        </p>
+        <p>
+            <label>Action</label>
+            <span class="field">
+                <select name="action">
+                    <option value="1">Delete all photos</option>
+                    <option value="2">Keep all photos</option>
+                </select>
+            </span>
+        </p>
+
+        <p class="stdformbutton">
+            <input name="submitDeleteCollection" type="submit" value="Delete" class="submit radius2" />
+        </p>
+    </form>
+</div>
+<br clear="all" />
