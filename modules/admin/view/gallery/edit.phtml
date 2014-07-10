@@ -1,0 +1,40 @@
+<article class="grid_12">
+    <h1>Add Gallery</h1>
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <p>
+            <label>Title</label>
+            <span class="field">
+                <input type="text" name="title" value="{echo $gallery->title}" />
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Active</label>
+            <span class="field">
+                <input type="text" name="active" value="{echo $gallery->active}" />
+                {if isset($errors["active"])}
+                <label class="error">{echo join("<br/>", $errors["active"])}</label>
+                {/if}
+            </span>
+        </p>
+         <p>
+            <label>Description<small>Max. 5000 characters</small></label>
+            <span class="field">
+                <textarea rows="20" name="description" id="ckeditor">{echo $gallery->description}</textarea>
+                {if isset($errors["description"])}
+                <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                {/if}
+                <br/>
+                <button id="news-clear-text">Clear</button>
+            </span>
+        </p>
+         <p class="stdformbutton">
+            <input name="submitEditCollection" type="submit" value="Save" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</article>

@@ -1,0 +1,50 @@
+<article class="grid_12">
+    <h1>Add news</h1>
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <p>
+            <label>Title</label>
+            <span class="field">
+                <input type="text" name="title" value="{echo isset($news)? $news->title: ""}" />
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Author</label>
+            <span class="field">
+                <input type="text" name="author" class="longinput" value="{echo $authUser->getWholeName()}"/>
+            </span>
+        </p>
+        <p>
+            <label>URL key<small>Automaticaly created from title</small></label>
+            <span class="field">
+                <input type="text" name="urlkey" class="longinput" value="{echo isset($news)? $news->urlKey: ""}" />
+                {if isset($errors["urlKey"])}
+                <label class="error">{echo join("<br/>", $errors["urlKey"])}</label>
+                {/if}
+            </span>
+        </p>
+
+        <p>
+            <label>Text*<small>Max. 5000 characters</small></label>
+            <span class="field">
+                <textarea rows="20" name="text" id="ckeditor">{echo isset($news)? $news->body: ""}</textarea>
+                {if isset($errors["text"])}
+                <label class="error">{echo join("<br/>", $errors["text"])}</label>
+                {/if}
+                <br/>
+                <button id="news-clear-text">Clear</button>
+            </span>
+        </p>
+
+
+        <p class="stdformbutton">
+            <input name="submitAddNews" type="submit" value="Save" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</article>
+

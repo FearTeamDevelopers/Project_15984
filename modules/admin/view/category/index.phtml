@@ -1,0 +1,29 @@
+<article class="grid_12">
+    <h1 class="left">News</h1>
+    <a class="button-orange right" href="/admin/category/add/">+ Add Category</a>
+    <div class="clear"></div><br/><br/>
+
+    {if !empty($categories)}
+    <table class="stdtable">
+        <thead>
+        <th>Title</th>
+        <th>isGrouped</th>
+        <th>Active</th>
+        <th>Manage</th>
+        </thead>
+        <tbody>
+            {foreach $category in $categories}
+            <tr>
+                <td>{echo $category->getTitle()}</td>
+                <td>{if $category->isGrouped == 0}yes {/if}{else}no{/else}</td>
+                <td>{echo $category->getActive()}</td>
+                <td>
+                    <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Edit"></a>
+                    {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    {/if}
+</article>
