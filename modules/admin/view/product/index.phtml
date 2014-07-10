@@ -1,0 +1,46 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Product List</a></li>
+    <li><a href="/admin/product/add/">Add new product</a></li>
+</ul>
+<div class="content">
+    <div class="contenttitle">
+        <h2 class="form"><span>Products</span></h2>
+    </div>
+    <label>Basic info</label>
+    <form method="post" class="massActionForm" action="/admin/product/massAction/">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+            <colgroup>
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> 
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="head0 width50"><input type="checkbox" class="checkall" /></th>
+                    <td class="head1">Title</td>
+                    <td class="head0">Product code</td>
+                    <td class="head1">preview</td>
+                    <td class="head0">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                {if !empty($products)}
+                {foreach $product in $products}
+                <tr>
+                    <td class="center">
+                        <input type="checkbox" name="productsids[]" value="{echo $product->getId()}" />
+                    </td>
+                    <td>{echo $product->getTitle()}</td>
+                    <td>{echo $product->getProductCode()}</td>
+                    <td><a href="#">#</a></td>
+                    <td>
+                        <a href="/admin/product/detail/{echo $product->id}" class="btn btn3 btn_document" title="Detail"></a>
+                        <a href="/admin/product/edit/{echo $product->id}" class="btn btn3 btn_pencil" title="Edit"></a>
+                        {if $isAdmin}<a href="/admin/news/delete/{echo $product->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                    </td>
+                </tr>
+                {/foreach}
+                {/if}
+            </tbody>
+        </table>

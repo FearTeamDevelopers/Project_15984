@@ -25,7 +25,7 @@
                 <select class="longinput" name="parent">
                     {if !empty($categories)
                     {foreach $cat in $categories}
-                    <option value="{echo $cat->getId()}">{echo $cat->getTitle()}</option>
+                    <option value="{echo $cat->id}">{echo $cat->title}</option>
                     {/foreach}
                     {/if}
                 </select>

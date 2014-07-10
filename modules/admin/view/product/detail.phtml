@@ -1,0 +1,76 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/product/">Product List</a></li>
+    <li><a href="/admin/product/add/">Add new product</a></li>
+</ul>
+
+<div class="contenttitle radiusbottom0">
+    <h2 class="table"><span>{echo $product->title}</span></h2>
+</div><!--contenttitle-->
+
+<div class="content">
+    {if !empty($product)}
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>{echo $product->title}</span></h2>
+    </div><!--contenttitle-->
+
+    <div class="collectiondetail">
+        <p>
+            Created: {echo $product->created}<br/>
+            URL key: {echo $product->urlKey}<br/>
+            Product code: {echo $product->productCode}<br/>
+            Basic price: {echo $product->basicPrice}<br/>
+            Regular price: {echo $product->regularPrice}<br/>
+            Current price: {echo $product->currentPrice}<br/>
+            Old price: {echo $product->priceOldOne}<br/>
+            Old price #2: {echo $product->priceOldTwo}<br/>
+            Discount: {echo $product->discount}<br/>
+            Discount start: {echo $product->discountFrom}<br/>
+            Discount end: {echo $product->discountTo}<br/>
+            EAN code: {echo $product->eanCode}<br/>
+            Measure unit: {echo $product->mu}<br/>
+            Weight: {echo $product->weight}<br/>
+            Is in action: {echo $product->isInAction}<br/>
+            New start: {echo $product->newFrom}<br/>
+            New end: {echo $product->newTo}<br/>
+            Meta-Title: {echo $product->metaTitle}<br/>
+            Meta-Keywords: {echo $product->metaKeaywords}<br/>
+            Product description:
+        </p>
+        <div class="collectiondetail_description">
+            {echo $product->description}
+        </div>
+        <br/>
+        <p>
+            <a href="/admin/gallery/addPhoto/{echo $product->galeryId}" class="btn btn_image"><span>Upload Photo</span></a> 
+        </p>
+    </div>
+    <hr/>
+
+    <div id="tabs-1">
+        {if !empty($photos)}
+        <div style="overflow:hidden;">
+            <ul class="imagelist">
+                {foreach $photo in $photos}
+                {if $photo->active}
+                <li class="photoactive">
+                    {/if} 
+                    {else}
+                <li class="photoinactive">
+                    {/else}
+                    <img src="{echo $photo->imgThumb}" alt="{echo $photo->photoName}" title="{echo $photo->photoName}" height="100px" />
+                    <span>
+                        <a href="{echo $photo->imgMain}" class="view"></a>
+                        <a href="/admin/gallery/changePhotoStatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
+                        <a href="/admin/gallery/deletePhoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
+                    </span>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        {/if} 
+        {else}
+        <div class="notification msginfo"><a class="close"></a><p>No Photo in collection</p></div>
+        {/else}
+    </div>
+
+</div>

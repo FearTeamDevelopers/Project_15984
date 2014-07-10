@@ -1,0 +1,245 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/product/">Product List</a></li>
+    <li class="current"><a href="#">Add new product</a></li>
+</ul>
+<div class="content">
+    <div class="two_third">
+        <div class="widgetbox">
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>News content</span></h2>
+            </div><!--contenttitle-->
+
+            <form class="stdform stdform2" method="post" action="#" >
+                <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+                <p>
+                    <label>Title</label>
+                    <span class="field" >
+                        <input required class="longinput" type="text" name="title" 
+                               value="{echo isset($product)? $product->title: ""}" />
+                        {if isset($errors["title"])}
+                        <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Product Code</label>
+                    <span class="field">
+                        <input required class="longinput" type="text" name="productcode" 
+                               value="{echo isset($product)? $product->productCode: ""}" />
+                        {if isset($errors["productcode"])}
+                        <label class="error">{echo join("<br/>", $errors["productcode"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Description<small>Max. 5000 characters</small></label>
+                    <span class="field">
+                        <textarea required rows="20" name="description" id="ckeditor">
+                            {echo isset($product)? $product->description: ""}
+                        </textarea>
+                        {if isset($errors["description"])}
+                        <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                        {/if}
+                        <br/>
+                        <button id="news-clear-text">Clear</button>
+                    </span>
+                </p>
+                <p>
+                    <label>Size</label>
+                    <span class="field">
+                        <select required class="longinput" name="size">
+                            {if !empty($sizes)
+                            {foreach $size in $sizes}
+                            <option value="{echo $size->id}">{echo $size->title}</option>
+                            {/foreach}
+                            {/if}
+                        </select>
+                        {if isset($errors["size"])}
+                        <label class="error">{echo join("<br/>", $errors["size"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Basic price</label>
+                    <span class="field">
+                        <input class="longinput" type="number" name="basicprice" 
+                               value="{echo isset($product)? $product->basicPrice: ""}" />
+                        {if isset($errors["basicprice"])}
+                        <label class="error">{echo join("<br/>", $errors["basicprice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Regular price</label>
+                    <span class="field">
+                        <input  class="longinput" type="number"  name="regularprice" 
+                                value="{echo isset($product)? $product->regularPrice: ""}" />
+                        {if isset($errors["regularprice"])}
+                        <label class="error">{echo join("<br/>", $errors["regularprice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Current price</label>
+                    <span class="field">
+                        <input  class="longinput" type="number"  name="currentprice" 
+                                value="{echo isset($product)? $product->currentPrice: ""}" />
+                        {if isset($errors["currentprice"])}
+                        <label class="error">{echo join("<br/>", $errors["currentprice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Discount</label>
+                    <span class="field">
+                        <input  class="longinput" type="number"  name="discount" 
+                                value="{echo isset($product)? $product->discount: ""}" />
+                        {if isset($errors["discount"])}
+                        <label class="error">{echo join("<br/>", $errors["discount"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Discount start</label>
+                    <span class="field">
+                        <input  class="longinput" type="datetime-local"  name="discountfrom" 
+                                value="{echo isset($product)? $product->discountFrom: ""}" />
+                        {if isset($errors["discountfrom"])}
+                        <label class="error">{echo join("<br/>", $errors["discountfrom"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Discount end</label>
+                    <span class="field">
+                        <input  class="longinput" type="datetime-local"  name="discountto" 
+                                value="{echo isset($product)? $product->discountto: ""}" />
+                        {if isset($errors["discountto"])}
+                        <label class="error">{echo join("<br/>", $errors["discountto"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Measure unit</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="mu" 
+                               value="{echo isset($product)? $product->mu: ""}" />
+                        {if isset($errors["mu"])}
+                        <label class="error">{echo join("<br/>", $errors["mu"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>EAN</label>
+                    <span class="field" >
+                        <input class="longinput" type="number" name="eancode" 
+                               value="{echo isset($product)? $product->eanCode: ""}" />
+                        {if isset($errors["eancode"])}
+                        <label class="error">{echo join("<br/>", $errors["eancode"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Weight</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="weight" 
+                               value="{echo isset($product)? $product->weight: ""}" />
+                        {if isset($errors["weight"])}
+                        <label class="error">{echo join("<br/>", $errors["weight"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>in action </label>
+                    <span class="field">
+                        <select name="inaction">
+                            <option value="0" selected>No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>New start</label>
+                    <span class="field">
+                        <input  class="longinput" type="datetime-local"  name="newfrom" 
+                                value="{echo isset($product)? $product->newFrom: ""}" />
+                        {if isset($errors["newfrom"])}
+                        <label class="error">{echo join("<br/>", $errors["newfrom"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>New end</label>
+                    <span class="field">
+                        <input  class="longinput" type="datetime-local"  name="newto" 
+                                value="{echo isset($product)? $product->newTo: ""}" />
+                        {if isset($errors["newto"])}
+                        <label class="error">{echo join("<br/>", $errors["newto"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-Title</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="metatitle" 
+                               value="{echo isset($product)? $product->metaTitle: ""}" />
+                        {if isset($errors["metatitle"])}
+                        <label class="error">{echo join("<br/>", $errors["metatitle"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-Keywords</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="metakeywords" 
+                               value="{echo isset($product)? $product->metaKeaywords: ""}" />
+                        {if isset($errors["metakeywords"])}
+                        <label class="error">{echo join("<br/>", $errors["metakeywords"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-Description<small>Max. 5000 characters</small></label>
+                    <span class="field">
+                        <textarea required rows="20" name="metadescription" id="ckeditor">
+                            {echo isset($product)? $product->metaDescription: ""}
+                        </textarea>
+                        {if isset($errors["metadescription"])}
+                        <label class="error">{echo join("<br/>", $errors["metadescription"])}</label>
+                        {/if}
+                        <br/>
+                        <button id="news-clear-text">Clear</button>
+                    </span>
+                </p>
+
+                <p class="stdformbutton">
+                    <input name="submitAddProduct" type="submit" value="Save" class="submit radius2" />
+                    <input type="reset" class="reset radius2" value="Reset" />
+                </p>
+            </form>
+            <br clear="all"/>
+        </div><br clear="all"/>
+    </div>
+    <div class="one_third last">
+        <div class="widgetbox">
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Photos</span></h2>
+            </div><!--contenttitle-->
+            <div class="news-photos">
+                {if ($photos && !empty($photos))}
+                {foreach $photo in $photos}
+                <span class="news-photo">
+                    <img src="{echo $photo->getImgMain()}" alt="{echo $photo->getPhotoName()}" width="200px"/>
+                    <button class="stdbtn img-to-text" value="{echo $photo->getId()}">To Text</button>
+                    <button class="stdbtn img-to-teaser" value="{echo $photo->getId()}">To Teaser</button>
+                </span>
+                {/foreach}
+                {/if}
+            </div>
+
+        </div>
+        <br clear="all"/>
+    </div><br clear="all"/>
+</div>
+<br clear="all"/>
+<script type="text/javascript" src="/public/js/custom/news.js"></script>
