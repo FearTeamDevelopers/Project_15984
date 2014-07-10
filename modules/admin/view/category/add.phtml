@@ -1,0 +1,90 @@
+<article class="grid_12">
+    <h1>Add Category</h1>
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <p>
+            <label>Title</label>
+            <span class="field">
+                <input type="text" name="title" value="{echo isset($category)? $category->title: ""}" />
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+
+        <p>
+            <label>nadskupina </label>
+            <span class="field">
+                <select name="parent">
+                    {if !empty($categories)
+                    {foreach $cat in $categories}
+                    <option value="{echo $cat->getId()}">{echo $cat->getTitle()}</option>
+                    {/foreach}
+                    {/if}
+                </select>
+                 {if isset($errors["parentId"])}
+                <label class="error">{echo join("<br/>", $errors["parentId"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Rank (0-99)</label>
+            <span class="field">
+                <input type="number" name="rank" value="{echo isset($category)? $category->rank: ""}" />
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Group </label>
+            <span class="field">
+                <select name="group">
+                    <option value="0" selected>no</option>
+                    <option value="1">yes</option>
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Description</label>
+            <span class="field">
+                <textarea cols="85" rows="5" name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
+                {if isset($errors["mainText"])}
+                <label class="error">{echo join("<br/>", $errors["mainText"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Meta-Title</label>
+            <span class="field">
+                <input type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
+                {if isset($errors["metaTitle"])}
+                <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Meta-Keywords</label>
+            <span class="field">
+                <input type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
+                {if isset($errors["metaKeywords"])}
+                <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Meta-Description</label>
+            <span class="field">
+                <textarea cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
+                {if isset($errors["metaDescription"])}
+                <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p class="stdformbutton">
+            <input name="submitAddCategory" type="submit" value="Save" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</article>

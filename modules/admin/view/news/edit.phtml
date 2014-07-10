@@ -1,0 +1,64 @@
+<article class="grid_12">
+    <h1 class="left">News</h1>
+    <form class="stdform stdform2" method="post" action="#" >
+                <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+                <p>
+                    <label>Title</label>
+                    <span class="field">
+                        <input type="text" name="title" value="{echo $news->title}" />
+                        {if isset($errors["title"])}
+                            <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Author</label>
+                    <span class="field">
+                        <input type="text" name="author" class="longinput" value="{echo $authUser->getWholeName()}"/>
+                    </span>
+                </p>
+                <p>
+                    <label>URL key<small>Automaticaly created from title</small></label>
+                    <span class="field">
+                        <input type="text" name="urlkey" class="longinput" value="{echo $news->urlKey}" />
+                        {if isset($errors["urlKey"])}
+                            <label class="error">{echo join("<br/>", $errors["urlKey"])}</label>
+                        {/if}
+                    </span>
+                </p>
+               
+                <p>
+                    <label>Text*<small>Max. 5000 characters</small></label>
+                    <span class="field">
+                        <textarea rows="20" name="text" id="ckeditor">{echo $news->text}</textarea>
+                        {if isset($errors["text"])}
+                            <label class="error">{echo join("<br/>", $errors["text"])}</label>
+                        {/if}
+                        <br/>
+                        <button id="news-clear-text">Clear</button>
+                    </span>
+                </p>
+              
+                <p>
+                    <label>Active</label>
+                    <span class="field">
+                        <select name="active" class="longinput">
+                            {if $news->active}
+                                <option value="0">Inactive</option>
+                                <option value="1" selected>Active</option>
+                            {/if}
+                            {else}
+                                <option value="0" selected>Inactive</option>
+                                <option value="1">Active</option>
+                            {/else}
+                        </select>
+                    </span>
+                </p>
+               
+                <p class="stdformbutton">
+                    <input name="submitEditNews" type="submit" value="Save" class="submit radius2" />
+                    <input type="reset" class="reset radius2" value="Reset" />
+                </p>
+            </form>
+</article>
+
