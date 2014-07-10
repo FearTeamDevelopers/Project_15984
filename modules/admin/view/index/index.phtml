@@ -6,7 +6,8 @@
 <div class="content">
     <ul class="widgetlist">
         <li><a href="/admin/news/add/" class="message">New News</a></li>
-        <li><a href="/admin/collection/" class="upload">New Product</a></li>
+        <li><a href="/admin/product/add/" class="message">New Product</a></li>
+        <li><a href="/admin/category/" class="upload">Category</a></li>
         <li><a href="/admin/photo/add/" class="upload">Upload Photo</a></li>
         <li><a href="/admin/analytics/" class="events">Analytics</a></li>
     </ul>
@@ -63,46 +64,13 @@
 
     <div class="one_half">
 
-        <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Partners</span></h2></div>
-            <div class="widgetcontent padding0 statement">
-                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
-                    <colgroup>
-                        <col class="con0" />
-                        <col class="con1" />
-                        <col class="con0" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th class="head0">Name</th>
-                            <th class="head1">Logo</th>
-                            <th class="head0">Webpage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {if !empty($partnerlist)}
-                            {foreach $partner in $partnerlist}
-                                <tr>
-                                    <td>{echo $partner->getTitle()}</td>
-                                    <td><img src="{echo $partner->getLogo()}" alt="" height="50px" /></td>
-                                    <td>
-                                        <a href="{echo $partner->getWeb()}" target="_blank">
-                                            {echo $partner->getWeb()}
-                                        </a>
-                                    </td>
-                                </tr>
-                            {/foreach}
-                        {/if} 
-                    </tbody>
-                </table>
-            </div><!--widgetcontent-->
-        </div><!--widgetbox-->                        
-    </div><!--one_half-->
+                            
+    
 
-    <div class="one_half last">
+    
 
         <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Collection List</span></h2></div>
+            <div class="title"><h2 class="tabbed"><span>Gallery List</span></h2></div>
             <div class="widgetcontent padding0 statement">
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
@@ -113,8 +81,7 @@
                     <thead>
                         <tr>
                             <th class="head0">Title</th>
-                            <th class="head1">Photographer</th>
-                            <th class="head0">Date</th>
+                            <th class="head1">Created</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,10 +89,9 @@
                             {foreach $collection in $collectionlist}
                                 <tr>
                                     <td>
-                                        <a href="/admin/collection/detail/{echo $collection->getId()}">{echo $collection->getTitle()}</a>
+                                        <a href="/admin/gallery/detail/{echo $collection->getId()}">{echo $collection->getTitle()}</a>
                                     </td>
-                                    <td>{echo $collection->getPhotographer()}</td>
-                                    <td>{echo $collection->getDate()}</td>
+                                    <td>{echo $collection->getCreated()}</td>
                                 </tr>
                             {/foreach}
                         {/if} 

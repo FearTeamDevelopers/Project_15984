@@ -1,3 +1,63 @@
-<article class="grid_12">
-    <h1>Detail </h1>
-</article>
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Gallery List</a></li>
+    <li><a href="/admin/gallery/add/">Add Gallery</a></li>
+    <li class="current"><a href="#">Gallery Detail</a></li>
+    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Edit Gallery</a></li>
+    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $collection->id}">Delete Gallery</a></li>{/if}
+</ul><!--maintabmenu-->
+
+<div class="content">
+    {if !empty($gallery)}
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>{echo $gallery->title}</span></h2>
+    </div><!--contenttitle-->
+
+    <div class="collectiondetail">
+        <p>
+            Created: {echo $gallery->created}<br/>
+            Photo count: {echo $collectionphotocount}<br/>
+            Collection description:
+        </p>
+        <div class="collectiondetail_description">
+            {echo $gallery->description}
+        </div>
+        <br/>
+        <p>
+            <a href="/admin/collection/addPhoto/{echo $gallery->id}" class="btn btn_image"><span>Upload Photo</span></a> 
+        </p>
+    </div>
+    <hr/>
+
+    
+        
+        <div id="tabs-1">
+            {if !empty($photos)}
+            <div style="overflow:hidden;">
+                <ul class="imagelist">
+                    {foreach $photo in $photos}
+                    {if $photo->active}
+                    <li class="photoactive">
+                        {/if} 
+                        {else}
+                    <li class="photoinactive">
+                        {/else}
+                        <img src="{echo $photo->thumbPath}" alt="{echo $photo->photoName}" title="{echo $photo->photoName}" height="100px" />
+                        <span>
+                            <a href="{echo $photo->imgMain}" class="view"></a>
+                            <a href="/admin/gallery/changePhotoStatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
+                            <a href="/admin/gallery/deletePhoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
+                        </span>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+            {/if} 
+            {else}
+            <div class="notification msginfo"><a class="close"></a><p>No Photo in collection</p></div>
+            {/else}
+        </div>
+        
+    </div><!--#tabs-->
+
+</div>
+<br clear="all"/><br />

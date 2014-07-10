@@ -1,12 +1,18 @@
-<article class="grid_12">
-    <h1>Add Category</h1>
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/category/">Category List</a></li>
+    <li class="current"><a href="#">Add Category</a></li>
+</ul><!--maintabmenu-->
 
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Category informations</span></h2>
+    </div><!--contenttitle-->
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
             <label>Title</label>
             <span class="field">
-                <input type="text" name="title" value="{echo isset($category)? $category->title: ""}" />
+                <input class="longinput" type="text" name="title" value="{echo isset($category)? $category->title: ""}" />
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
@@ -14,9 +20,9 @@
         </p>
 
         <p>
-            <label>nadskupina </label>
+            <label>Parent Category </label>
             <span class="field">
-                <select name="parent">
+                <select class="longinput" name="parent">
                     {if !empty($categories)
                     {foreach $cat in $categories}
                     <option value="{echo $cat->getId()}">{echo $cat->getTitle()}</option>
@@ -31,7 +37,7 @@
         <p>
             <label>Rank (0-99)</label>
             <span class="field">
-                <input type="number" name="rank" value="{echo isset($category)? $category->rank: ""}" />
+                <input class="longinput" type="number" name="rank" value="{echo isset($category)? $category->rank: ""}" />
                 {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
@@ -58,7 +64,7 @@
         <p>
             <label>Meta-Title</label>
             <span class="field">
-                <input type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
+                <input class="longinput" type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
                 {if isset($errors["metaTitle"])}
                 <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                 {/if}
@@ -67,7 +73,7 @@
         <p>
             <label>Meta-Keywords</label>
             <span class="field">
-                <input type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
+                <input class="longinput" type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
                 {if isset($errors["metaKeywords"])}
                 <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
                 {/if}
@@ -76,7 +82,7 @@
         <p>
             <label>Meta-Description</label>
             <span class="field">
-                <textarea cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
+                <textarea class="longinput" cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
                 {if isset($errors["metaDescription"])}
                 <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                 {/if}
@@ -87,4 +93,4 @@
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>
-</article>
+</div>
