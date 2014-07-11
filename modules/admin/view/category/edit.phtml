@@ -23,13 +23,16 @@
             <label>Parent group </label>
             <span class="field">
                 <select class="longinput" name="parent">
-                        {if !empty($categories)
+                    <option></option>   
+                    {if !empty($categories)}
                         {foreach $cat in $categories}
                         {script $s = ""}
-                        {if $category->getParentId() == $cat->getId()}
+                        {if $category->getParentId() == $cat->id}
                         {script $s = "selected"}
                         {/if}
-                        <option value="{echo $cat->getId()}" {echo $s}>{echo $cat->getTitle()}</option>
+                        {if $cat->id <> $category->id}
+                        <option value="{echo $cat->id}" {echo $s}>{echo $cat->title}</option>
+                        {/if}
                     {/foreach}
                     {/if}
                 </select>
@@ -39,12 +42,26 @@
             </span>
         </p>
         <p>
-            <label>Rank (0-99)</label>
+            <label>Rank <small>(1-99)</small></label>
             <span class="field">
                 <input class="longinput" type="number" name="rank" value="{echo $category->rank}" />
                        {if isset($errors["rank"])}
                        <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
+            </span>
+        </p>
+        <p>
+            <label>Active </label>
+            <span class="field">
+                <select class="longinput" name="active">
+                        {if $category->active == 0}
+                        <option value="0" selected>no</option>
+                    <option value="1">yes</option>
+                    {/if}{else}
+                    <option value="0">no</option>
+                    <option value="1" selected>yes</option>
+                    {/else}
+                </select>
             </span>
         </p>
         <p>
@@ -98,7 +115,7 @@
             </span>
         </p>
         <p class="stdformbutton">
-            <input name="submitAddCategory" type="submit" value="Save" class="submit radius2" />
+            <input name="submitEditCategory" type="submit" value="Save" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>

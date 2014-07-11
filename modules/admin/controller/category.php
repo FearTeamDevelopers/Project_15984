@@ -18,9 +18,16 @@ class Admin_Controller_Category extends Controller
     {
         $view = $this->getActionView();
         
-        $categories = App_Model_Category::all(array('active = ?' => true));
-        
-        $view->set('catergories', $categories);
+        $categories = App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => 0));
+        $view->set('categories', $categories);
+    }
+       public function detail($id)
+    {
+        $view = $this->getActionView();
+        $current = App_Model_Category::first(array('id = ?' => $id));
+        $categories = App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => $id));
+        $view->set('categories', $categories)
+            ->set('current', $current);
     }
     
     /**
@@ -32,7 +39,6 @@ class Admin_Controller_Category extends Controller
         $categories = App_Model_Category::all(array('active = ?' => true));
 
         $view->set('categories', $categories);
-
         if (RequestMethods::post('submitAddCategory')) {
             $this->checkToken();
             $urlKey = strtolower(
@@ -132,6 +138,7 @@ class Admin_Controller_Category extends Controller
             } else {
                 if ($category->delete()) {
                     Event::fire('admin.log', array('success', 'Category id: ' . $id));
+                    ob_clean();
                     echo 'ok';
                 } else {
                     Event::fire('admin.log', array('fail', 'Category id: ' . $id));

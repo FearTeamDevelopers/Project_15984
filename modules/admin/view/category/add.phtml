@@ -12,7 +12,7 @@
         <p>
             <label>Title</label>
             <span class="field">
-                <input class="longinput" type="text" name="title" value="{echo isset($category)? $category->title: ""}" />
+                <input class="longinput" type="text" name="title" required value="{echo isset($category)? $category->title: ""}" />
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
@@ -23,21 +23,24 @@
             <label>Parent Category </label>
             <span class="field">
                 <select class="longinput" name="parent">
-                    {if !empty($categories)
+                    <option></option>
+                    {if !empty($categories)}
                     {foreach $cat in $categories}
-                    <option value="{echo $cat->id}">{echo $cat->title}</option>
+                    {if $cat->id <> $category->id}
+                    <option value="{echo $cat->id}" {echo $s}>{echo $cat->title}</option>
+                    {/if}
                     {/foreach}
                     {/if}
                 </select>
-                 {if isset($errors["parentId"])}
+                {if isset($errors["parentId"])}
                 <label class="error">{echo join("<br/>", $errors["parentId"])}</label>
                 {/if}
             </span>
         </p>
         <p>
-            <label>Rank (0-99)</label>
+            <label>Rank <small>(1-99)</small></label>
             <span class="field">
-                <input class="longinput" type="number" name="rank" value="{echo isset($category)? $category->rank: ""}" />
+                <input class="longinput" type="text" pattern="[\d]*[\.,]?[\d]+" name="rank" value="{echo isset($category)? $category->rank: ""}" />
                 {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
@@ -55,7 +58,7 @@
         <p>
             <label>Description</label>
             <span class="field">
-                <textarea cols="85" rows="5" name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
+                <textarea cols="85" rows="5" required name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
                 {if isset($errors["mainText"])}
                 <label class="error">{echo join("<br/>", $errors["mainText"])}</label>
                 {/if}
@@ -64,7 +67,7 @@
         <p>
             <label>Meta-Title</label>
             <span class="field">
-                <input class="longinput" type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
+                <input required class="longinput" type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
                 {if isset($errors["metaTitle"])}
                 <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                 {/if}
@@ -73,7 +76,7 @@
         <p>
             <label>Meta-Keywords</label>
             <span class="field">
-                <input class="longinput" type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
+                <input required class="longinput" type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
                 {if isset($errors["metaKeywords"])}
                 <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
                 {/if}
@@ -82,7 +85,7 @@
         <p>
             <label>Meta-Description</label>
             <span class="field">
-                <textarea class="longinput" cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
+                <textarea required class="longinput" cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
                 {if isset($errors["metaDescription"])}
                 <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                 {/if}

@@ -613,7 +613,7 @@ jQuery(document).ready(function() {
             var url = jQuery(this).attr('href');
 
             jQuery.post(url, {tk: tk}, function(msg) {
-                if (msg == 'ok') {
+                if (msg == 2) {
                     parentTr.fadeOut();
                 } else {
                     alert(msg);

@@ -30,7 +30,7 @@ class App_Model_Category extends Model
      * @type integer
      * @index
      * 
-     * @validate required, numeric, max(8)
+     * @validate  numeric, max(8)
      */
     protected $_parentId;
 

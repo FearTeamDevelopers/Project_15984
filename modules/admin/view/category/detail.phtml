@@ -1,11 +1,12 @@
 <ul class="maintabmenu multipletabmenu">
-    <li class="current"><a href="#">Seznam Kategorií</a></li>
+    <li class="current"><a href="#">Detail Kategorie</a></li>
+    <li><a href="/admin/category/">Seznam Kategorií</a></li>
     <li><a href="/admin/category/add/">Přidat Kategorii</a></li>
 </ul><!--maintabmenu-->
 <div class="content">
     <input type="hidden" name="tk" id="tk" value="{echo $token}" />
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>Kategorie</span></h2>
+        <h2 class="table"><span>{echo $current->getTitle()}</span></h2>
     </div><!--contenttitle-->
 
     
@@ -15,7 +16,7 @@
                 <col class="con0" /> 
             </colgroup>
         <thead>
-        <td class="head0">Název</td>
+        <td class="head0">Podkategorie</td>
         <td class="head1">Skupinová</td>
         <td class="head0">&nbsp;</td>
         </thead>
@@ -35,4 +36,9 @@
             {/if}
         </tbody>
     </table>
+    <p>
+        <span>
+            <b>Popis kategorie:</b><br/> {echo $current->getMainText()}
+        </span>
+    </p>
 </div>

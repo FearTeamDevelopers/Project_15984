@@ -34,7 +34,7 @@ class Admin_Etc_Observer
             $paramStr = '';
         }
 
-        $log = new App_Model_AdminLog(array(
+        $log = new Admin_Model_AdminLog(array(
             'userId' => $userId,
             'module' => $module,
             'controller' => $controller,
