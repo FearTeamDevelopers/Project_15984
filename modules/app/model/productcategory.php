@@ -7,7 +7,7 @@ use THCFrame\Model\Model;
  *
  * @author Tomy
  */
-class App_Model_Productcategory extends Model
+class App_Model_ProductCategory extends Model
 {
 
     /**

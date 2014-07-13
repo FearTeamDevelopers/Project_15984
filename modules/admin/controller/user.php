@@ -47,7 +47,7 @@ class Admin_Controller_User extends Controller
                         $user->lastLogin = date('Y-m-d H:i:s', time());
                         $user->save();
 
-                        self::redirect('/');
+                        self::redirect('/admin/');
                     } else {
                         $view->set('account_error', 'Email address and/or password are incorrect');
                     }

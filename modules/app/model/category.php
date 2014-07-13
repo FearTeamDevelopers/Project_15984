@@ -82,8 +82,21 @@ class App_Model_Category extends Model
      * @column
      * @readwrite
      * @type boolean
+     * 
+     * @validate max(2)
+     * @label for group costumes
      */
     protected $_isGrouped;
+    
+    /**
+     * @column
+     * @readwrite
+     * @type boolean
+     * 
+     * @validate max(2)
+     * @label for selable goods
+     */
+    protected $_isSelable;
 
     /**
      * @column
@@ -142,6 +155,11 @@ class App_Model_Category extends Model
      * @type datetime
      */
     protected $_modified;
+    
+    /**
+     * @readwrite
+     */
+    protected $_subcategory;
 
     /**
      * 
@@ -176,9 +194,33 @@ class App_Model_Category extends Model
      */
     public static function fetchChildrens($id)
     {
-        $section = new self(array('id' => $id));
+        $category = new self(array('id' => $id));
 
-        return $section->getChildrens();
+        $category->_subcategory = $category->getChildrens();
+
+        if($category->_subcategory !== null){
+            foreach($category->_subcategory as $cat){
+                $cat->_subcategory = self::fetchChildrens($cat->id);
+            }
+        }
+        
+        return $category->_subcategory;
     }
 
+    /**
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public static function fetchAllCategories()
+    {
+        $mainCat = self::all(array('active = ?' => true, 'parentId = ?' => 0));
+        
+        foreach ($mainCat as $category) {
+            $category->_subcategory = self::fetchChildrens($category->id);
+        }
+        
+        return $mainCat;
+    }
+    
 }

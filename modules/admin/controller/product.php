@@ -4,6 +4,7 @@ use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Core\StringMethods;
+use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
 
 /**
@@ -11,6 +12,289 @@ use THCFrame\Filesystem\FileManager;
  */
 class Admin_Controller_Product extends Controller
 {
+
+    private $_errors = array();
+
+    /**
+     * 
+     * @param type $configurable
+     * @return \App_Model_Product
+     */
+    private function createMainProduct($configurable = false)
+    {
+        $urlKey = strtolower(
+                str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+
+        if (!$this->checkUrlKey($urlKey)) {
+            $this->_errors['title'] = array('Product with this title already exists');
+        }
+
+        $fileManager = new FileManager(array(
+            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+        ));
+
+        $uploadTo = substr($urlKey, 0, 3);
+
+        try {
+            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
+            $uploadedFile = ArrayMethods::toObject($data);
+        } catch (Exception $ex) {
+            $this->_errors['mainfile'] = array($ex->getMessage());
+        }
+
+        if ($configurable) {
+            $product = new App_Model_Product(array(
+                'sizeId' => 0,
+                'urlKey' => $urlKey,
+                'productType' => RequestMethods::post('producttype'),
+                'variantFor' => 0,
+                'productCode' => RequestMethods::post('productcode'),
+                'title' => RequestMethods::post('title'),
+                'description' => RequestMethods::post('description'),
+                'basicPrice' => RequestMethods::post('basicprice'),
+                'regularPrice' => RequestMethods::post('regularprice'),
+                'currentPrice' => RequestMethods::post('currentprice'),
+                'discount' => RequestMethods::post('discount'),
+                'discountFrom' => RequestMethods::post('discountfrom'),
+                'discountTo' => RequestMethods::post('discountto'),
+                'eanCode' => RequestMethods::post('eancode'),
+                'weight' => RequestMethods::post('weight'),
+                'isInAction' => RequestMethods::post('inaction'),
+                'newFrom' => RequestMethods::post('newfrom'),
+                'newTo' => RequestMethods::post('newto'),
+                'imgMain' => trim($uploadedFile->file->path, '.'),
+                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                'metaTitle' => RequestMethods::post('metatitle', RequestMethods::post('title')),
+                'metaKeywords' => RequestMethods::post('metakeywords'),
+                'metaDescription' => RequestMethods::post('metadescription', RequestMethods::post('description')),
+                'rssFeedTitle' => RequestMethods::post('title'),
+                'rssFeedDescription' => RequestMethods::post('description'),
+                'rssFeedImg' => trim($uploadedFile->file->path, '.')
+            ));
+        } else {
+            $product = new App_Model_Product(array(
+                'sizeId' => RequestMethods::post('size'),
+                'urlKey' => $urlKey,
+                'productType' => RequestMethods::post('producttype'),
+                'variantFor' => 0,
+                'productCode' => RequestMethods::post('productcode'),
+                'title' => RequestMethods::post('title'),
+                'description' => RequestMethods::post('description'),
+                'basicPrice' => RequestMethods::post('basicprice'),
+                'regularPrice' => RequestMethods::post('regularprice'),
+                'currentPrice' => RequestMethods::post('currentprice'),
+                'discount' => RequestMethods::post('discount'),
+                'discountFrom' => RequestMethods::post('discountfrom'),
+                'discountTo' => RequestMethods::post('discountto'),
+                'eanCode' => RequestMethods::post('eancode'),
+                'weight' => RequestMethods::post('weight'),
+                'isInAction' => RequestMethods::post('inaction'),
+                'newFrom' => RequestMethods::post('newfrom'),
+                'newTo' => RequestMethods::post('newto'),
+                'imgMain' => trim($uploadedFile->file->path, '.'),
+                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                'metaTitle' => RequestMethods::post('metatitle', RequestMethods::post('title')),
+                'metaKeywords' => RequestMethods::post('metakeywords'),
+                'metaDescription' => RequestMethods::post('metadescription', RequestMethods::post('description')),
+                'rssFeedTitle' => RequestMethods::post('title'),
+                'rssFeedDescription' => RequestMethods::post('description'),
+                'rssFeedImg' => trim($uploadedFile->file->path, '.')
+            ));
+        }
+
+        if (empty($this->_errors) && $product->validate()) {
+            $pid = $product->save();
+            Event::fire('app.log', array('success', 'Product id: ' . $pid));
+        } else {
+            Event::fire('app.log', array('fail'));
+            $this->_errors = $this->_errors + $product->getErrors();
+        }
+
+        return $product;
+    }
+
+    /**
+     * 
+     * @param App_Model_Product $productConf
+     * @return boolean
+     */
+    private function createVariants(App_Model_Product $productConf)
+    {
+        $sizeVariantsArr = RequestMethods::post('size');
+
+        if (!is_array($sizeVariantsArr)) {
+            $this->_errors['sizeId'] = array('Must be selected more size variants');
+            return false;
+        }
+
+        foreach ($sizeVariantsArr as $size) {
+            $urlKey = strtolower(
+                            str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title')))) . '-' . $size;
+
+            if (!$this->checkUrlKey($urlKey)) {
+                $this->_errors['title'] = array('Product with this title already exists');
+            }
+
+            $product = new App_Model_Product(array(
+                'sizeId' => $size,
+                'urlKey' => $urlKey,
+                'productType' => 3,
+                'variantFor' => $productConf->getId(),
+                'productCode' => RequestMethods::post('productcode'),
+                'title' => RequestMethods::post('title'),
+                'description' => RequestMethods::post('description'),
+                'basicPrice' => 0,
+                'regularPrice' => 0,
+                'currentPrice' => RequestMethods::post('currentprice'),
+                'discount' => 0,
+                'discountFrom' => '',
+                'discountTo' => '',
+                'eanCode' => '',
+                'weight' => 0,
+                'isInAction' => '',
+                'newFrom' => '',
+                'newTo' => '',
+                'imgMain' => '',
+                'imgThumb' => '',
+                'metaTitle' => '',
+                'metaKeywords' => '',
+                'metaDescription' => '',
+                'rssFeedTitle' => '',
+                'rssFeedDescription' => '',
+                'rssFeedImg' => ''
+            ));
+
+            if (empty($this->_errors) && $product->validate()) {
+                $pid = $product->save();
+                Event::fire('app.log', array('success', 'Product variant id: ' . $pid));
+            } else {
+                Event::fire('app.log', array('fail'));
+                $this->_errors = $this->_errors + $product->getErrors();
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param type $productId
+     * @param type $categoryArr
+     * @param type $update
+     * @return boolean
+     */
+    private function createCategoryRecords($productId, $categoryArr = array(), $update = false)
+    {
+        if ($update) {
+            $deleteStatus = App_Model_ProductCategory::deleteAll(array('productId = ?' => (int) $productId));
+            if ($deleteStatus == -1) {
+                return false;
+            }
+        }
+
+        foreach ($categoryArr as $category) {
+            $pc = new App_Model_ProductCategory(array(
+                'productId' => (int) $productId,
+                'categoryId' => (int) $category
+            ));
+
+            $pc->save();
+            Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' into category ' . $category));
+        }
+
+        return true;
+    }
+
+    /**
+     * 
+     * @param type $productId
+     * @param type $recommendedArr
+     * @param type $update
+     * @return boolean
+     */
+    private function createRecommendedProductsRecords($productId, $recommendedArr = array(), $update = false)
+    {
+        if ($update) {
+            $deleteStatus = App_Model_RecommendedProduct::deleteAll(array('productId = ?' => (int) $productId));
+            if ($deleteStatus == -1) {
+                return false;
+            }
+        }
+
+        foreach ($recommendedArr as $recProduct) {
+            $rp = new App_Model_RecommendedProduct(array(
+                'productId' => $productId,
+                'recommendedId' => $recProduct
+            ));
+
+            $rp->save();
+            Event::fire('admin.log', array('success', 'Recommended product id: ' . $recProduct . ' for product ' . $productId));
+        }
+
+        return true;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    private function uploadAdditionalPhotos($productId, $uploadTo)
+    {
+        $fileManager = new FileManager(array(
+            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+        ));
+
+        try {
+            $data = $fileManager->upload('secondfile', 'product/' . $uploadTo);
+        } catch (Exception $ex) {
+            $this->_errors['secondfile'] = array($ex->getMessage());
+        }
+
+        if (empty($data['errors']) && empty($this->_errors['secondfile'])) {
+            foreach ($data['files'] as $i => $value) {
+                $uploadedFile = ArrayMethods::toObject($value);
+
+                $photo = new App_Model_ProductPhoto(array(
+                    'productId' => (int) $productId,
+                    'imgMain' => trim($uploadedFile->file->path, '.'),
+                    'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                ));
+
+                if ($photo->validate()) {
+                    $aid = $photo->save();
+
+                    Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $productId));
+                } else {
+                    Event::fire('app.log', array('fail', 'Photo for product ' . $productId));
+                    $this->_errors['secondfile'][] = $photo->getErrors();
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 
+     * @param type $key
+     * @return boolean
+     */
+    private function checkUrlKey($key)
+    {
+        $status = App_Model_Product::first(array('urlKey = ?' => $key));
+
+        if ($status === null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @before _secured, _member
@@ -30,125 +314,58 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type' => 'size'));
-        $view->set('sizes', $sizes);
+        $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
+        $categories = App_Model_Category::fetchAllCategories();
+        $allProducts = App_Model_Product::all(
+                        array('active = ?' => true, 'deleted = ?' => false, 'productType IN ?' => array(1, 2)));
+
+        $view->set('sizes', $sizes)
+                ->set('allproducts', $allProducts)
+                ->set('categories', $categories);
 
         if (RequestMethods::post('submitAddProduct')) {
             $this->checkToken();
-            $urlKey = strtolower(
-                    str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
-            $fileManager = new FileManager(array(
-                'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
-            ));
-
-            try {
-                $data = $fileManager->upload('mainfile', 'product');
-                $uploadedFile = ArrayMethods::toObject($data);
-            } catch (Exception $ex) {
-                $view->set('uploadErr', array('mainfile' => array($ex->getMessage())));
+            $categoryArr = RequestMethods::post('rcat');
+            if (empty($categoryArr)) {
+                $this->_errors['category'] = array('Atleast one category has to be selected');
             }
 
-            $product = new App_Model_Product(array(
-                'sizeId' => RequestMethods::post('size'),
-                'urlKey' => $urlKey,
-                'productCode' => RequestMethods::post('productcode'),
-                'title' => RequestMethods::post('title'),
-                'description' => RequestMethods::post('description'),
-                'basicPrice' => RequestMethods::post('basicprice'),
-                'regularPrice' => RequestMethods::post('regularprice'),
-                'currentPrice' => RequestMethods::post('currentprice'),
-                'discount' => RequestMethods::post('discount'),
-                'discountFrom' => RequestMethods::post('discountfrom'),
-                'discountTo' => RequestMethods::post('discountto'),
-                'eanCode' => RequestMethods::post('eancode'),
-                'mu' => RequestMethods::post('mu'),
-                'weight' => RequestMethods::post('weight'),
-                'isInAction' => RequestMethods::post('inaction'),
-                'newFrom' => RequestMethods::post('newfrom'),
-                'newTo' => RequestMethods::post('newto'),
-                'imgMain' => trim($uploadedFile->file->path, '.'),
-                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                'metaTitle' => RequestMethods::post('metatitle', RequestMethods::post('title')),
-                'metaKeaywords' => RequestMethods::post('metakeywords'),
-                'metaDescription' => RequestMethods::post('metadescription', RequestMethods::post('description')),
-                'rssFeedTitle' => RequestMethods::post('title'),
-                'rssFeedDescription' => RequestMethods::post('description'),
-                'rssFeedImg' => trim($uploadedFile->file->path, '.')
-            ));
-
-            if ($product->validate()) {
-                $pid = $product->save();
-
-                if (RequestMethods::post('uplMoreImages') == 1) {
-                    try {
-                        $data = $fileManager->upload('secondfile', 'product');
-                    } catch (Exception $ex) {
-                        $view->set('uploadErr', array('secondfile' => array($ex->getMessage())));
-                    }
-
-                    if (array_key_exists('files', $data)) {
-                        $errors = $errors + $data['errors'];
-
-                        foreach ($data['files'] as $i => $value) {
-                            $uploadedFile = ArrayMethods::toObject($value);
-
-                            $photo = new App_Model_Productphoto(array(
-                                'productId' => $pid,
-                                'imgMain' => trim($uploadedFile->file->path, '.'),
-                                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                            ));
-
-                            if ($photo->validate()) {
-                                $aid = $photo->save();
-
-                                Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $pid));
-                            } else {
-                                Event::fire('app.log', array('fail', 'Photo for product ' . $pid));
-                                $errors[] = $photo->getErrors();
-                            }
-                        }
-
-                        if (empty($errors)) {
-                            $view->successMessage('Product and photos have been successfully saved');
-                            self::redirect('/admin/product/detail/' . $pid);
-                        } else {
-                            $view->set('errors', $photo->getErrors());
-                        }
-                    } elseif (array_key_exists('file', $data)) {
-                        $uploadedFile = ArrayMethods::toObject($data);
-
-                        $photo = new App_Model_Productphoto(array(
-                            'productId' => $pid,
-                            'imgMain' => trim($uploadedFile->file->path, '.'),
-                            'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                        ));
-
-                        if ($photo->validate()) {
-                            $aid = $photo->save();
-
-                            Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $pid));
-                            $view->successMessage('Product and photo have been successfully saved');
-                            self::redirect('/admin/product/detail/' . $pid);
-                        } else {
-                            Event::fire('app.log', array('fail', 'Photo for product ' . $pid));
-                            $view->set('photo', $photo)
-                                    ->set('errors', $photo->getErrors());
-                        }
-                    }
-                } else {
-                    Event::fire('app.log', array('success', 'Product id: ' . $pid));
-                    $view->successMessage('Product has been successfully saved');
-                    self::redirect('/admin/product/detail/' . $pid);
+            if (RequestMethods::post('producttype') == 2) {
+                $product = $this->createMainProduct(true);
+                if (empty($this->_errors)) {
+                    $this->createVariants($product);
                 }
             } else {
-                Event::fire('app.log', array('fail'));
+                $product = $this->createMainProduct();
+            }
+
+            if (empty($this->_errors)) {
+                /* category */
+                $this->createCategoryRecords($product->getId(), $categoryArr);
+
+                /* recommended products */
+                $recomProducts = RequestMethods::post('recomproductids');
+                if (!empty($recomProducts)) {
+                    $this->createRecommendedProductsRecords($product->getId(), $recomProducts);
+                }
+
+                /* additional photos */
+                if (RequestMethods::post('uplMoreImages') == 1) {
+                    $uploadTo = substr($product, 0, 3);
+                    $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
+                }
+
+                if (empty($this->_errors)) {
+                    $view->successMessage('Product has been successfully saved');
+                    self::redirect('/admin/product/');
+                } else {
+                    $view->set('product', $product)
+                            ->set('errors', $this->_errors);
+                }
+            } else {
                 $view->set('product', $product)
-                        ->set('errors', $product->getErrors());
+                        ->set('errors', $this->_errors);
             }
         }
     }
@@ -160,23 +377,56 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int)$id));
-        
-        if($product === null){
+        $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
+
+        if ($product === null) {
             $view->warningMessage('Product not found');
             self::redirect('/admin/product/');
         }
-        
-        $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type' => 'size'));
-        
+
+        $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
+        $productCategory = App_Model_ProductCategory::all(array('productId = ?' => $product->getId()));
+        $recomProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $product->getId()));
+        $categories = App_Model_Category::fetchAllCategories();
+        $allProducts = App_Model_Product::all(
+                        array('active = ?' => true, 'deleted = ?' => false, 'productType IN ?' => array(1, 2)));
+        $additionalProductPhoto = App_Model_ProductPhoto::all(array('productId = ?' => $product->getId()));
+
+        if (!empty($productCategory)) {
+            $productCategoryIds = array();
+            foreach ($productCategory as $prcat) {
+                $productCategoryIds[] = $prcat->getCategoryId();
+            }
+        }
+
+        if (!empty($recomProducts)) {
+            $recomProductIds = array();
+            foreach ($recomProducts as $recprod) {
+                $recomProductIds[] = $recprod->getRecommendedId();
+            }
+        }
+
         $view->set('product', $product)
+                ->set('categories', $categories)
+                ->set('allproducts', $allProducts)
+                ->set('productcategoryids', $productCategoryIds)
+                ->set('recommendedproductids', $recomProductIds)
+                ->set('productphotos', $additionalProductPhoto)
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
             $this->checkToken();
+            $errors = array();
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
+
+            if ($product->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
+                $errors['title'] = array('Product with this title already exists');
+            }
+
+            $uploadTo = substr($product->getUrlKey(), 0, 3);
             if ($product->imgMain == '') {
                 try {
                     $fileManager = new FileManager(array(
@@ -188,15 +438,15 @@ class Admin_Controller_Product extends Controller
                     ));
 
                     try {
-                        $data = $fileManager->upload('mainfile', 'product');
+                        $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
                         $uploadedFile = ArrayMethods::toObject($data);
                     } catch (Exception $ex) {
-                        $view->set('uploadErr', array('mainfile' => array($ex->getMessage())));
+                        $errors['mainfile'] = array($ex->getMessage());
                     }
                     $imgMain = trim($uploadedFile->file->path, '.');
                     $imgThumb = trim($uploadedFile->thumb->path, '.');
                 } catch (Exception $ex) {
-                    $errors['logo'] = $ex->getMessage();
+                    $errors['mainfile'] = $ex->getMessage();
                 }
             } else {
                 $imgMain = $product->imgMain;
@@ -215,7 +465,6 @@ class Admin_Controller_Product extends Controller
             $product->discountFrom = RequestMethods::post('discountfrom');
             $product->discountTo = RequestMethods::post('discountto');
             $product->eanCode = RequestMethods::post('eancode');
-            $product->mu = RequestMethods::post('mu');
             $product->weight = RequestMethods::post('weight');
             $product->isInAction = RequestMethods::post('inaction');
             $product->newFrom = RequestMethods::post('newfrom');
@@ -223,200 +472,181 @@ class Admin_Controller_Product extends Controller
             $product->imgMain = $imgMain;
             $product->imgThumb = $imgThumb;
             $product->metaTitle = RequestMethods::post('metatitle', RequestMethods::post('title'));
-            $product->metaKeaywords = RequestMethods::post('metakeywords');
+            $product->metaKeywords = RequestMethods::post('metakeywords');
             $product->metaDescription = RequestMethods::post('metadescription', RequestMethods::post('description'));
             $product->rssFeedTitle = RequestMethods::post('title');
             $product->rssFeedDescription = RequestMethods::post('description');
-            $product->rssFeedImg = trim($uploadedFile->file->path, '.');
+            $product->rssFeedImg = $imgMain;
 
-            if ($product->validate()) {
+            $categoryArr = RequestMethods::post('rcat');
+            if (empty($categoryArr)) {
+                $errors['category'] = array('Atleast one category has to be selected');
+            }
+
+            if (empty($errors) && $product->validate()) {
                 $product->save();
 
+                /* category */
+                $this->createCategoryRecords($product->getId(), $categoryArr, true);
+
+                /* recommended products */
+                $recomProducts = RequestMethods::post('recomproductids');
+                if (!empty($recomProducts)) {
+                    $this->createRecommendedProductsRecords($product->getId(), $recomProducts, true);
+                }
+
                 if (RequestMethods::post('uplMoreImages') == 1) {
-                    try {
-                        $data = $fileManager->upload('secondfile', 'product');
-                    } catch (Exception $ex) {
-                        $view->set('uploadErr', array('secondfile' => array($ex->getMessage())));
-                    }
+                    $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
+                }
 
-                    if (array_key_exists('files', $data)) {
-                        $errors = $errors + $data['errors'];
-
-                        foreach ($data['files'] as $i => $value) {
-                            $uploadedFile = ArrayMethods::toObject($value);
-
-                            $photo = new App_Model_Productphoto(array(
-                                'productId' => $product->getId(),
-                                'imgMain' => trim($uploadedFile->file->path, '.'),
-                                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                            ));
-
-                            if ($photo->validate()) {
-                                $aid = $photo->save();
-
-                                Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $product->getId()));
-                            } else {
-                                Event::fire('app.log', array('fail', 'Photo for product ' . $product->getId()));
-                                $errors[] = $photo->getErrors();
-                            }
-                        }
-
-                        if (empty($errors)) {
-                            $view->successMessage('Product and photos have been successfully saved');
-                            self::redirect('/admin/product/detail/' . $product->getId());
-                        } else {
-                            $view->set('errors', $photo->getErrors());
-                        }
-                    } elseif (array_key_exists('file', $data)) {
-                        $uploadedFile = ArrayMethods::toObject($data);
-
-                        $photo = new App_Model_Productphoto(array(
-                            'productId' => $product->getId(),
-                            'imgMain' => trim($uploadedFile->file->path, '.'),
-                            'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                        ));
-
-                        if ($photo->validate()) {
-                            $aid = $photo->save();
-
-                            Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $product->getId()));
-                            $view->successMessage('Product and photo have been successfully saved');
-                            self::redirect('/admin/product/detail/' . $product->getId());
-                        } else {
-                            Event::fire('app.log', array('fail', 'Photo for product ' . $product->getId()));
-                            $view->set('photo', $photo)
-                                    ->set('errors', $photo->getErrors());
-                        }
-                    }
-                } else {
+                if (empty($this->_errors)) {
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
                     $view->successMessage('Product has been successfully saved');
-                    self::redirect('/admin/product/detail/' . $product->getId());
+                    self::redirect('/admin/product/');
+                } else {
+                    Event::fire('app.log', array('fail'));
+                    $view->set('product', $product)
+                            ->set('errors', $this->_errors + $product->getErrors());
                 }
             } else {
                 Event::fire('app.log', array('fail'));
                 $view->set('product', $product)
-                        ->set('errors', $product->getErrors());
+                        ->set('errors', $errors + $this->_errors + $product->getErrors());
             }
         }
     }
 
     /**
-     * @before _secured, _member
+     * 
+     * @param type $id
      */
-    public function detail($id)
+    public function delete($id)
     {
-        
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+
+        if ($this->checkTokenAjax()) {
+            $product = App_Model_Product::first(
+                            array('id = ?' => (int) $id));
+
+            if (NULL === $product) {
+                echo 'Product not found';
+            } else {
+                $product->deleted = true;
+                
+                if ($product->validate()) {
+                    $product->save();
+                    
+                    Event::fire('admin.log', array('success', 'Product id: ' . $id));
+                    echo 'success';
+                } else {
+                    Event::fire('admin.log', array('fail', 'Product id: ' . $id));
+                    echo 'Unknown error occured';
+                }
+            }
+        } else {
+            echo 'Security token is not valid';
+        }
     }
 
     /**
-     * @before _secured, _member
+     * 
+     * @param type $photoId
      */
-    public function processRecommend($id)
+    public function changePhotoStatus($photoId)
     {
         $this->willRenderLayoutView = false;
-        $view = $this->getActionView();
-        
-        if (RequestMethods::post('performRecomendedAction')) {
-            $this->checkToken();
-            
-            $errors = array();
-            $uids = RequestMethods::post('productsids');
+        $this->willRenderActionView = false;
 
-            $status = App_Model_Recommendedproduct::deleteAll(array('productId = ?' => $id));
+        $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $photoId));
 
-            if ($status != -1) {
-                if ($uids[0] == '') {
-                    self::redirect('/admin/product/');
-                }
-                
-                $recomIds = array();
-                foreach ($uids as $recomId) {
-                    $recomProduct = new App_Model_Recommendedproduct(array(
-                        'recommendedId' => $recomId,
-                        'productId' => $id
-                    ));
-
-                    if ($recomProduct->validate()) {
-                        $recomProduct->save();
-                        $recomIds[] = $recomId;
-                    } else {
-                        $errors[] = $recomProduct->getErrors();
-                    }
-                }
-
-                if (empty($errors)) {
-                    $view->successMessage('Product has been successfully updated');
-                    Event::fire('app.log', array('success', 'Recommended products: ' . join(', ', $recomIds). ' to product: '.$id));
-                    self::redirect('/product/detail/' . $id);
+        if (null === $photo) {
+            echo 'Photo not found';
+        } else {
+            if (!$photo->active) {
+                $photo->active = true;
+                if ($photo->validate()) {
+                    $photo->save();
+                    Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
+                    echo 'active';
                 } else {
-                    Event::fire('app.log', array('fail', 'Recommended products: ' . join(', ', $recomIds). ' to product: '.$id));
-                    $view->errorMessage('An error occured while saving recommended products');
+                    echo join('<br/>', $photo->getErrors());
+                }
+            } elseif ($photo->active) {
+                $photo->active = false;
+                if ($photo->validate()) {
+                    $photo->save();
+                    Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
+                    echo 'inactive';
+                } else {
+                    echo join('<br/>', $photo->getErrors());
                 }
             }
         }
     }
-    
+
     /**
      * @before _secured, _member
      */
     public function deleteProductPhoto($id)
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
-        
-        if($this->checkTokenAjax()){
-            $photo = App_Model_Productphoto::first(array('id = ?' => (int)$id));
-            
-            if($photo === null){
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+
+        if ($this->checkTokenAjax()) {
+            $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
+
+            if ($photo === null) {
                 echo 'Product photo not found';
-            }else{
-                if($photo->delete()){
+            } else {
+                if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
-                
-                    Event::fire('app.log', array('success', 'Photo id: ' . $photo->getId(). ' for product '. $photo->getProductId()));
+
+                    Event::fire('app.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'success';
-                }else{
+                } else {
+                    Event::fire('app.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'An error occured while deleting the photo';
                 }
-                
             }
-        }else{
+        } else {
             echo 'Security token is not valid';
         }
     }
-    
+
     /**
      * @before _secured, _member
      */
     public function deleteProductMainPhoto($id)
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
-        
-        if($this->checkTokenAjax()){
-            $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int)$id));
-            
-            if($product === null){
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+
+        if ($this->checkTokenAjax()) {
+            $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
+
+            if ($product === null) {
                 echo 'Product not found';
-            }else{
-                @unlink($product->getUnlinkPath());
-                @unlink($product->getUnlinkThumbPath());
+            } else {
+                $unlinkMainImg = $product->getUnlinkPath();
+                $unlinkThumbImg = $product->getUnlinkThumbPath();
                 $product->imgMain = '';
                 $product->imgThumb = '';
-                
-                if($product->validate()){
+
+                if ($product->validate()) {
                     $product->save();
-                
+                    @unlink($unlinkMainImg);
+                    @unlink($unlinkThumbImg);
+
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
                     echo 'success';
-                }else{
+                } else {
+                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
                     echo 'An error occured while deleting the photo';
                 }
-                
             }
-        }else{
+        } else {
             echo 'Security token is not valid';
         }
     }
@@ -444,10 +674,10 @@ class Admin_Controller_Product extends Controller
                     if (NULL !== $products) {
                         foreach ($products as $product) {
                             $product->deleted = true;
-                            
+
                             if ($product->validate()) {
                                 $product->save();
-                            }else{
+                            } else {
                                 $errors[] = 'An error occured while activating ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
@@ -465,30 +695,31 @@ class Admin_Controller_Product extends Controller
 
                     self::redirect('/admin/product/');
                     break;
-                
+
                 case 'overprice':
                     $products = App_Model_Product::all(array(
                                 'deleted = ?' => false,
                                 'id IN ?' => $ids
                     ));
-                    
+
                     $val = RequestMethods::post('price');
-                    
+                    $oper = RequestMethods::post('operation');
+
                     if (NULL !== $products) {
                         foreach ($products as $product) {
-                            if($val > 0 && $val < 1){
+                            if ($val > 0 && $val < 1) {
                                 $product->priceOldTwo = $product->priceOldOne;
                                 $product->priceOldOne = $product->currentPrice;
-                                $product->currentPrice = $product->currentPrice + ($product->currentPrice * $val);
-                            }else{
+                                $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * ($product->currentPrice * $val);
+                            } else {
                                 $product->priceOldTwo = $product->priceOldOne;
                                 $product->priceOldOne = $product->currentPrice;
-                                $product->currentPrice = $product->currentPrice + $val;
+                                $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * $val;
                             }
-                            
+
                             if ($product->validate()) {
                                 $product->save();
-                            }else{
+                            } else {
                                 $errors[] = 'An error occured while activating ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
@@ -514,10 +745,10 @@ class Admin_Controller_Product extends Controller
                     if (NULL !== $products) {
                         foreach ($products as $product) {
                             $product->active = true;
-                            
+
                             if ($product->validate()) {
                                 $product->save();
-                            }else{
+                            } else {
                                 $errors[] = 'An error occured while activating ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
@@ -543,10 +774,10 @@ class Admin_Controller_Product extends Controller
                     if (NULL !== $products) {
                         foreach ($products as $product) {
                             $product->active = false;
-                            
+
                             if ($product->validate()) {
                                 $product->save();
-                            }else{
+                            } else {
                                 $errors[] = 'An error occured while deactivating ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }

@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
     });
 
     jQuery('a.view').lightBox();
-    jQuery('#tabs').tabs();
+    jQuery('#tabs, .tabs').tabs();
 
     jQuery('.datepicker').datepicker({
         changeMonth: true,
@@ -348,12 +348,12 @@ jQuery(document).ready(function() {
         if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length < 7) {
             jQuery('.uploadPhotoForm .file_inputs input[type=file]')
                     .last()
-                    .after('<input type="file" name="photos[]" />');
+                    .after('<input type="file" name="secondfile[]" />');
         }
     });
 
     jQuery('.uploadPhotoForm .multi_upload_dec').click(function() {
-        if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length > 2) {
+        if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length > 1) {
             jQuery('.uploadPhotoForm .file_inputs input[type=file]').last().remove();
         }
     });
@@ -362,12 +362,12 @@ jQuery(document).ready(function() {
         if (jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').length < 7) {
             jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]')
                     .last()
-                    .after('<input type="file" name="photos[]" />');
+                    .after('<input type="file" name="secondfile[]" />');
         }
     });
 
     jQuery('.uploadCollectionPhotoForm .multi_upload_dec').click(function() {
-        if (jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').length > 2) {
+        if (jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').length > 1) {
             jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').last().remove();
         }
     });
@@ -376,77 +376,40 @@ jQuery(document).ready(function() {
         jQuery('#loader').show();
     });
 
-    jQuery('.uploadPhotoForm input[type=submit]').mouseover(function() {
-        var inputs = jQuery(this).parents('form').find('input[type=file]');
-        var proceed = true;
-
-        inputs.each(function() {
-            var file_data = this.files[0];
-            var filename = file_data.name;
-
-            jQuery.post('/admin/photo/checkPhoto/', {filename: filename}, function(msg) {
-                if (msg == 'ok') {
-                    jQuery('.uploadPhotoForm input[type=submit]').removeAttr('disabled');
-                } else {
-                    var c = confirm(msg);
-
-                    if (c) {
-                        if (proceed) {
-                            jQuery('.uploadPhotoForm input[type=submit]').removeAttr('disabled');
-                        }
-                    } else {
-                        jQuery('.uploadPhotoForm input[type=submit]').attr('disabled', 'disabled');
-                        proceed = false;
-                    }
-                }
-            });
-        });
-    });
-
-    jQuery('.uploadCollectionPhotoForm input[type=submit]').mouseover(function() {
-        var inputs = jQuery(this).parents('form').find('input[type=file]');
-        var collectionId = jQuery(this).parents('form').children('.collid').val();
-        var proceed = true;
-
-        inputs.each(function() {
-            var file_data = this.files[0];
-            var filename = file_data.name;
-
-            jQuery.post('/admin/collection/checkPhoto/', {filename: filename, collectionId: collectionId}, function(msg) {
-                if (msg == 'ok') {
-                    jQuery('.uploadCollectionPhotoForm input[type=submit]').removeAttr('disabled');
-                } else {
-                    var c = confirm(msg);
-
-                    if (c) {
-                        if (proceed) {
-                            jQuery('.uploadCollectionPhotoForm input[type=submit]').removeAttr('disabled');
-                        }
-                    } else {
-                        jQuery('.uploadCollectionPhotoForm input[type=submit]').attr('disabled', 'disabled');
-                        proceed = false;
-                    }
-                }
-            });
-        });
-    });
-
-    jQuery('.uploadPhotoForm input[type=file], .uploadCollectionPhotoForm input[type=file]').change(function() {
-        jQuery('.uploadPhotoForm input[type=submit], .uploadCollectionPhotoForm input[type=submit]').removeAttr('disabled');
-    });
-
-    //Partner
-    jQuery('#delLogo').click(function() {
+    jQuery('#delImg').click(function() {
         var id = jQuery(this).attr('value');
+        var token = jQuery('#tk').val();
 
-        jQuery.post('/admin/partner/deleteLogo/' + id, function(msg) {
-            if (msg == 'ok') {
+        jQuery.post('/admin/product/deleteproductmainphoto/' + id, {tk: token}, function(msg) {
+            if (msg == 'success') {
                 jQuery('#currentLogo').hide(500);
                 jQuery('#uploadLogo').removeClass('nodisplay');
             } else {
-                jQuery('#currentLogo').append("<label class='error'>An error occured while deleting logo: " + msg + "</label>")
+                jQuery('#currentLogo').append("<label class='error'>" + msg + "</label>")
             }
         });
+    });
+    
+    jQuery('.product-select').change(function(){
+        var selected = jQuery(this).children('option:selected').val();
+        
+        if(selected == 1){
+            jQuery('.check-size').addClass('nodisplay');
+            jQuery('.select-size').removeClass('nodisplay');
+        }else if(selected == 2){
+            jQuery('.select-size').addClass('nodisplay');
+            jQuery('.check-size').removeClass('nodisplay');
+        }
+    });
+    
+    jQuery('.tableoptions > select').change(function(){
+        var selected = jQuery(this).children('option:selected').val();
+        
+        if(selected == 'overprice'){
+            jQuery('.overprice-option').removeClass('nodisplay');
+        }else{
+            jQuery('.overprice-option').addClass('nodisplay');
+        }
     });
 
     /* ------------ MEDIA ---------------*/
@@ -462,11 +425,13 @@ jQuery(document).ready(function() {
         event.preventDefault();
         var parent = jQuery(this).parents('li');
         var c = confirm('Delete this image?');
+        
         if (c) {
             var url = jQuery(this).attr('href');
+            var tk = jQuery('#tk').val();
 
-            jQuery.post(url, function(msg) {
-                if (msg == 'ok') {
+            jQuery.post(url, {tk:tk}, function(msg) {
+                if (msg == 'success') {
                     parent.hide('explode', 500);
                 } else {
                     alert(msg);
@@ -605,15 +570,15 @@ jQuery(document).ready(function() {
 
     //delete individual row
     jQuery('.stdtable a.deleteRow').click(function() {
-        var tk = jQuery('#tk').val();
         var c = confirm('Continue delete?');
         var parentTr = jQuery(this).parents('tr');
 
         if (c) {
             var url = jQuery(this).attr('href');
+            var tk = jQuery('#tk').val();
 
             jQuery.post(url, {tk: tk}, function(msg) {
-                if (msg == 2) {
+                if (msg == 'success') {
                     parentTr.fadeOut();
                 } else {
                     alert(msg);

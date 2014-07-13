@@ -249,8 +249,8 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
     letter-spacing: 0.8px; display: block; background: #eee url(../images/admin/titlebg.png) repeat-x top left; text-shadow: 1px 1px #f7f7f7;
 }
 .maintabmenu li a:hover { text-decoration: none; color: #666; background: #ddd; border-color: #ccc; text-shadow: 1px 1px #e7e7e7; }
-.maintabmenu li.current a { display: block; background: #fff; border: 1px solid #ddd; border-bottom: 1px solid #fff; color: #333; }
-.maintabmenu li.current a:hover { text-shadow: none; }
+.maintabmenu li.current a, .maintabmenu li.ui-state-active a { display: block; background: #fff; border: 1px solid #ddd; border-bottom: 1px solid #fff; color: #333; }
+.maintabmenu li.current a:hover, .maintabmenu li.ui-state-active a:hover { text-shadow: none; }
 
 .content { 
     padding: 20px; border: 1px solid #ddd; background: #fff; margin-top: -1px; position: relative; line-height: 21px; 
@@ -358,8 +358,9 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
 .stdform div.par { overflow: hidden; }
 .stdform span.field, .stdform div.field { margin-left: 220px; display: block; position: relative; }
 .stdform .formwrapper { display: block; padding-top: 5px; margin-left: 220px; line-height: 25px; }
-.stdform label { float: left; width: 200px; text-align: right; padding: 5px 20px 0 0; }
-.stdform label.error { float: none; width: 500px; color: #ff6600; font-size: 11px; display: block; text-align: left; font-weight: bold; }
+.stdform p > label, .stdform div.par > label { float: left; width: 200px; text-align: right; padding: 5px 20px 0 0; }
+.stdform p span > label.error, .stdform div.par div.field > label.error{ 
+    float: none; width: 500px; color: #ff6600; font-size: 11px; display: block; text-align: left; font-weight: bold; }
 
 .stdform input { 
     border: 1px solid #ccc; background: #fcfcfc; padding: 8px 5px; width: 300px; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; 
@@ -414,9 +415,9 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
 .stdform2 div.terms { border: 0; background: none; }
 .stdform2 p:first-child, .stdform2 div.par:first-child { border-top: 1px solid #ddd; }
 .stdform div.par { overflow: hidden; }
-.stdform2 label { display: inline-block; padding: 13px 20px; vertical-align: top; text-align: left; font-weight: bold; }
-.stdform2 label.error { margin-left: 0; padding: 8px 0 0 0; }
-.stdform2 label small { font-size: 11px; color: #999; display: block; font-weight: normal; line-height: 16px; }
+.stdform2 p > label, .stdform2 div.par > label { display: inline-block; padding: 13px 20px; vertical-align: top; text-align: left; font-weight: bold; }
+.stdform2 p span > label.error, .stdform2 div.par div.field > label.error { margin-left: 0; padding: 8px 0 0 0; }
+.stdform2 p > label small, .stdform2 div.par > label small { font-size: 11px; color: #999; display: block; font-weight: normal; line-height: 16px; }
 .stdform2 span.field, .stdform2 div.field { margin-left: 220px; display: block; background: #fff; padding: 20px; border-left: 1px solid #ddd; }
 .stdform2 .stdformbutton { margin-left: 0; padding: 20px; background: #fff; }
 
@@ -872,6 +873,9 @@ a.btn_table { background-position: -82px -480px; }
 .news-photos, .news-videos{height: 600px; overflow-y: auto; overflow-x: no-content;}
 .news-photo, .news-video{width: 200px; margin: 10px; border: 1px solid #ccc; display: block; float: left;}
 
+.category-tree {list-style: none;}
+.category-tree li span {margin-left: 5px;}
+.category-tree li ul { margin-left: 20px; list-style: none;}
 
 @media screen and (max-width: 1024px) {
     .maincontent { margin-right: 260px; margin-left: 230px; }
