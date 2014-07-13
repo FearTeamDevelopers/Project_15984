@@ -28,11 +28,31 @@ class App_Model_Product extends Model
      * @readwrite
      * @type integer
      *      
-     * @validate required
+     * @validate numeric, max(8)
      * @label sizeId
      */
     protected $_sizeId;
 
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     *      
+     * @validate numeric, max(8)
+     * @label variant for
+     */
+    protected $_variantFor;
+    
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     *      
+     * @validate numeric, max(2)
+     * @label product type
+     */
+    protected $_productType;
+    
     /**
      * @column
      * @readwrite
@@ -47,9 +67,9 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 250
      * 
-     * @validate required, alphanumeric, max(100)
+     * @validate required, alphanumeric, max(250)
      * @label url key
      */
     protected $_urlKey;
@@ -57,9 +77,10 @@ class App_Model_Product extends Model
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type text
+     * @length 50
      *      
-     * @validate required
+     * @validate required, alphanumeric, max(50)
      * @label productCode
      */
     protected $_productCode;
@@ -68,9 +89,9 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 150
+     * @length 250
      * 
-     * @validate required, alphanumeric, max(150)
+     * @validate required, alphanumeric, max(250)
      * @label title
      */
     protected $_title;
@@ -81,7 +102,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, alphanumeric, max(2048)
+     * @validate required, alphanumeric, max(5000)
      * @label description
      */
     protected $_description;
@@ -152,7 +173,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 22
      * 
-     * @validate alphanumeric, max(22)
+     * @validate date, max(22)
      * @label discount From
      */
     protected $_discountFrom;
@@ -163,7 +184,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 22
      * 
-     * @validate alphanumeric, max(22)
+     * @validate date, max(22)
      * @label discount to
      */
     protected $_discountTo;
@@ -181,18 +202,7 @@ class App_Model_Product extends Model
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 5
-     * 
-     * @validate alphanumeric, max(5)
-     * @label measure unit
-     */
-    protected $_mu;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
+     * @type decimal
      *      
      * @validate numeric
      * @label weight
@@ -215,7 +225,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 22
      * 
-     * @validate alphanumeric, max(22)
+     * @validate date, max(22)
      * @label new from
      */
     protected $_newFrom;
@@ -226,7 +236,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 22
      * 
-     * @validate alphanumeric, max(22)
+     * @validate date, max(22)
      * @label new to
      */
     protected $_newTo;
@@ -237,7 +247,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
+     * @validate path, max(250)
      * @label thum path
      */
     protected $_imgThumb;
@@ -248,7 +258,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
+     * @validate path, max(250)
      * @label photo path
      */
     protected $_imgMain;
@@ -257,9 +267,9 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 150
+     * @length 250
      * 
-     * @validate alphanumeric, max(150)
+     * @validate alphanumeric, max(250)
      * @label meta title
      */
     protected $_metaTitle;
@@ -281,7 +291,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate alphanumeric, max(2048)
+     * @validate alphanumeric, max(5000)
      * @label meta description
      */
     protected $_metaDescription;
@@ -292,7 +302,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 150
      * 
-     * @validate alphanumeric, max(150)
+     * @validate alphanumeric, max(250)
      * @label rss feed title
      */
     protected $_rssFeedTitle;
@@ -303,7 +313,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate alphanumeric, max(2048)
+     * @validate alphanumeric, max(5000)
      * @label rss feed description
      */
     protected $_rssFeedDescription;
@@ -354,6 +364,7 @@ class App_Model_Product extends Model
         if (empty($this->$raw)) {
             $this->setCreated(date('Y-m-d H:i:s'));
             $this->setActive(true);
+            $this->setDeleted(false);
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }

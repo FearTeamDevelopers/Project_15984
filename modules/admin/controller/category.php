@@ -43,6 +43,7 @@ class Admin_Controller_Category extends Controller
                 'title' => RequestMethods::post('title'),
                 'rank' => RequestMethods::post('rank', 1),
                 'isGrouped' => RequestMethods::post('group', 0),
+                'isSelable' => RequestMethods::post('selable', 0),
                 'urlKey' => $urlKey,
                 'mainText' => RequestMethods::post('text'),
                 'metaTitle' => RequestMethods::post('metaTitle'),
@@ -94,6 +95,7 @@ class Admin_Controller_Category extends Controller
             $category->title = RequestMethods::post('title');
             $category->urlKey = $urlKey;
             $category->isGrouped = RequestMethods::post('group', 0);
+            $category->isSelable = RequestMethods::post('selable', 0);
             $category->rank = RequestMethods::post('rank', 1);
             $category->mainText = RequestMethods::post('text');
             $category->metaTitle = RequestMethods::post('metaTitle');

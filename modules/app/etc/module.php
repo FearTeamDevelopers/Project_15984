@@ -67,6 +67,12 @@ class App_Etc_Module extends Module
             'args' => ':id'
         ),
         array(
+            'pattern' => '/login',
+            'module' => 'admin',
+            'controller' => 'index',
+            'action' => 'index',
+        ),
+        array(
             'pattern' => '/admin',
             'module' => 'admin',
             'controller' => 'index',
