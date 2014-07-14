@@ -1,44 +1,62 @@
 <ul class="maintabmenu multipletabmenu">
-    <li class="current"><a href="#">Detail Kategorie</a></li>
     <li><a href="/admin/category/">Seznam Kategorií</a></li>
     <li><a href="/admin/category/add/">Přidat Kategorii</a></li>
+    <li class="current"><a href="#">Detail Kategorie</a></li>
 </ul><!--maintabmenu-->
 <div class="content">
-    <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>{echo $current->getTitle()}</span></h2>
+        <h2 class="table"><span>{echo $parentcat->getTitle()}</span></h2>
     </div><!--contenttitle-->
 
-    
-    <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+    <form class="stdform stdform2" action="#" method="post">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
             <colgroup>
                 <col class="con0" /> <col class="con1" />
-                <col class="con0" /> 
+                <col class="con0" /> <col class="con1" />
             </colgroup>
-        <thead>
-        <td class="head0">Podkategorie</td>
-        <td class="head1">Skupinová</td>
-        <td class="head0">&nbsp;</td>
-        </thead>
-        <tbody>
-            {if !empty($categories)}
-            {foreach $category in $categories}
-            <tr>
-                <td>{echo $category->getTitle()}</td>
-                <td>{if $category->isGrouped == 0}Ne {/if}{else}Ano{/else}</td>
-                <td>
-                    <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Detail"></a>
-                    <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
-                    {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
-                </td>
-            </tr>
-            {/foreach}
-            {/if}
-        </tbody>
-    </table>
-    <p>
-        <span>
-            <b>Popis kategorie:</b><br/> {echo $current->getMainText()}
-        </span>
-    </p>
+            <thead>
+            <td class="head0">Podkategorie</td>
+            <td class="head1">Typ</td>
+            <td class="head0">Poradi</td>
+            <td class="head1">&nbsp;</td>
+            </thead>
+            <tbody>
+                {if !empty($categories)}
+                {foreach $category in $categories}
+                <tr>
+                    <td>{echo $category->getTitle()}</td>
+                    <td>
+                        {if $category->isGrouped == 1}
+                        Pro skupinove
+                        {/if}{elseif $category->isSelable == 1}
+                        Pro prodejne
+                        {/elseif}{else}
+                        Pro bezne
+                        {/else}
+                    </td>
+                    <td>
+                        <input type="text" pattern="[\d]{0,2}" name="rank[{echo $category->id}]" value="{echo $category->getRank()}" />
+                    </td>
+                    <td>
+                        <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Detail"></a>
+                        <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
+                        {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
+                    </td>
+                </tr>
+                {/foreach}
+                {/if}
+            </tbody>
+        </table>
+        <div class="tableoptions">
+            <input class="radius3" type="submit" name="submitSaveCategoryRank" value="Ulozit poradi kategorii"/>
+        </div><!--tableoptions-->
+    </form>
+    <div class="category-detail">
+        <span>Popis kategorie:</span>
+        <div>
+            {echo $parentcat->getMainText()}
+        </div>
+    </div>
 </div>

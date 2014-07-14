@@ -1,6 +1,7 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/category/">Category List</a></li>
     <li><a href="/admin/category/add/">Add Category</a></li>
+    <li class="current"><a href="#">Edit Category</a></li>
 </ul><!--maintabmenu-->
 <div class="content">
     <div class="contenttitle radiusbottom0">
@@ -13,27 +14,26 @@
             <label>Title</label>
             <span class="field">
                 <input class="longinput" type="text" name="title" value="{echo $category->title}" />
-                       {if isset($errors["title"])}
-                       <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
             </span>
         </p>
-
         <p>
-            <label>Parent group </label>
+            <label>Parent category</label>
             <span class="field">
                 <select class="longinput" name="parent">
                     <option></option>   
                     {if !empty($categories)}
                         {foreach $cat in $categories}
-                        {script $s = ""}
-                        {if $category->getParentId() == $cat->id}
-                        {script $s = "selected"}
-                        {/if}
-                        {if $cat->id <> $category->id}
-                        <option value="{echo $cat->id}" {echo $s}>{echo $cat->title}</option>
-                        {/if}
-                    {/foreach}
+                            {script $s = ""}
+                            {if $category->getParentId() == $cat->id}
+                                {script $s = "selected"}
+                            {/if}
+                            {if $cat->id != $category->id}
+                                <option value="{echo $cat->id}" {echo $s}>{echo $cat->title}</option>
+                            {/if}
+                        {/foreach}
                     {/if}
                 </select>
                 {if isset($errors["parentId"])}
@@ -44,9 +44,9 @@
         <p>
             <label>Rank <small>(1-99)</small></label>
             <span class="field">
-                <input class="longinput" type="number" name="rank" value="{echo $category->rank}" />
-                       {if isset($errors["rank"])}
-                       <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                <input class="longinput" type="text" pattern="[\d]{0,2}" name="rank" value="{echo $category->rank}" />
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
             </span>
         </p>
@@ -54,8 +54,22 @@
             <label>Active </label>
             <span class="field">
                 <select class="longinput" name="active">
-                        {if $category->active == 0}
-                        <option value="0" selected>no</option>
+                    {if $category->active == 0}
+                    <option value="0" selected>Inactive</option>
+                    <option value="1">Active</option>
+                    {/if}{else}
+                    <option value="0">Inactive</option>
+                    <option value="1" selected>Active</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Pro skupinove </label>
+            <span class="field">
+                <select class="longinput" name="group">
+                    {if $category->isGrouped == 0}
+                    <option value="0" selected>no</option>
                     <option value="1">yes</option>
                     {/if}{else}
                     <option value="0">no</option>
@@ -65,11 +79,25 @@
             </span>
         </p>
         <p>
-            <label>Group </label>
+            <label>Pro prodejne </label>
             <span class="field">
-                <select class="longinput" name="group">
-                        {if $category->isGrouped == 0}
-                        <option value="0" selected>no</option>
+                <select class="longinput" name="selable">
+                    {if $category->isSelable == 0}
+                    <option value="0" selected>no</option>
+                    <option value="1">yes</option>
+                    {/if}{else}
+                    <option value="0">no</option>
+                    <option value="1" selected>yes</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Je oddelovac </label>
+            <span class="field">
+                <select class="longinput" name="separator">
+                    {if $category->isSeparator == 0}
+                    <option value="0" selected>no</option>
                     <option value="1">yes</option>
                     {/if}{else}
                     <option value="0">no</option>
@@ -91,8 +119,8 @@
             <label>Meta-Title</label>
             <span class="field">
                 <input class="longinput" type="text" name="metaTitle" value="{echo $category->metaTitle}" />
-                       {if isset($errors["metaTitle"])}
-                       <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
+                {if isset($errors["metaTitle"])}
+                <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                 {/if}
             </span>
         </p>
@@ -100,8 +128,8 @@
             <label>Meta-Keywords</label>
             <span class="field">
                 <input class="longinput" type="text" name="metaKeywords" value="{echo $category->metaKeywords}" />
-                       {if isset($errors["metaKeywords"])}
-                       <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
+                {if isset($errors["metaKeywords"])}
+                <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
                 {/if}
             </span>
         </p>

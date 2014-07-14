@@ -876,6 +876,9 @@ a.btn_table { background-position: -82px -480px; }
 .category-tree {list-style: none;}
 .category-tree li span {margin-left: 5px;}
 .category-tree li ul { margin-left: 20px; list-style: none;}
+.category-detail {margin-top: 15px;}
+.category-detail span {font-size: 15px; font-weight: bold;}
+.category-detail div {margin-top: 5px;}
 
 @media screen and (max-width: 1024px) {
     .maincontent { margin-right: 260px; margin-left: 230px; }

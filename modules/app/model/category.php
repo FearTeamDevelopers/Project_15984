@@ -101,6 +101,16 @@ class App_Model_Category extends Model
     /**
      * @column
      * @readwrite
+     * @type boolean
+     * 
+     * @validate max(2)
+     * @label category separator
+     */
+    protected $_isSeparator;
+    
+    /**
+     * @column
+     * @readwrite
      * @type text
      * @length 256
      * 

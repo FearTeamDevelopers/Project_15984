@@ -18,18 +18,15 @@
                 {/if}
             </span>
         </p>
-
         <p>
             <label>Parent Category </label>
             <span class="field">
                 <select class="longinput" name="parent">
                     <option></option>
                     {if !empty($categories)}
-                    {foreach $cat in $categories}
-                    {if $cat->id <> $category->id}
-                    <option value="{echo $cat->id}" {echo $s}>{echo $cat->title}</option>
-                    {/if}
-                    {/foreach}
+                        {foreach $cat in $categories}
+                            <option value="{echo $cat->id}">{echo $cat->title}</option>
+                        {/foreach}
                     {/if}
                 </select>
                 {if isset($errors["parentId"])}
@@ -40,17 +37,35 @@
         <p>
             <label>Rank <small>(1-99)</small></label>
             <span class="field">
-                <input class="longinput" type="text" pattern="[\d]*[\.,]?[\d]+" name="rank" value="{echo isset($category)? $category->rank: ""}" />
+                <input class="longinput" type="text" pattern="[\d]{0,2}" name="rank" value="{echo isset($category)? $category->rank: ""}" />
                 {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
             </span>
         </p>
         <p>
-            <label>Group </label>
+            <label>Pro skupinove </label>
             <span class="field">
                 <select name="group">
-                    <option value="0" selected>no</option>
+                    <option value="0">no</option>
+                    <option value="1">yes</option>
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Pro prodejne </label>
+            <span class="field">
+                <select name="selable">
+                    <option value="0">no</option>
+                    <option value="1">yes</option>
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Oddelovac </label>
+            <span class="field">
+                <select name="separator">
+                    <option value="0">no</option>
                     <option value="1">yes</option>
                 </select>
             </span>

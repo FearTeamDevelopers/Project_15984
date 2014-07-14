@@ -1,5 +1,6 @@
 <ul class="maintabmenu">
-    <li class="current"><a href="#">Pages</a></li>
+    <li><a href="/admin/content/">Pages</a></li>
+    <li class="current"><a href="#">Edit Page</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
@@ -9,20 +10,6 @@
     
     <form class="stdform stdform2" method="post" action="#" id="pageContentForm">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
-        <p>
-            <label>Section*</label>
-            <span class="field">
-                <select name="section" class="longinput">
-                    {foreach $section in $categories}
-                        {script $s=""}
-                        {if $section->id == $content->sectionId}
-                            {script $s = "selected"}
-                        {/if}
-                        <option value="{echo $section->id}" {echo $s}>{echo $section->title}</option>
-                    {/foreach}
-                </select>
-            </span>
-        </p>
         <p>
             <label>Page name*</label>
             <span class="field">
