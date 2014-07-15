@@ -1,6 +1,6 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/category/">Seznam Kategorií</a></li>
-    <li><a href="/admin/category/add/">Přidat Kategorii</a></li>
+    <li><a href="/admin/category/">Kategorie</a></li>
+    <li><a href="/admin/category/add/">Nová Kategorie</a></li>
     <li class="current"><a href="#">Detail Kategorie</a></li>
 </ul><!--maintabmenu-->
 <div class="content">
@@ -19,7 +19,7 @@
             <thead>
             <td class="head0">Podkategorie</td>
             <td class="head1">Typ</td>
-            <td class="head0">Poradi</td>
+            <td class="head0">Pořadí</td>
             <td class="head1">&nbsp;</td>
             </thead>
             <tbody>
@@ -29,11 +29,11 @@
                     <td>{echo $category->getTitle()}</td>
                     <td>
                         {if $category->isGrouped == 1}
-                        Pro skupinove
+                        Pro skupinové
                         {/if}{elseif $category->isSelable == 1}
-                        Pro prodejne
+                        Pro prodejné
                         {/elseif}{else}
-                        Pro bezne
+                        Pro běžné
                         {/else}
                     </td>
                     <td>
@@ -50,7 +50,7 @@
             </tbody>
         </table>
         <div class="tableoptions">
-            <input class="radius3" type="submit" name="submitSaveCategoryRank" value="Ulozit poradi kategorii"/>
+            <input class="radius3" type="submit" name="submitSaveCategoryRank" value="Uložit pořadí kategorií"/>
         </div><!--tableoptions-->
     </form>
     <div class="category-detail">

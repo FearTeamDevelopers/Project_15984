@@ -1,9 +1,9 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/gallery/">Gallery List</a></li>
-    <li><a href="/admin/gallery/add/">Add Gallery</a></li>
-    <li class="current"><a href="#">Gallery Detail</a></li>
-    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Edit Gallery</a></li>
-    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $collection->id}">Delete Gallery</a></li>{/if}
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+    <li class="current"><a href="#">Detail Galerie</a></li>
+    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Editovat Galerii</a></li>
+    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $collection->id}">Smazat Galerii</a></li>{/if}
 </ul><!--maintabmenu-->
 
 <div class="content">
@@ -16,14 +16,14 @@
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
             Created: {echo $gallery->created}<br/>
-            Collection description:
+            Popis galerie:
         </p>
         <div class="collectiondetail_description">
             {echo $gallery->description}
         </div>
         <br/>
         <p>
-            <a href="/admin/gallery/addphoto/{echo $gallery->id}" class="btn btn_image"><span>Upload Photo</span></a> 
+            <a href="/admin/gallery/addphoto/{echo $gallery->id}" class="btn btn_image"><span>Nahrát foto</span></a> 
         </p>
     </div>
     <hr/>
@@ -42,8 +42,8 @@
                     <img src="{echo $photo->imgThumb}" alt="" height="120px" />
                     <span>
                         <a href="{echo $photo->imgMain}" class="view"></a>
-                        <a href="/admin/gallery/changephotostatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
-                        <a href="/admin/gallery/deletephoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
+                        <a href="/admin/gallery/changephotostatus/{echo $photo->id}" class="activate" value="Změnit stav foto"></a>
+                        <a href="/admin/gallery/deletephoto/{echo $photo->id}" class="delete" value="Smazat foto"></a>
                     </span>
                 </li>
                 {/foreach}
@@ -51,7 +51,7 @@
         </div>
         {/if} 
         {else}
-        <div class="notification msginfo"><a class="close"></a><p>No Photo in gallery</p></div>
+        <div class="notification msginfo"><a class="close"></a><p>Žádné foto v galerii</p></div>
         {/else}
     </div>
 </div><!--#tabs-->

@@ -1,16 +1,16 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/category/">Category List</a></li>
-    <li class="current"><a href="#">Add Category</a></li>
+    <li><a href="/admin/category/">Kategorie</a></li>
+    <li class="current"><a href="#">Nová kategorie</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>Category informations</span></h2>
+        <h2 class="table"><span>Kategorie</span></h2>
     </div><!--contenttitle-->
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
-            <label>Title</label>
+            <label>Název</label>
             <span class="field">
                 <input class="longinput" type="text" name="title" required value="{echo isset($category)? $category->title: ""}" />
                 {if isset($errors["title"])}
@@ -19,7 +19,7 @@
             </span>
         </p>
         <p>
-            <label>Parent Category </label>
+            <label>Rodičovská kategorie</label>
             <span class="field">
                 <select class="longinput" name="parent">
                     <option></option>
@@ -35,7 +35,7 @@
             </span>
         </p>
         <p>
-            <label>Rank <small>(1-99)</small></label>
+            <label>Pořadí <small>(1-99)</small></label>
             <span class="field">
                 <input class="longinput" type="text" pattern="[\d]{0,2}" name="rank" value="{echo isset($category)? $category->rank: ""}" />
                 {if isset($errors["rank"])}
@@ -44,34 +44,34 @@
             </span>
         </p>
         <p>
-            <label>Pro skupinove </label>
+            <label>Skupinová kategorie</label>
             <span class="field">
                 <select name="group">
-                    <option value="0">no</option>
-                    <option value="1">yes</option>
+                    <option value="0">Ne</option>
+                    <option value="1">Ano</option>
                 </select>
             </span>
         </p>
         <p>
-            <label>Pro prodejne </label>
+            <label>Prodejné</label>
             <span class="field">
                 <select name="selable">
-                    <option value="0">no</option>
-                    <option value="1">yes</option>
+                    <option value="0">Ne</option>
+                    <option value="1">Ano</option>
                 </select>
             </span>
         </p>
         <p>
-            <label>Oddelovac </label>
+            <label>Oddělovač </label>
             <span class="field">
                 <select name="separator">
-                    <option value="0">no</option>
-                    <option value="1">yes</option>
+                    <option value="0">Ne</option>
+                    <option value="1">Ano</option>
                 </select>
             </span>
         </p>
         <p>
-            <label>Description</label>
+            <label>Popis</label>
             <span class="field">
                 <textarea cols="85" rows="5" required name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
                 {if isset($errors["mainText"])}
@@ -80,7 +80,7 @@
             </span>
         </p>
         <p>
-            <label>Meta-Title</label>
+            <label>Meta-Název</label>
             <span class="field">
                 <input required class="longinput" type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
                 {if isset($errors["metaTitle"])}
@@ -89,7 +89,7 @@
             </span>
         </p>
         <p>
-            <label>Meta-Keywords</label>
+            <label>Meta-Klíčová slova</label>
             <span class="field">
                 <input required class="longinput" type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
                 {if isset($errors["metaKeywords"])}
@@ -98,7 +98,7 @@
             </span>
         </p>
         <p>
-            <label>Meta-Description</label>
+            <label>Meta-Popis</label>
             <span class="field">
                 <textarea required class="longinput" cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
                 {if isset($errors["metaDescription"])}
@@ -107,7 +107,7 @@
             </span>
         </p>
         <p class="stdformbutton">
-            <input name="submitAddCategory" type="submit" value="Save" class="submit radius2" />
+            <input name="submitAddCategory" type="submit" value="Uložit" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>

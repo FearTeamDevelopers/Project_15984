@@ -1,16 +1,16 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/gallery/">Gallery List</a></li>
-    <li class="current"><a href="#">Add Gallery</a></li>
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li class="current"><a href="#">Nová Galerie</a></li>
 </ul><!--maintabmenu-->
 <div class="content">
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>Add Gallery</span></h2>
+        <h2 class="table"><span>Nová Galerie</span></h2>
     </div><!--contenttitle-->
 
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
-            <label>Title</label>
+            <label>Název</label>
             <span class="field">
                 <input class="longinput" type="text" name="title" value="{echo isset($gallery)? $gallery->title: ""}" />
                 {if isset($errors["title"])}
@@ -19,16 +19,16 @@
             </span>
         </p>
         <p>
-            <label>Public </label>
+            <label>Veřejná/soukromá </label>
             <span class="field">
                 <select class="longinput" name="active">
-                    <option value="0">Private</option>
-                    <option value="1" selected>Public</option>
+                    <option value="0">Soukromá</option>
+                    <option value="1" selected>Veřejná</option>
                 </select>
             </span>
         </p>
         <p>
-            <label>Description<small>Max. 5000 characters</small></label>
+            <label>Popis<small>Max. 5000 znaků</small></label>
             <span class="field">
                 <textarea rows="20" name="description" id="ckeditor">{echo isset($gallery)? $gallery->description: ""}</textarea>
                 {if isset($errors["description"])}
@@ -37,7 +37,7 @@
             </span>
         </p>
         <p class="stdformbutton">
-            <input name="submitAddGallery" type="submit" value="Save" class="submit radius2" />
+            <input name="submitAddGallery" type="submit" value="Uložit" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>

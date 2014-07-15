@@ -1,17 +1,17 @@
 <ul class="maintabmenu">
-    <li><a href="/admin/content/">Pages</a></li>
-    <li class="current"><a href="#">Edit Page</a></li>
+    <li><a href="/admin/content/">Stránky</a></li>
+    <li class="current"><a href="#">Editovat stránku</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
     <div class="contenttitle">
-        <h2 class="form"><span>Edit {echo $content->pageName} Content</span></h2>
+        <h2 class="form"><span>Editovat obsah {echo $content->pageName}</span></h2>
     </div>
     
     <form class="stdform stdform2" method="post" action="#" id="pageContentForm">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
-            <label>Page name*</label>
+            <label>Název stránky*</label>
             <span class="field">
                 <input type="text" name="page" required class="longinput" value="{echo $content->pageName}"/>
                {if isset($errors["pageName"])}
@@ -29,22 +29,22 @@
             </span>
         </p>
         <p>
-            <label>Active</label>
+            <label>Aktivní</label>
             <span class="field">
                 <select name="active" class="longinput">
                     {if $content->active}
-                    <option value="0">Inactive</option>
-                    <option value="1" selected>Active</option>
+                    <option value="0">Neaktivní</option>
+                    <option value="1" selected>Aktivní</option>
                     {/if}
                     {else}
-                    <option value="0" selected>Inactive</option>
-                    <option value="1">Active</option>
+                    <option value="0" selected>Neaktivní</option>
+                    <option value="1">Aktivní</option>
                     {/else}
                 </select>
             </span>
         </p>
         <p class="stdformbutton">
-            <input name="submitEditContent" type="submit" value="Save" class="submit radius2" />
+            <input name="submitEditContent" type="submit" value="Uložit" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>

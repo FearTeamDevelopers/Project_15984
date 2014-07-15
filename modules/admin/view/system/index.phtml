@@ -1,12 +1,12 @@
 <ul class="maintabmenu multipletabmenu">
-    <li class="current"><a href="/admin/system/">Main</a></li>
-    <li><a href="/admin/system/settings/">Settings</a></li>
+    <li class="current"><a href="/admin/system/">Hlavní</a></li>
+    <li><a href="/admin/system/settings/">Nastavení</a></li>
     {if $isSuperAdmin}<li><a href="/admin/system/showadminlog/">Admin log</a></li>{/if}
 </ul><!--maintabmenu-->
 <div class="content">
 
     <div class="one_fifth">
-        <div class="contenttitle"><h2 class="form"><span>Clear cache</span></h2></div>
+        <div class="contenttitle"><h2 class="form"><span>Smazat cache</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/clearcache/">
             <input type="hidden" name="tk" id="tk" value="{echo $token}" />
             <p class="stdformbutton">
@@ -24,7 +24,7 @@
         </form>
     </div>
     <div class="one_fifth">
-        <div class="contenttitle"><h2 class="form"><span>Archivate older news</span></h2></div>
+        <div class="contenttitle"><h2 class="form"><span>Archivovat starší novinky</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/archivatenews/">
             <input type="hidden" name="tk" id="tk" value="{echo $token}" />
             <p class="stdformbutton">
@@ -34,7 +34,7 @@
     </div>
 
     <div class="one_fifth">
-        <div class="contenttitle"><h2 class="form"><span>Change Application Status</span></h2></div>
+        <div class="contenttitle"><h2 class="form"><span>Změnit status aplikace</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/changeapplicationstatus/">
             <input type="hidden" name="tk" id="tk" value="{echo $token}" />
             <p class="stdformbutton">
