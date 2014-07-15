@@ -1,11 +1,11 @@
 <ul class="maintabmenu multipletabmenu">
-    <li class="current"><a href="#">News list</a></li>
-    <li><a href="/admin/news/add/">Add News</a></li>
+    <li class="current"><a href="#">Seznam novinek</a></li>
+    <li><a href="/admin/news/add/">Nová novinka</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
     <div class="contenttitle radiusbottom0">
-        <h2 class="image"><span>News List</span></h2>
+        <h2 class="image"><span>Seznam novinek</span></h2>
     </div><!--contenttitle-->
     
     <form method="post" class="massActionForm" action="/admin/news/massAction/">
@@ -19,10 +19,10 @@
             <thead>
                 <tr>
                     <th class="head0 width50"><input type="checkbox" class="checkall" /></th>
-                    <td class="head1">Title</td>
-                    <td class="head0">Url Key</td>
-                    <td class="head1">Author</td>
-                    <td class="head0">Created</td>
+                    <td class="head1">Název</td>
+                    <td class="head0">URL klíč</td>
+                    <td class="head1">Autor</td>
+                    <td class="head0">Vytvořeno</td>
                     <td class="head1">&nbsp;</td>
                 </tr>
             </thead>
@@ -43,8 +43,8 @@
                             <td>{echo $_news->getAuthor()}</td>
                             <td>{echo $_news->getCreated()}</td>
                             <td>
-                                <a href="/admin/news/edit/{echo $_news->id}" class="btn btn3 btn_pencil" title="Edit"></a>
-                                {if $isAdmin}<a href="/admin/news/delete/{echo $_news->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                                <a href="/admin/news/edit/{echo $_news->id}" alt= "Editovat"class="btn btn3 btn_pencil" title="Edit"></a>
+                                {if $isAdmin}<a href="/admin/news/delete/{echo $_news->id}" alt="Smazat" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
                             </td>
                         </tr>
                     {/foreach}
