@@ -377,7 +377,7 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
+        $product = App_Model_Product::fetchProductById($id);
 
         if ($product === null) {
             $view->warningMessage('Product not found');
@@ -385,23 +385,20 @@ class Admin_Controller_Product extends Controller
         }
 
         $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
-        $productCategory = App_Model_ProductCategory::all(array('productId = ?' => $product->getId()));
-        $recomProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $product->getId()));
         $categories = App_Model_Category::fetchAllCategories();
         $allProducts = App_Model_Product::all(
                         array('active = ?' => true, 'deleted = ?' => false, 'productType IN ?' => array(1, 2)));
-        $additionalProductPhoto = App_Model_ProductPhoto::all(array('productId = ?' => $product->getId()));
 
-        if (!empty($productCategory)) {
+        if (!empty($product->inCategories)) {
             $productCategoryIds = array();
-            foreach ($productCategory as $prcat) {
+            foreach ($product->inCategories as $prcat) {
                 $productCategoryIds[] = $prcat->getCategoryId();
             }
         }
 
-        if (!empty($recomProducts)) {
+        if (!empty($product->recommendedProducts)) {
             $recomProductIds = array();
-            foreach ($recomProducts as $recprod) {
+            foreach ($product->recommendedProducts as $recprod) {
                 $recomProductIds[] = $recprod->getRecommendedId();
             }
         }
@@ -411,7 +408,6 @@ class Admin_Controller_Product extends Controller
                 ->set('allproducts', $allProducts)
                 ->set('productcategoryids', $productCategoryIds)
                 ->set('recommendedproductids', $recomProductIds)
-                ->set('productphotos', $additionalProductPhoto)
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
