@@ -1,20 +1,20 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/news/">News List</a></li>
-    <li><a href="/admin/news/add/">Add News</a></li>
-    <li class="current"><a href="#">Edit News</a></li>
+    <li><a href="/admin/news/">Seznam novinek</a></li>
+    <li><a href="/admin/news/add/">Nová novinka</a></li>
+    <li class="current"><a href="#">Upravit novinku</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
     <div class="two_third">
         <div class="widgetbox">
             <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>News content</span></h2>
+                <h2 class="table"><span>Obsah novinky</span></h2>
             </div><!--contenttitle-->
 
             <form class="stdform stdform2" method="post" action="#" >
                 <input type="hidden" name="tk" id="tk" value="{echo $token}" />
                 <p>
-                    <label>Title</label>
+                    <label>Název</label>
                     <span class="field">
                         <input type="text" name="title" value="{echo $news->title}" />
                         {if isset($errors["title"])}
@@ -23,25 +23,17 @@
                     </span>
                 </p>
                 <p>
-                    <label>Author</label>
+                    <label>Autor</label>
                     <span class="field">
                         <input type="text" name="author" class="longinput" value="{echo $authUser->getWholeName()}"/>
                     </span>
                 </p>
-                <p>
-                    <label>URL key<small>Automaticaly created from title</small></label>
-                    <span class="field">
-                        <input type="text" name="urlkey" class="longinput" value="{echo $news->urlKey}" />
-                        {if isset($errors["urlKey"])}
-                        <label class="error">{echo join("<br/>", $errors["urlKey"])}</label>
-                        {/if}
-                    </span>
-                </p>
+               
 
                 <p>
                     <label>Text*<small>Max. 5000 characters</small></label>
                     <span class="field">
-                        <textarea rows="20" name="text" id="ckeditor">{echo $news->text}</textarea>
+                        <textarea rows="20" name="text" id="ckeditor">{echo $news->body}</textarea>
                         {if isset($errors["text"])}
                         <label class="error">{echo join("<br/>", $errors["text"])}</label>
                         {/if}
@@ -51,7 +43,7 @@
                 </p>
 
                 <p>
-                    <label>Active</label>
+                    <label>Aktivní</label>
                     <span class="field">
                         <select name="active" class="longinput">
                             {if $news->active}
@@ -81,9 +73,8 @@
                 {if ($photos && !empty($photos))}
                 {foreach $photo in $photos}
                 <span class="news-photo">
-                    <img src="{echo $photo->getImgMain()}" alt="{echo $photo->getPhotoName()}" width="200px"/>
-                    <button class="stdbtn img-to-text" value="{echo $photo->getId()}">To Text</button>
-                    <button class="stdbtn img-to-teaser" value="{echo $photo->getId()}">To Teaser</button>
+                    <img src="{echo $photo->getImgThumb()}" alt="{echo $photo->getPhotoName()}" width="200px"/>
+                    <button class="stdbtn img-to-text" value="{echo $photo->getId()}">Přidat</button>
                 </span>
                 {/foreach}
                 {/if}

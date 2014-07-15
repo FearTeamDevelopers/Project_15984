@@ -13,7 +13,7 @@ class Admin_Controller_News extends Controller
      */
     private function _getPhotos()
     {
-        $photos = App_Model_Photo::all(array('active = ?' => true));
+        $photos = App_Model_ProductPhoto::all(array('active = ?' => true));
 
         return $photos;
     }
