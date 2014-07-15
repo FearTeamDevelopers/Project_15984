@@ -37,11 +37,22 @@ class App_Model_PageContent extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 250
      * @unique
      * 
-     * @validate required, alpha, max(100)
-     * @label page
+     * @validate required, alpha, max(250)
+     * @label url key
+     */
+    protected $_urlKey;
+    
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 150
+     * 
+     * @validate required, alpha, max(150)
+     * @label page name
      */
     protected $_pageName;
 

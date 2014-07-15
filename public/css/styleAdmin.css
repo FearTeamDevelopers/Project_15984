@@ -256,6 +256,7 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
     padding: 20px; border: 1px solid #ddd; background: #fff; margin-top: -1px; position: relative; line-height: 21px; 
     -moz-border-radius: 0 2px 2px 2px; -webkit-border-radius: 0 2px 2px 2px; border-radius: 0 2px 2px 2px;
     -moz-box-shadow: 1px 1px 2px #eee; -webkit-box-shadow: 1px 1px 2px #eee; box-shadow: 1px 1px 2px #eee;
+    overflow: hidden;
 }
 
 .contenttitle { background: #222; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; }
@@ -850,6 +851,7 @@ a.btn_table { background-position: -82px -480px; }
 .floatleft { float: left; }
 .floatright { float: right; }
 .fs15{font-size: 15px;}
+.clear-all{clear: both;}
 
 .ui-datepicker-inline .ui-datepicker-calendar td a:hover { background: #ddd; text-decoration: none; color: #666; text-shadow: none; }
 .ui-datepicker-inline .ui-datepicker-calendar td.ui-datepicker-today a { 

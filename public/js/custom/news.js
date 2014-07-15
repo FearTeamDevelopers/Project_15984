@@ -1,12 +1,6 @@
 jQuery.noConflict();
 
 jQuery(document).ready(function() {
-    jQuery('input[name=title]').blur(function(){
-        var t = jQuery('input[name=title]').val();
-        var val = t.replace(/\s/g, '-');
-        jQuery('input[name=urlkey]').val(val);
-    });
-    
     jQuery('#news-text-to-teaser').click(function(event){
         event.preventDefault();
         var value = CKEDITOR.instances['ckeditor'].getData();
@@ -32,23 +26,5 @@ jQuery(document).ready(function() {
         event.preventDefault();
         var id = jQuery(this).attr('value');
         CKEDITOR.instances['ckeditor'].insertText('(!photo_'+id+'!)');
-    });
-    
-    jQuery('.img-to-teaser').click(function(event){
-        event.preventDefault();
-        var id = jQuery(this).attr('value');
-        CKEDITOR.instances['ckeditor2'].insertText('(!photo_'+id+'!)');
-    });
-    
-    jQuery('.video-to-text').click(function(event){
-        event.preventDefault();
-        var id = jQuery(this).attr('value');
-        CKEDITOR.instances['ckeditor'].insertText('(!video_'+id+'!)');
-    });
-    
-    jQuery('.video-to-teaser').click(function(event){
-        event.preventDefault();
-        var id = jQuery(this).attr('value');
-        CKEDITOR.instances['ckeditor2'].insertText('(!video_'+id+'!)');
     });
 });

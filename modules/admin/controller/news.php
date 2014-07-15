@@ -7,13 +7,29 @@ use THCFrame\Core\StringMethods;
 
 class Admin_Controller_News extends Controller
 {
-    
+
+    /**
+     * 
+     * @param type $key
+     * @return boolean
+     */
+    private function checkUrlKey($key)
+    {
+        $status = App_Model_News::first(array('urlKey = ?' => $key));
+
+        if ($status === null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @before _secured, _member
      */
     private function _getPhotos()
     {
-        $photos = App_Model_ProductPhoto::all(array('active = ?' => true));
+        $photos = App_Model_Photo::all(array('active = ?' => true));
 
         return $photos;
     }
@@ -26,7 +42,7 @@ class Admin_Controller_News extends Controller
         $view = $this->getActionView();
 
         $news = App_Model_News::all(array('active = ?' => true));
-        
+
         $view->set('news', $news);
     }
 
@@ -40,11 +56,17 @@ class Admin_Controller_News extends Controller
         $photos = $this->_getPhotos();
 
         $view->set('photos', $photos);
-        
+
         if (RequestMethods::post('submitAddNews')) {
             $this->checkToken();
+            $errors = array();
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+
+            if (!$this->checkUrlKey($urlKey)) {
+                $errors['title'] = array('News with this title already exists');
+            }
 
             $news = new App_Model_News(array(
                 'title' => RequestMethods::post('title'),
@@ -53,7 +75,7 @@ class Admin_Controller_News extends Controller
                 'body' => RequestMethods::post('text')
             ));
 
-            if ($news->validate()) {
+            if (empty($errors) && $news->validate()) {
                 $id = $news->save();
 
                 Event::fire('admin.log', array('success', 'News id: ' . $id));
@@ -74,28 +96,34 @@ class Admin_Controller_News extends Controller
     {
         $view = $this->getActionView();
         $photos = $this->_getPhotos();
-        $news = App_Model_News::first(array('id = ?' => (int)$id));
+        $news = App_Model_News::first(array('id = ?' => (int) $id));
 
         if ($news === null) {
             $view->errorMessage('News not found');
             self::redirect('/admin/news/');
         }
-        
+
         $view->set('news', $news)
                 ->set('photos', $photos);
 
         if (RequestMethods::post('submitEditNews')) {
             $this->checkToken();
+            $errors = array();
+            
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
+            if ($news->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
+                $errors['title'] = array('Product with this title already exists');
+            }
+            
             $news->title = RequestMethods::post('title');
             $news->urlKey = $urlKey;
             $news->author = RequestMethods::post('author', $this->getUser()->getWholeName());
             $news->body = RequestMethods::post('text');
             $news->active = RequestMethods::post('active');
 
-            if ($news->validate()) {
+            if (empty($errors) && $news->validate()) {
                 $news->save();
 
                 Event::fire('admin.log', array('success', 'News id: ' . $id));
@@ -126,7 +154,7 @@ class Admin_Controller_News extends Controller
             } else {
                 if ($news->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'ok';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
                     echo 'Unknown error eccured';

@@ -36,36 +36,32 @@
                         <button id="news-clear-text">Clear</button>
                     </span>
                 </p>
-
-
                 <p class="stdformbutton">
                     <input name="submitAddNews" type="submit" value="Uložit" class="submit radius2" />
                     <input type="reset" class="reset radius2" value="Reset" />
                 </p>
             </form>
         </div>
-        <br clear="all"/>
     </div>
 
     <div class="one_third last">
         <div class="widgetbox">
             <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>Fotky</span></h2>
+                <h2 class="table"><span>Foto</span></h2>
             </div><!--contenttitle-->
             <div class="news-photos">
                 {if ($photos && !empty($photos))}
                 {foreach $photo in $photos}
                 <span class="news-photo">
                     <img src="{echo $photo->getImgThumb()}" alt="{echo $photo->getPhotoName()}" width="200px"/>
-                    <button class="stdbtn img-to-text" value="{echo $photo->getId()}">Přidat do novinky</button>
+                    <button class="stdbtn img-to-text" value="{echo $photo->getId()}">Vložit</button>
                 </span>
                 {/foreach}
                 {/if}
             </div>
 
         </div>
-        <br clear="all"/>
     </div>
-    <br clear="all"/>
 </div>
+<br class="clear-all"/>
 <script type="text/javascript" src="/public/js/custom/news.js"></script>
