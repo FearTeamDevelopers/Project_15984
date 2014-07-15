@@ -1,11 +1,11 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/product/">Product List</a></li>
-    <li class="current"><a href="#">Add new product</a></li>
+    <li><a href="/admin/product/">Produkty</a></li>
+    <li class="current"><a href="#">Nový produkt</a></li>
 </ul>
 <div class="content">
 
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>New Product</span></h2>
+        <h2 class="table"><span>Nový produkt</span></h2>
     </div><!--contenttitle-->
 
     <form class="stdform stdform2 uploadPhotoForm" method="post" action="#" enctype="multipart/form-data">
@@ -13,16 +13,16 @@
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
         <div id="tabs">
             <ul class="maintabmenu multipletabmenu">
-                <li><a href="#basic">Basic Information</a></li>
-                <li><a href="#additional">Additional Information</a></li>
-                <li><a href="#meta">Meta Information</a></li>
-                <li><a href="#recommended">Recommended products</a></li>
-                <li><a href="#photos">Additional photos</a></li>
+                <li><a href="#basic">Základní informace</a></li>
+                <li><a href="#additional">Dodatečné informace</a></li>
+                <li><a href="#meta">Meta informace</a></li>
+                <li><a href="#recommended">Doporučené produkty</a></li>
+                <li><a href="#photos">Dodatečné fotografie</a></li>
             </ul>
 
             <div id="basic">
                 <p>
-                    <label>Title*</label>
+                    <label>Název*</label>
                     <span class="field" >
                         <input required class="longinput" type="text" name="title" 
                                value="{echo isset($product)? $product->title: ""}" />
@@ -32,7 +32,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Product Code*</label>
+                    <label>Kód produktu*</label>
                     <span class="field">
                         <input required class="longinput" type="text" name="productcode" 
                                value="{echo isset($product)? $product->productCode: ""}" />
@@ -42,7 +42,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Product Type*</label>
+                    <label>Typ produktu*</label>
                     <span class="field">
                         <select name="producttype" class="longinput product-select">
                             <option value="1">Product bez variant</option>
@@ -54,7 +54,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Description*<small>Max. 5000 characters</small></label>
+                    <label>Popis*<small>Max. 5000 znaků</small></label>
                     <span class="field">
                         <textarea required rows="20" name="description" id="ckeditor">{echo isset($product)? $product->description: ""}</textarea>
                         {if isset($errors["description"])}
@@ -63,7 +63,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Main Image*</label>
+                    <label>Hlavní obrázek*</label>
                     <span class="field">
                         <input type="file" name="mainfile"/>
                         {if isset($errors["mainfile"])}
@@ -75,7 +75,7 @@
 
                 </p>
                 <p>
-                    <label>Size*</label>
+                    <label>Velikost*</label>
                     <span class="field select-size">
                         <select required class="longinput" name="size">
                             {if !empty($sizes)}
@@ -100,7 +100,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Current price*</label>
+                    <label>Současná cena*</label>
                     <span class="field">
                         <input required class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
                                value="{echo isset($product)? $product->currentPrice: ""}" />
@@ -110,7 +110,7 @@
                     </span>
                 </p>
                 <div class="par">
-                    <label>Category*</label>
+                    <label>Kategorie*</label>
                     <div class="field">
                         {if isset($categories)}
                             {macro showSubs($catSubs)}
@@ -145,7 +145,7 @@
 
             <div id="additional">
                  <p>
-                    <label>Basic price</label>
+                    <label>Základní cena</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
                                value="{echo isset($product)? $product->basicPrice: ""}" />
@@ -155,7 +155,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Regular price</label>
+                    <label>Obvyklá cena</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="regularprice" 
                                value="{echo isset($product)? $product->regularPrice: ""}" />
@@ -165,7 +165,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount</label>
+                    <label>Sleva</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
                                value="{echo isset($product)? $product->discount: ""}" />
@@ -175,7 +175,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount start</label>
+                    <label>Sleva od</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="discountfrom" 
                                value="{echo isset($product)? $product->discountFrom: ""}" />
@@ -185,7 +185,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount end</label>
+                    <label>Sleva do</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="discountto" 
                                value="{echo isset($product)? $product->discountTo: ""}" />
@@ -205,7 +205,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Weight</label>
+                    <label>Hmotnost</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="weight" 
                                value="{echo isset($product)? $product->weight: ""}" />
@@ -215,7 +215,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>in action </label>
+                    <label>V akci</label>
                     <span class="field">
                         <select class="longinput" name="inaction">
                             <option value="0" selected>No</option>
@@ -224,7 +224,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>New start</label>
+                    <label>Novinka od</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="newfrom" 
                                value="{echo isset($product)? $product->newFrom: ""}" />
@@ -234,7 +234,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>New end</label>
+                    <label>Novinka do</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="newto" 
                                value="{echo isset($product)? $product->newTo: ""}" />
@@ -248,7 +248,7 @@
             
             <div id="meta">
                 <p>
-                    <label>Meta-Title</label>
+                    <label>Meta-Název</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metatitle" 
                                value="{echo isset($product)? $product->metaTitle: ""}" />
@@ -258,7 +258,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Meta-Keywords</label>
+                    <label>Meta-Klíčová slova</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metakeywords" 
                                value="{echo isset($product)? $product->metaKeaywords: ""}" />
@@ -268,7 +268,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Meta-Description<small>Max. 5000 characters</small></label>
+                    <label>Meta-Popis<small>Max. 5000 znaků</small></label>
                     <span class="field">
                         <textarea rows="20" name="metadescription" id="ckeditor" class="longinput">{echo isset($product)? $product->metaDescription: ""}</textarea>
                         {if isset($errors["metaDescription"])}
@@ -280,7 +280,7 @@
             
             <div id="recommended">
                <div class="contenttitle radiusbottom0">
-                    <h2 class="table"><span>Recommended products</span></h2>
+                    <h2 class="table"><span>Doporučené produkty</span></h2>
                 </div><!--contenttitle-->
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
@@ -309,16 +309,16 @@
 
             <div id="photos">
                 <p>
-                    <label>Upload more photos</label>
+                    <label>Nahrát více fotek</label>
                     <span class="field">
                         <select class="longinput" name="uplMoreImages">
-                            <option value="0">No</option>
+                            <option value="0">Ne</option>
                             <option value="1">Ano</option>
                         </select>
                     </span>
                 </p>
                 <p>
-                    <label>Image</label>
+                    <label>Obrázek</label>
                     <span class="field">
                         <a href="#" class="btn btn_folder multi_upload"><span>+</span></a>
                         <a href="#" class="btn btn_folder multi_upload_dec"><span>-</span></a>
@@ -338,7 +338,7 @@
         </div>
         
         <p class="stdformbutton">
-            <input name="submitAddProduct" type="submit" value="Save" class="submit radius2" />
+            <input name="submitAddProduct" type="submit" value="Uložit" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>

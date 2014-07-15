@@ -26,7 +26,7 @@ class Admin_Controller_Product extends Controller
                 str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
         if (!$this->checkUrlKey($urlKey)) {
-            $this->_errors['title'] = array('Product with this title already exists');
+            $this->_errors['title'] = array('Produkt s tímto názvem již existuje');
         }
 
         $fileManager = new FileManager(array(
@@ -127,7 +127,7 @@ class Admin_Controller_Product extends Controller
         $sizeVariantsArr = RequestMethods::post('size');
 
         if (!is_array($sizeVariantsArr)) {
-            $this->_errors['sizeId'] = array('Must be selected more size variants');
+            $this->_errors['sizeId'] = array('Musí být vybráno více velikostí');
             return false;
         }
 
@@ -136,7 +136,7 @@ class Admin_Controller_Product extends Controller
                             str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title')))) . '-' . $size;
 
             if (!$this->checkUrlKey($urlKey)) {
-                $this->_errors['title'] = array('Product with this title already exists');
+                $this->_errors['title'] = array('Produkt s tímto názvem již existuje');
             }
 
             $product = new App_Model_Product(array(
@@ -328,7 +328,7 @@ class Admin_Controller_Product extends Controller
 
             $categoryArr = RequestMethods::post('rcat');
             if (empty($categoryArr)) {
-                $this->_errors['category'] = array('Atleast one category has to be selected');
+                $this->_errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
             }
 
             if (RequestMethods::post('producttype') == 2) {
@@ -357,7 +357,7 @@ class Admin_Controller_Product extends Controller
                 }
 
                 if (empty($this->_errors)) {
-                    $view->successMessage('Product has been successfully saved');
+                    $view->successMessage('Produkt byl úspěšně uložen');
                     self::redirect('/admin/product/');
                 } else {
                     $view->set('product', $product)
@@ -380,7 +380,7 @@ class Admin_Controller_Product extends Controller
         $product = App_Model_Product::fetchProductById($id);
 
         if ($product === null) {
-            $view->warningMessage('Product not found');
+            $view->warningMessage('Produkt nenalezen');
             self::redirect('/admin/product/');
         }
 
@@ -419,7 +419,7 @@ class Admin_Controller_Product extends Controller
 
 
             if ($product->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Produkt s tímto názvem již existuje');
             }
 
             $uploadTo = substr($product->getUrlKey(), 0, 3);
@@ -476,7 +476,7 @@ class Admin_Controller_Product extends Controller
 
             $categoryArr = RequestMethods::post('rcat');
             if (empty($categoryArr)) {
-                $errors['category'] = array('Atleast one category has to be selected');
+                $errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
             }
 
             if (empty($errors) && $product->validate()) {
@@ -497,7 +497,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($this->_errors)) {
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
-                    $view->successMessage('Product has been successfully saved');
+                    $view->successMessage('Produkt byl úspěšně uložen');
                     self::redirect('/admin/product/');
                 } else {
                     Event::fire('app.log', array('fail'));
@@ -526,7 +526,7 @@ class Admin_Controller_Product extends Controller
                             array('id = ?' => (int) $id));
 
             if (NULL === $product) {
-                echo 'Product not found';
+                echo 'Produkt nenalezen';
             } else {
                 $product->deleted = true;
                 
@@ -534,14 +534,14 @@ class Admin_Controller_Product extends Controller
                     $product->save();
                     
                     Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                    echo 'success';
+                    echo 'úspěch';
                 } else {
                     Event::fire('admin.log', array('fail', 'Product id: ' . $id));
-                    echo 'Unknown error occured';
+                    echo 'Nastala neznámá chyba';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -557,14 +557,14 @@ class Admin_Controller_Product extends Controller
         $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $photoId));
 
         if (null === $photo) {
-            echo 'Photo not found';
+            echo 'Fotka nenalezena';
         } else {
             if (!$photo->active) {
                 $photo->active = true;
                 if ($photo->validate()) {
                     $photo->save();
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
-                    echo 'active';
+                    echo 'aktivní';
                 } else {
                     echo join('<br/>', $photo->getErrors());
                 }
@@ -573,7 +573,7 @@ class Admin_Controller_Product extends Controller
                 if ($photo->validate()) {
                     $photo->save();
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
-                    echo 'inactive';
+                    echo 'neaktivní';
                 } else {
                     echo join('<br/>', $photo->getErrors());
                 }
@@ -593,21 +593,21 @@ class Admin_Controller_Product extends Controller
             $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
 
             if ($photo === null) {
-                echo 'Product photo not found';
+                echo 'Fotka produktu nenalezena';
             } else {
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
 
                     Event::fire('app.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'success';
+                    echo 'úspěch';
                 } else {
                     Event::fire('app.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'An error occured while deleting the photo';
+                    echo 'Nastala chyba během mazání fotky';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -636,14 +636,14 @@ class Admin_Controller_Product extends Controller
                     @unlink($unlinkThumbImg);
 
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
-                    echo 'success';
+                    echo 'úspěch';
                 } else {
                     Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
-                    echo 'An error occured while deleting the photo';
+                    echo 'Nastala chyba během mazání fotky';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -674,7 +674,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errors[] = 'Nastala chyba během aktivování' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -682,7 +682,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Products have been deleted successfully');
+                        $view->successMessage('Produkty byly úspěšně smazány');
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
                         $message = join(PHP_EOL, $errors);
@@ -716,7 +716,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errors[] = 'Nastala chyba během aktivování' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -724,7 +724,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Products have been saved successfully');
+                        $view->successMessage('Produkty byly úspěšně smazány');
                     } else {
                         Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
                         $message = join(PHP_EOL, $errors);
@@ -745,7 +745,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'An error occured while activating ' . $product->getTitle();
+                                $errors[] = 'Nastala chyba při aktivování ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -753,7 +753,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Products have been activated successfully');
+                        $view->successMessage('Produkty byly úspěšně aktivovány');
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
                         $message = join(PHP_EOL, $errors);
@@ -774,7 +774,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'An error occured while deactivating ' . $product->getTitle();
+                                $errors[] = 'Nastala chyba během deaktivování' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -782,7 +782,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Products have been deactivated successfully');
+                        $view->successMessage('Produkty byly úspěšně deaktivovány');
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
                         $message = join(PHP_EOL, $errors);

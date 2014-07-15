@@ -1,12 +1,12 @@
 <ul class="maintabmenu multipletabmenu">
-    <li><a href="/admin/product/">Product List</a></li>
-    <li><a href="/admin/product/add/">Add new product</a></li>
-    <li class="current"><a href="#">Edit product</a></li>
+    <li><a href="/admin/product/">Produkty</a></li>
+    <li><a href="/admin/product/add/">Nový produkt</a></li>
+    <li class="current"><a href="#">Editovat produkt</a></li>
 </ul>
 <div class="content">
 
     <div class="contenttitle radiusbottom0">
-        <h2 class="table"><span>Edit Product</span></h2>
+        <h2 class="table"><span>Editovat produkt</span></h2>
     </div><!--contenttitle-->
 
     <form class="stdform stdform2 uploadPhotoForm" method="post" action="#" enctype="multipart/form-data">
@@ -15,17 +15,17 @@
 
         <div id="tabs">
             <ul class="maintabmenu multipletabmenu">
-                <li><a href="#basic">Basic Information</a></li>
-                <li><a href="#additional">Additional Information</a></li>
-                <li><a href="#meta">Meta Information</a></li>
-                <li><a href="#recommended">Recommended products</a></li>
-                <li><a href="#photos">Additional photos</a></li>
-                <li><a href="#variants">Variants</a></li>
+                <li><a href="#basic">Základní informace</a></li>
+                <li><a href="#additional">Doplňující informace</a></li>
+                <li><a href="#meta">Meta informace</a></li>
+                <li><a href="#recommended">Doporučené produkty</a></li>
+                <li><a href="#photos">Doplňující fotografie</a></li>
+                <li><a href="#variants">Varianty</a></li>
             </ul>
 
             <div id="basic">
                 <p>
-                    <label>Title*</label>
+                    <label>Název*</label>
                     <span class="field" >
                         <input required class="longinput" type="text" name="title" 
                                value="{echo $product->title}" />
@@ -35,7 +35,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Product Code*</label>
+                    <label>Kód produktu*</label>
                     <span class="field">
                         <input required class="longinput" type="text" name="productcode" 
                                value="{echo $product->productCode}" />
@@ -45,7 +45,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Description*<small>Max. 5000 characters</small></label>
+                    <label>Popis*<small>Max. 5000 znaků</small></label>
                     <span class="field">
                         <textarea required rows="20" name="description" id="ckeditor">{echo $product->description}</textarea>
                         {if isset($errors["description"])}
@@ -54,7 +54,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Main Image*</label>
+                    <label>Hlavní obrázek*</label>
                     {if $product->imgMain != ""}
                     <span class="field" id="currentLogo">
                         <img src="{echo $product->imgThumb}" alt="" height="100px" />
@@ -77,7 +77,7 @@
                     {/else}
                 </p>
                 <p>
-                    <label>Size*</label>
+                    <label>Velikost*</label>
                     <span class="field">
                         <select required class="longinput" name="size">
                             {if !empty($sizes)}
@@ -96,7 +96,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Current price*</label>
+                    <label>Současná cena*</label>
                     <span class="field">
                         <input required class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
                                value="{echo $product->currentPrice}" />
@@ -106,7 +106,7 @@
                     </span>
                 </p>
                 <div class="par">
-                    <label>Category*</label>
+                    <label>Kategorie*</label>
                     <div class="field">
                         {if isset($categories)}
                         {macro showSubs($catSubs, $usedCat)}
@@ -147,15 +147,15 @@
                     </div>
                 </div>
                 <p>
-                    <label>Active</label>
+                    <label>Aktivní</label>
                     <span class="field">
                         <select name="active">
                             {if $product->active}
-                            <option value="0">Inactive</option>
-                            <option value="1" selected>Active</option>
+                            <option value="0">Neaktivní</option>
+                            <option value="1" selected>Aktivní</option>
                             {/if}{else}
-                            <option value="0" selected>Inactive</option>
-                            <option value="1">Active</option>
+                            <option value="0" selected>Neaktivní</option>
+                            <option value="1">Aktivní</option>
                             {/else}
                         </select>
                     </span>
@@ -164,7 +164,7 @@
 
             <div id="additional">
                 <p>
-                    <label>Basic price</label>
+                    <label>Základní cena</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
                                value="{echo $product->basicPrice}" />
@@ -174,7 +174,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Regular price</label>
+                    <label>Běžná cena</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="regularprice" 
                                value="{echo $product->regularPrice}" />
@@ -184,7 +184,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount</label>
+                    <label>Sleva</label>
                     <span class="field">
                         <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
                                value="{echo $product->discount}" />
@@ -194,7 +194,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount start</label>
+                    <label>Sleva od</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="discountfrom" 
                                value="{echo $product->discountFrom}" />
@@ -204,7 +204,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Discount end</label>
+                    <label>Sleva do</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="discountto" 
                                value="{echo $product->discountTo}" />
@@ -224,7 +224,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Weight</label>
+                    <label>Hmotnost</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="weight" 
                                value="{echo $product->weight}" />
@@ -234,21 +234,21 @@
                     </span>
                 </p>
                 <p>
-                    <label>in action </label>
+                    <label>V akci</label>
                     <span class="field">
                         <select name="inaction">
                             {if $product->inAction == 0}
-                            <option value="0" selected>No</option>
-                            <option value="1">Yes</option>
+                            <option value="0" selected>Ne</option>
+                            <option value="1">Ano</option>
                             {/if}{else}
-                            <option value="0">No</option>
-                            <option value="1" selected>Yes</option>
+                            <option value="0">Ne</option>
+                            <option value="1" selected>Ano</option>
                             {/else}
                         </select>
                     </span>
                 </p>
                 <p>
-                    <label>New start</label>
+                    <label>Novinka od</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="newfrom" 
                                value="{echo $product->newFrom}" />
@@ -258,7 +258,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>New end</label>
+                    <label>Novinka do</label>
                     <span class="field">
                         <input class="longinput datepicker" type="text"  name="newto" 
                                value="{echo $product->newTo}" />
@@ -271,7 +271,7 @@
 
             <div id="meta">
                 <p>
-                    <label>Meta-Title</label>
+                    <label>Meta-Název</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metatitle" 
                                value="{echo $product->metaTitle}" />
@@ -281,7 +281,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Meta-Keywords</label>
+                    <label>Meta-Klíčová slova</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metakeywords" 
                                value="{echo $product->metaKeaywords}" />
@@ -291,7 +291,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Meta-Description<small>Max. 5000 characters</small></label>
+                    <label>Meta-Popis<small>Max. 5000 characters</small></label>
                     <span class="field">
                         <textarea rows="20" name="metadescription" id="ckeditor" class="longinput">{echo $product->metaDescription}</textarea>
                         {if isset($errors["metaDescription"])}
@@ -303,7 +303,7 @@
 
             <div id="recommended">
                 <div class="contenttitle radiusbottom0">
-                    <h2 class="form"><span>Recommended products</span></h2>
+                    <h2 class="form"><span>Doporučené produkty</span></h2>
                 </div>
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
@@ -336,7 +336,7 @@
 
             <div id="photos">
                 <p>
-                    <label>Upload more photos</label>
+                    <label>Nahrát více fotek</label>
                     <span class="field">
                         <select class="longinput" name="uplMoreImages">
                             <option value="0">Ne</option>
@@ -345,7 +345,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Image</label>
+                    <label>Obrázek</label>
                     <span class="field">
                         <a href="#" class="btn btn_folder multi_upload"><span>+</span></a>
                         <a href="#" class="btn btn_folder multi_upload_dec"><span>-</span></a>
@@ -376,8 +376,8 @@
                                 <img src="{echo $photo->imgThumb}" alt="" height="150px" />
                                 <span>
                                     <a href="{echo $photo->imgMain}" class="view"></a>
-                                    <a href="/admin/product/changephotostatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
-                                    <a href="/admin/product/deleteproductphoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
+                                    <a href="/admin/product/changephotostatus/{echo $photo->id}" class="activate" value="Změnit status fotky"></a>
+                                    <a href="/admin/product/deleteproductphoto/{echo $photo->id}" class="delete" value="Smazat fotku"></a>
                                 </span>
                             </li>
                             {/foreach}
@@ -389,7 +389,7 @@
 
             <div id="variants">
                 <div class="contenttitle radiusbottom0">
-                    <h2 class="form"><span>Product variants</span></h2>
+                    <h2 class="form"><span>Varianty produktu</span></h2>
                 </div>
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
@@ -399,11 +399,11 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="head0">Title</th>
-                            <th class="head1">Type</th>
-                            <th class="head0">Size</th>
-                            <th class="head1">Product code</th>
-                            <th class="head0">Current Price</th>
+                            <th class="head0">Název</th>
+                            <th class="head1">Typ</th>
+                            <th class="head0">Velikost</th>
+                            <th class="head1">Kód produktu</th>
+                            <th class="head0">Současná cena</th>
                             <th class="head1">&nbsp;</th>
                         </tr>
                     </thead>
@@ -418,8 +418,8 @@
                                 <td>{echo $variant->getProductCode()}</td>
                                 <td>{echo $variant->getCurrentPrice()}</td>
                                 <td>
-                                    <a href="/admin/product/edit/{echo $variant->id}" class="btn btn3 btn_pencil" title="Edit"></a>
-                                {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                                    <a href="/admin/product/edit/{echo $variant->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
+                                {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
                                 </td>
                             </tr>
                             {/foreach}
@@ -429,7 +429,7 @@
             </div>
         </div>
         <p class="stdformbutton">
-            <input name="submitEditProduct" type="submit" value="Save" class="submit radius2" />
+            <input name="submitEditProduct" type="submit" value="Uložit" class="submit radius2" />
         </p>
     </form>
 </div>
