@@ -137,7 +137,7 @@ class Controller extends BaseController
      */
     protected function isSuperAdmin()
     {
-        if ($this->_security->getUser() && !$this->_security->isGranted('role_superadmin')) {
+        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin')) {
             return true;
         } else {
             return false;
