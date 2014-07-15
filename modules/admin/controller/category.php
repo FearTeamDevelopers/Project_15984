@@ -47,7 +47,7 @@ class Admin_Controller_Category extends Controller
                 $cat->save();
             }
             Event::fire('admin.log', array('success', 'Category update rank: ' . $cat->getId()));
-            $view->successMessage('Poradi kategorii bylo uspesne ulozeno');
+            $view->successMessage('Pořadí kategorií bylo úspěšně uloženo');
             self::redirect('/admin/category/');
         }
     }
@@ -70,7 +70,7 @@ class Admin_Controller_Category extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if (!$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Produkt s tímto názvem již existuje');
             }
 
             $category = new App_Model_Category(array(
@@ -91,7 +91,7 @@ class Admin_Controller_Category extends Controller
                 $cid = $category->save();
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $cid));
-                $view->successMessage('Section has been successfully saved');
+                $view->successMessage('Kategorie byla úspěšně uložena');
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -114,7 +114,7 @@ class Admin_Controller_Category extends Controller
         ));
 
         if (NULL === $category) {
-            $view->warningMessage('Category not found');
+            $view->warningMessage('Kategorie nenalezena');
             self::redirect('/admin/category/');
         }
 
@@ -129,7 +129,7 @@ class Admin_Controller_Category extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if ($category->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Produkt s tímto názvem již existuje');
             }
 
             $category->parentId = RequestMethods::post('parent', 0);
@@ -149,7 +149,7 @@ class Admin_Controller_Category extends Controller
                 $category->save();
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $category->getId()));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšne uloženy');
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail', 'Category id: ' . $category->getId()));
@@ -170,7 +170,7 @@ class Admin_Controller_Category extends Controller
         $categories = App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => (int) $id));
 
         if ($parentCat === null) {
-            $view->infoMessage('Kategorie nema zadne podkategorie');
+            $view->infoMessage('Kategorie nemá žádné podkategorie');
             self::redirect('/admin/category/');
         }
 
@@ -186,7 +186,7 @@ class Admin_Controller_Category extends Controller
                 $cat->save();
             }
             Event::fire('admin.log', array('success', 'Category update rank: ' . $cat->getId()));
-            $view->successMessage('Poradi kategorii bylo uspesne ulozeno');
+            $view->successMessage('Pořadí kategorií bylo úspěšně uloženo');
             self::redirect('/admin/category/');
         }
     }
@@ -205,18 +205,18 @@ class Admin_Controller_Category extends Controller
             ));
 
             if (NULL === $category) {
-                echo 'Category not found';
+                echo 'Kategorie nenalezena';
             } else {
                 if ($category->delete()) {
                     Event::fire('admin.log', array('success', 'Category id: ' . $id));
-                    echo 'success';
+                    echo 'Úspěch';
                 } else {
                     Event::fire('admin.log', array('fail', 'Category id: ' . $id));
-                    echo 'Unknown error eccured';
+                    echo 'Nastala neznámá chyba';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 

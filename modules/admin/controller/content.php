@@ -66,7 +66,7 @@ class Admin_Controller_Content extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
 
             if (!$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Page with this title already exists');
+                $errors['title'] = array('Stránka s tímto názvem již existuje');
             }
             
             $content = new App_Model_PageContent(array(
@@ -80,7 +80,7 @@ class Admin_Controller_Content extends Controller
                 $id = $content->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('Content has been successfully saved');
+                $view->successMessage('Obsah byl úspěšně uložen');
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -101,7 +101,7 @@ class Admin_Controller_Content extends Controller
         ));
 
         if (NULL === $content) {
-            $view->errorMessage('Content not found');
+            $view->errorMessage('Obsah nenalezen');
             self::redirect('/admin/content/');
         }
 
@@ -118,7 +118,7 @@ class Admin_Controller_Content extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
 
             if ($content->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Obsah s tímto názvem již existuje');
             }
             
             $content->pageName = RequestMethods::post('page');
@@ -131,7 +131,7 @@ class Admin_Controller_Content extends Controller
                 $content->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšně uloženy');
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail', 'ID: ' . $id));

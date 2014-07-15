@@ -61,7 +61,7 @@ class Admin_Controller_Gallery extends Controller
                 str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
             
             if (!$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Galerie s tímto názvem již existuje');
             }
             
             $gallery = new App_Model_Gallery(array(
@@ -75,7 +75,7 @@ class Admin_Controller_Gallery extends Controller
                 $id = $gallery->save();
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Gallery has been successfully saved');
+                $view->successMessage('Galerie byla úspěšně uložena');
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -131,7 +131,7 @@ class Admin_Controller_Gallery extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if ($gallery->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Galerie s tímto názvem již existuje');
             }
 
             $collection->title = RequestMethods::post('title');
@@ -170,7 +170,7 @@ class Admin_Controller_Gallery extends Controller
         );
 
         if (NULL === $gallery) {
-            $view->warningMessage('Gallery not found');
+            $view->warningMessage('Galerie nenalezena');
             self::redirect('/admin/gallery/');
         }
 
@@ -213,11 +213,11 @@ class Admin_Controller_Gallery extends Controller
                 }
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Gallery has been deleted');
+                $view->successMessage('Galerie byla smazána');
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail', 'Gallery id: ' . $id));
-                $view->errorMessage('Unknown error eccured');
+                $view->errorMessage('Nastala neznámá chyba');
                 self::redirect('/admin/gallery/');
             }
         }
@@ -289,7 +289,7 @@ class Admin_Controller_Gallery extends Controller
             }
 
             if (empty($errors)) {
-                $view->successMessage('Photos has been successfully uploaded');
+                $view->successMessage('Fotky byly úspěšně nahrány');
                 self::redirect('/admin/gallery/detail/'.$gallery->getId());
             } else {
                 $view->set('errors', $errors);
@@ -320,14 +320,14 @@ class Admin_Controller_Gallery extends Controller
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'success';
+                    echo 'úspěch';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo 'Unknown error eccured';
+                    echo 'Nastala neznámá chyba';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -347,14 +347,14 @@ class Admin_Controller_Gallery extends Controller
             $photo = App_Model_Photo::first(array('id = ?' => $id));
 
             if (null === $photo) {
-                echo 'Photo not found';
+                echo 'Fotka nenalezena';
             } else {
                 if (!$photo->active) {
                     $photo->active = true;
                     if ($photo->validate()) {
                         $photo->save();
                         Event::fire('admin.log', array('success', 'ID: ' . $id));
-                        echo 'active';
+                        echo 'aktivní';
                     } else {
                         echo join('<br/>', $photo->getErrors());
                     }
@@ -363,14 +363,14 @@ class Admin_Controller_Gallery extends Controller
                     if ($photo->validate()) {
                         $photo->save();
                         Event::fire('admin.log', array('success', 'ID: ' . $id));
-                        echo 'inactive';
+                        echo 'neaktivní';
                     } else {
                         echo join('<br/>', $photo->getErrors());
                     }
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 

@@ -65,7 +65,7 @@ class Admin_Controller_News extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if (!$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('News with this title already exists');
+                $errors['title'] = array('Novinka s tímto názvem již existuje');
             }
 
             $news = new App_Model_News(array(
@@ -79,7 +79,7 @@ class Admin_Controller_News extends Controller
                 $id = $news->save();
 
                 Event::fire('admin.log', array('success', 'News id: ' . $id));
-                $view->successMessage('News has been successfully saved');
+                $view->successMessage('Novinka byla úspěšně uložena');
                 self::redirect('/admin/news/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -99,7 +99,7 @@ class Admin_Controller_News extends Controller
         $news = App_Model_News::first(array('id = ?' => (int) $id));
 
         if ($news === null) {
-            $view->errorMessage('News not found');
+            $view->errorMessage('Novinka nenalezena');
             self::redirect('/admin/news/');
         }
 
@@ -114,7 +114,7 @@ class Admin_Controller_News extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if ($news->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Product with this title already exists');
+                $errors['title'] = array('Novinka s tímto názvem již existuje');
             }
             
             $news->title = RequestMethods::post('title');
@@ -127,7 +127,7 @@ class Admin_Controller_News extends Controller
                 $news->save();
 
                 Event::fire('admin.log', array('success', 'News id: ' . $id));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšně uloženy');
                 self::redirect('/admin/news/');
             } else {
                 Event::fire('admin.log', array('fail', 'News id: ' . $id));
@@ -150,18 +150,18 @@ class Admin_Controller_News extends Controller
             );
 
             if (NULL === $news) {
-                echo 'News not found';
+                echo 'Novinka nenalezena';
             } else {
                 if ($news->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'success';
+                    echo 'úspěch';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo 'Unknown error eccured';
+                    echo 'Nastala neznámá chyba';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -186,14 +186,14 @@ class Admin_Controller_News extends Controller
                     if (NULL !== $news) {
                         foreach ($news as $_news) {
                             if (!$_news->delete()) {
-                                $errors[] = 'An error occured while deleting ' . $_news->getTitle();
+                                $errors[] = 'Nastala chyba při mazání ' . $_news->getTitle();
                             }
                         }
                     }
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'IDs: ' . join(',', $ids)));
-                        $view->successMessage('News have been deleted');
+                        $view->successMessage('Novinky byly smazány');
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);
@@ -222,7 +222,7 @@ class Admin_Controller_News extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'IDs: ' . join(',', $ids)));
-                        $view->successMessage('News have been activated');
+                        $view->successMessage('Novinky byly aktivovány');
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);
@@ -251,7 +251,7 @@ class Admin_Controller_News extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'IDs: ' . join(',', $ids)));
-                        $view->successMessage('News have been deactivated');
+                        $view->successMessage('Novinky byly deaktivovány');
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);

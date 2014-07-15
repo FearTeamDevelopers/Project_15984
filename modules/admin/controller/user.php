@@ -28,12 +28,12 @@ class Admin_Controller_User extends Controller
             $error = false;
 
             if (empty($email)) {
-                $view->set('account_error', 'Email not provided');
+                $view->set('account_error', 'Není zadán email');
                 $error = true;
             }
 
             if (empty($password)) {
-                $view->set('account_error', 'Password not provided');
+                $view->set('account_error', 'Není zadáno heslo');
                 $error = true;
             }
 
@@ -49,13 +49,13 @@ class Admin_Controller_User extends Controller
 
                         self::redirect('/admin/');
                     } else {
-                        $view->set('account_error', 'Email address and/or password are incorrect');
+                        $view->set('account_error', 'Email nebo heslo není správně');
                     }
                 } catch (\Exception $e) {
                     if (ENV == 'dev') {
                         $view->set('account_error', $e->getMessage());
                     } else {
-                        $view->set('account_error', 'Unknown error occured');
+                        $view->set('account_error', 'Nastala neznámá chyba');
                     }
                 }
             }
@@ -108,13 +108,13 @@ class Admin_Controller_User extends Controller
             $this->checkToken();
             
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
-                $errors['password2'] = array('Paswords doesnt match');
+                $errors['password2'] = array('Hesla se neshodují');
             }
 
             $email = App_Model_User::first(array('email = ?' => RequestMethods::post('email')), array('email'));
 
             if ($email) {
-                $errors['email'] = array('Email is already used');
+                $errors['email'] = array('Tento email se již používá');
             }
 
             $salt = $security->createSalt();
@@ -133,7 +133,7 @@ class Admin_Controller_User extends Controller
                 $id = $user->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('Account has been successfully created');
+                $view->successMessage('Účet byl úspěšně vytvořen');
                 self::redirect('/admin/user/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -164,7 +164,7 @@ class Admin_Controller_User extends Controller
             $this->checkToken();
             
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
-                $errors['password2'] = array('Paswords doesnt match');
+                $errors['password2'] = array('Hesla se neshodují');
             }
 
             if (RequestMethods::post('email') != $user->email) {
@@ -174,7 +174,7 @@ class Admin_Controller_User extends Controller
                 );
                 
                 if ($email) {
-                    $errors['email'] = array('Email is already used');
+                    $errors['email'] = array('Tento email je již použit');
                 }
             }
 
@@ -200,7 +200,7 @@ class Admin_Controller_User extends Controller
                 $user->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $user->getId()));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšne uloženy');
                 self::redirect('/admin/');
             } else {
                 Event::fire('admin.log', array('fail', 'ID: ' . $user->getId()));
@@ -223,10 +223,10 @@ class Admin_Controller_User extends Controller
         $user = App_Model_User::first(array('id = ?' => $id));
 
         if (NULL === $user) {
-            $view->errorMessage('User not found');
+            $view->errorMessage('Uživatel nenalezen');
             self::redirect('/admin/user/');
         } elseif ($user->role == 'role_superadmin' && !$superAdmin) {
-            $view->errorMessage('You dont have permissions to update this user');
+            $view->errorMessage('Nemáte práva pro editování tohoto uživatele');
             self::redirect('/admin/user/');
         }
         
@@ -237,7 +237,7 @@ class Admin_Controller_User extends Controller
             $this->checkToken();
             
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
-                $errors['password2'] = array('Paswords doesnt match');
+                $errors['password2'] = array('Hesla se neshodují');
             }
 
             if (RequestMethods::post('email') != $user->email) {
@@ -247,7 +247,7 @@ class Admin_Controller_User extends Controller
                 );
                 
                 if ($email) {
-                    $errors['email'] = array('Email is already used');
+                    $errors['email'] = array('Tento email je již použit');
                 }
             }
 
@@ -273,7 +273,7 @@ class Admin_Controller_User extends Controller
                 $user->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšně uloženy');
                 self::redirect('/admin/user/');
             } else {
                 Event::fire('admin.log', array('fail', 'ID: ' . $id));
@@ -297,18 +297,18 @@ class Admin_Controller_User extends Controller
             $user = App_Model_User::first(array('id = ?' => $id));
 
             if (NULL === $user) {
-                echo 'User not found';
+                echo 'Uživatel nenalezen';
             } else {
                 if ($user->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     echo 'ok';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo 'Unknown error eccured';
+                    echo 'Nastala neznámá chyba';
                 }
             }
         } else {
-            echo 'Security token is not valid';
+            echo 'Bezpečnostní token není validní';
         }
     }
 

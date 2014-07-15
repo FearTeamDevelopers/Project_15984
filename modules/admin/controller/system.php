@@ -32,7 +32,7 @@ class Admin_Controller_System extends Controller
             Event::fire('admin.log');
             $cache = Registry::get('cache');
             $cache->clearCache();
-            $view->successMessage('Cache has been successfully cleared');
+            $view->successMessage('Cache byly úspěšně smazány');
             self::redirect('/admin/system/');
         }
     }
@@ -53,7 +53,7 @@ class Admin_Controller_System extends Controller
         }
 
         $dump->create();
-        $view->successMessage('Database backup has been successfully created');
+        $view->successMessage('Záloha databáze byla úspěšně vytvořena');
         Event::fire('app.log', array('success', 'Database backup ' . $dump->getBackupName()));
         unset($fm);
         unset($dump);
@@ -95,7 +95,7 @@ class Admin_Controller_System extends Controller
             }
 
             if(empty($errors)){
-                $view->successMessage('Settings have been successfully changed');
+                $view->successMessage('Nastavení bylo úspěšně změněno');
                 self::redirect('/admin/system/');
             }else{
                 $view->set('errors', $errors);
