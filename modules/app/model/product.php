@@ -414,4 +414,15 @@ class App_Model_Product extends Model
             return $this->_imgThumb;
         }
     }
+    
+    public static function fetchProductById($id)
+    {
+        $product = self::first(array('id = ?' => (int)$id));
+        return $product->getProductById();
+    }
+    
+    public function getProductById()
+    {
+        
+    }
 }

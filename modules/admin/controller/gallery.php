@@ -175,6 +175,8 @@ class Admin_Controller_Gallery extends Controller
         }
 
         $photos = App_Model_Photo::all(array('galleryId = ?' => $gallery->getId()));
+        
+        $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitDeleteGallery')) {
             $this->checkToken();
@@ -254,7 +256,7 @@ class Admin_Controller_Gallery extends Controller
             ));
 
             try {
-                $data = $fileManager->upload('photo', 'gallery-' . $gallery->getId());
+                $data = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId());
             } catch (Exception $ex) {
                 $errors['photo'] = array($ex->getMessage());
             }
@@ -318,7 +320,7 @@ class Admin_Controller_Gallery extends Controller
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'ok';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
                     echo 'Unknown error eccured';

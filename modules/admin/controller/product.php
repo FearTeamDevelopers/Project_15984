@@ -303,7 +303,7 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $products = App_Model_Product::all(array('deleted = ?' => false));
+        $products = App_Model_Product::all(array('deleted = ?' => false, 'variantFor = ?' => 0));
         $view->set('products', $products);
     }
 

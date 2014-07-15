@@ -470,7 +470,7 @@ jQuery(document).ready(function() {
             var token = jQuery('#tk').val();
 
             jQuery.post(url, {tk: token}, function(msg) {
-                if (msg == 'ok') {
+                if (msg == 'success') {
                     parentTr.fadeOut();
                 } else {
                     alert(msg);
