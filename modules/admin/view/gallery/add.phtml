@@ -12,10 +12,19 @@
         <p>
             <label>Title</label>
             <span class="field">
-                <input type="text" name="title" value="{echo isset($gallery)? $gallery->title: ""}" />
+                <input class="longinput" type="text" name="title" value="{echo isset($gallery)? $gallery->title: ""}" />
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
+            </span>
+        </p>
+        <p>
+            <label>Public </label>
+            <span class="field">
+                <select class="longinput" name="active">
+                    <option value="0">Private</option>
+                    <option value="1" selected>Public</option>
+                </select>
             </span>
         </p>
         <p>
@@ -25,8 +34,6 @@
                 {if isset($errors["description"])}
                 <label class="error">{echo join("<br/>", $errors["description"])}</label>
                 {/if}
-                <br/>
-                <button id="news-clear-text">Clear</button>
             </span>
         </p>
         <p class="stdformbutton">

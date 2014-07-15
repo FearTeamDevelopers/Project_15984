@@ -34,7 +34,7 @@ class Admin_Controller_Category extends Controller
     {
         $view = $this->getActionView();
 
-        $categories = App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => 0));
+        $categories = App_Model_Category::all(array('parentId = ?' => 0));
 
         $view->set('categories', $categories);
 

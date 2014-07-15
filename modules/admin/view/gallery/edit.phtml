@@ -5,6 +5,7 @@
     <li class="current"><a href="#">Edit Gallery</a></li>
     {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $gallery->id}">Delete Gallery</a></li>{/if}
 </ul><!--maintabmenu-->
+
 <div class="content">
     <div class="contenttitle radiusbottom0">
         <h2 class="table"><span>Add Gallery</span></h2>
@@ -21,6 +22,20 @@
             </span>
         </p>
         <p>
+            <label>Public </label>
+            <span class="field">
+                <select class="longinput" name="active">
+                    {if $gallery->isPublic == 0}
+                    <option value="0" selected>Private</option>
+                    <option value="1">Public</option>
+                    {/if}{else}
+                    <option value="0">Private</option>
+                    <option value="1" selected>Public</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+        <p>
             <label>Description<small>Max. 5000 characters</small></label>
             <span class="field">
                 <textarea rows="20" name="description" id="ckeditor">{echo $gallery->description}</textarea>
@@ -29,6 +44,20 @@
                 {/if}
                 <br/>
                 <button id="news-clear-text">Clear</button>
+            </span>
+        </p>
+        <p>
+            <label>Active </label>
+            <span class="field">
+                <select class="longinput" name="active">
+                    {if $gallery->active == 0}
+                    <option value="0" selected>Inactive</option>
+                    <option value="1">Active</option>
+                    {/if}{else}
+                    <option value="0">Inactive</option>
+                    <option value="1" selected>Active</option>
+                    {/else}
+                </select>
             </span>
         </p>
         <p class="stdformbutton">

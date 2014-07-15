@@ -9,22 +9,35 @@
     </div><!--contenttitle-->
 
     <table class="stdtable">
+        <colgroup>
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+        </colgroup>
         <thead>
-        <th>Title</th>
-        <th>Active</th>
-        <th>Created</th>
-        <th>Manage</th>
-        </thead>
-        <tbody>
-            {if !empty($collections)}
-            {foreach $col in $collections}
             <tr>
-                <td>{echo $col->getTitle()}</td>
-                <td>{echo $col->getActive()}</td>
-                <td>{echo $col->getCreated()}</td>
+                <th class="head0">Title</th>
+                <th class="head1">Type</th>
+                <th class="head0">Created</th>
+                <th class="head1">&nbsp;</th>
+            </tr> 
+        </thead>
+
+        <tbody>
+            {if !empty($galleries)}
+            {foreach $gallery in $galleries}
+            <tr>
+                <td>{echo $gallery->getTitle()}</td>
                 <td>
-                    <a class="btn btn_image2" class="button-edit" href="/admin/gallery/detail/{echo $col->id}" >
-                        Enter gallery
+                    {if $gallery->isPublic == 0}
+                        Private
+                    {/if}{else}
+                        Public
+                    {/else}
+                </td>
+                <td>{echo $gallery->getCreated()}</td>
+                <td>
+                    <a href="/admin/gallery/detail/{echo $gallery->id}" class="btn btn_image2">
+                        <span>Vstoupit do galerie</span>
                     </a>
                 </td>
             </tr>

@@ -15,7 +15,6 @@
     <div class="collectiondetail">
         <p>
             Created: {echo $gallery->created}<br/>
-            Photo count: {echo $collectionphotocount}<br/>
             Collection description:
         </p>
         <div class="collectiondetail_description">
@@ -23,41 +22,35 @@
         </div>
         <br/>
         <p>
-            <a href="/admin/collection/addPhoto/{echo $gallery->id}" class="btn btn_image"><span>Upload Photo</span></a> 
+            <a href="/admin/gallery/addphoto/{echo $gallery->id}" class="btn btn_image"><span>Upload Photo</span></a> 
         </p>
     </div>
     <hr/>
-
-    
-        
-        <div id="tabs-1">
-            {if !empty($photos)}
-            <div style="overflow:hidden;">
-                <ul class="imagelist">
-                    {foreach $photo in $photos}
-                    {if $photo->active}
-                    <li class="photoactive">
-                        {/if} 
-                        {else}
-                    <li class="photoinactive">
-                        {/else}
-                        <img src="{echo $photo->thumbPath}" alt="{echo $photo->photoName}" title="{echo $photo->photoName}" height="100px" />
-                        <span>
-                            <a href="{echo $photo->imgMain}" class="view"></a>
-                            <a href="/admin/gallery/changePhotoStatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
-                            <a href="/admin/gallery/deletePhoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
-                        </span>
-                    </li>
-                    {/foreach}
-                </ul>
-            </div>
-            {/if} 
-            {else}
-            <div class="notification msginfo"><a class="close"></a><p>No Photo in collection</p></div>
-            {/else}
+    <div id="tabs-1">
+        {script $photos = $gallery->getPhotos()}
+        {if !empty($photos)}
+        <div style="overflow:hidden;">
+            <ul class="imagelist">
+                {foreach $photo in $photos}
+                {if $photo->active}
+                <li class="photoactive">
+                    {/if} 
+                    {else}
+                <li class="photoinactive">
+                    {/else}
+                    <img src="{echo $photo->imgThumb}" alt="" height="120px" />
+                    <span>
+                        <a href="{echo $photo->imgMain}" class="view"></a>
+                        <a href="/admin/gallery/changephotostatus/{echo $photo->id}" class="activate" value="Change photo state"></a>
+                        <a href="/admin/gallery/deletephoto/{echo $photo->id}" class="delete" value="Delete photo"></a>
+                    </span>
+                </li>
+                {/foreach}
+            </ul>
         </div>
-        
-    </div><!--#tabs-->
-
-</div>
-<br clear="all"/><br />
+        {/if} 
+        {else}
+        <div class="notification msginfo"><a class="close"></a><p>No Photo in gallery</p></div>
+        {/else}
+    </div>
+</div><!--#tabs-->

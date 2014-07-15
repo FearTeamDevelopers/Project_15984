@@ -48,12 +48,33 @@ class App_Model_Gallery extends Model
      * @column
      * @readwrite
      * @type text
+     * @length 250
+     * 
+     * @validate required, alphanumeric, max(250)
+     * @label url key
+     */
+    protected $_urlKey;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
      * @length 256
      * 
      * @validate required, alphanumeric, max(2048)
      * @label description
      */
     protected $_description;
+
+    /**
+     * @column
+     * @readwrite
+     * @type boolean
+     * 
+     * @validate max(2)
+     * @lable public
+     */
+    protected $_isPublic;
 
     /**
      * @column
@@ -70,6 +91,11 @@ class App_Model_Gallery extends Model
     protected $_modified;
 
     /**
+     * @readwrite
+     */
+    protected $_photos;
+
+    /**
      * 
      */
     public function preSave()
@@ -82,6 +108,30 @@ class App_Model_Gallery extends Model
             $this->setActive(true);
         }
         $this->setModified(date('Y-m-d H:i:s'));
+    }
+
+    /**
+     * 
+     * @param type $id
+     * @return type
+     */
+    public static function fetchGalleryById($id)
+    {
+        $gallery = self::first(array('id = ?' => (int) $id));
+        return $gallery->getGalleryById();
+    }
+
+    /**
+     * 
+     * @return \App_Model_Gallery
+     */
+    public function getGalleryById()
+    {
+        $photos = App_Model_Photo::all(array('galleryId = ?' => $this->getId()));
+
+        $this->_photos = $photos;
+
+        return $this;
     }
 
 }
