@@ -28,7 +28,7 @@
         <p>
             <label>Description</label>
             <span class="field">
-                <textarea rows="20" name="description" class="longinput">{echo isset($photo)? $photo->description: ""}</textarea>
+                <textarea rows="5" name="description" class="longinput">{echo isset($photo)? $photo->description: ""}</textarea>
                 {if isset($errors["description"])}
                 <label class="error">{echo join("<br/>", $errors["description"])}</label>
                 {/if}
@@ -41,47 +41,18 @@
                 <a href="#" class="btn btn_folder multi_upload_dec"><span>-</span></a>
             </span>
             <span class="field file_inputs">
-                <input type="file" name="photos[]"/>
+                <input type="file" name="secondfile[]"/>
             </span> 
             {if isset($errors["photo"])}
             <label class="error">
                 {echo join("<br/>", $errors["photo"])}
             </label>
             {/if}
-            {if isset($errors["photoName"])}
-            <label class="error">
-                {echo join("<br/>", $errors["photoName"])}
-            </label>
-            {/if}
-            {if isset($errors["mime"])}
-            <label class="error">
-                {echo join("<br/>", $errors["mime"])}
-            </label>
-            {/if}
-            {if isset($errors["imgMain"])}
-            <label class="error">
-                {echo join("<br/>", $errors["imgMain"])}
-            </label>
-            {/if}
-            {if isset($errors["imgThumb"])}
-            <label class="error">
-                {echo join("<br/>", $errors["imgThumb"])}
-            </label>
-            {/if}
-            {if isset($errors["sizeMain"])}
-            <label class="error">
-                {echo join("<br/>", $errors["sizeMain"])}
-            </label>
-            {/if}
-            {if isset($errors["sizeThumb"])}
-            <label class="error">
-                {echo join("<br/>", $errors["sizeThumb"])}
-            </label>
-            {/if}
+           
         </p>
 
         <p class="stdformbutton">
-            <input name="submitAddMultiPhoto" type="submit" value="Save" class="submit radius2" />
+            <input name="submitAddPhoto" type="submit" value="Save" class="submit radius2" />
             <input type="reset" class="reset radius2" value="Reset" />
         </p>
     </form>
