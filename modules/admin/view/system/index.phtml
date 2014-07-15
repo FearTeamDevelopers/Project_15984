@@ -5,7 +5,7 @@
 </ul><!--maintabmenu-->
 <div class="content">
 
-    <div class="one_fifth">
+    <div class="one_fourth">
         <div class="contenttitle"><h2 class="form"><span>Smazat cache</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/clearcache/">
             <input type="hidden" name="tk" id="tk" value="{echo $token}" />
@@ -14,7 +14,7 @@
             </p>
         </form>
     </div>
-    <div class="one_fifth">
+    <div class="one_fourth">
         <div class="contenttitle"><h2 class="form"><span>Database backup</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/createdatabasebackup/">
             <input type="hidden" name="tk" id="tk" value="{echo $token}" />
@@ -23,27 +23,7 @@
             </p>
         </form>
     </div>
-    <div class="one_fifth">
-        <div class="contenttitle"><h2 class="form"><span>Archivovat starší novinky</span></h2></div>
-        <form class="stdform stdform2" method="post" action="/admin/system/archivatenews/">
-            <input type="hidden" name="tk" id="tk" value="{echo $token}" />
-            <p class="stdformbutton">
-                <input name="archivateNews" type="submit" value="Archivate" class="submit radius2" />
-            </p>
-        </form>
-    </div>
-
-    <div class="one_fifth">
-        <div class="contenttitle"><h2 class="form"><span>Změnit status aplikace</span></h2></div>
-        <form class="stdform stdform2" method="post" action="/admin/system/changeapplicationstatus/">
-            <input type="hidden" name="tk" id="tk" value="{echo $token}" />
-            <p class="stdformbutton">
-                <input name="changeStatus" type="submit" value="{echo $appstatus}" class="submit radius2" />
-            </p>
-        </form>
-    </div>
-    
-    <br clear="all" />
+  
 </div><!--widgetcontent-->
 
-<br clear="all" />
+<br class="clear-all" />
