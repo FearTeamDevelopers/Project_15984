@@ -17,7 +17,7 @@ body{
     margin-left:380px;
     margin-right:10px;
     max-width:1120px;
-    height:800px;
+    min-height:800px;
     border:10px solid black;
 }
 
