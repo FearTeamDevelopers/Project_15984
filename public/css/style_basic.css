@@ -46,6 +46,7 @@ header{
     padding-top:40px;
     width:230px;
     float:left;
+    margin-left:5px;
 }
 #logo{
     width:200px;
@@ -100,7 +101,7 @@ DROPDOWN MENU
 .menuleft ul li:hover ul{display:block;}
 .dropdownmenu{
     position:absolute;
-    left:190px;
+    left:200px;
     top:40px;
 }
 .menuleft ul li ul li a {
@@ -136,22 +137,7 @@ DROPDOWN MENU
     text-align: center;
 }
 
-.menuleft ul li ul li a:visited {
-    color: black;
-    padding:10px;
-    padding-top:14px;
-    padding-bottom: 14px;
-    font-size: 16px;
-    text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
-    border-radius:3px;
-    width:130px;
-    background-color: gray;
-    background: rgb(255, 255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
-    display: block;
-    text-align: center;
-}
+
 
 /************
 FOOTER
