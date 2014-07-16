@@ -1,0 +1,167 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16.7.2014, 17:14:41
+    Author     : Tomas
+*/
+
+/********************* 
+BACKGROUND
+*********************/
+
+html {
+    background-image: url('../images/karneval_bg.jpg'), url('../images/bg.jpg');
+    background-repeat: no-repeat ,repeat-x;
+    background-position-x: center;
+}
+
+/* Obrázek roztažený přes celý monitor
+
+#bg {
+  position: fixed; 
+  top: -50%; 
+  left: -50%; 
+  width: 200%; 
+  height: 200%;
+}
+#bg img {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  margin: auto; 
+  min-width: 50%;
+  min-height: 50%;
+}*/
+
+/***********************
+HEADER
+************************/
+
+header{
+    padding-top:40px;
+    width:230px;
+    float:left;
+}
+#logo{
+    width:200px;
+}
+
+/************************
+MENU
+*************************/
+
+.menuleft ul li {margin:5px;}
+
+.menuleft ul li a {
+    color: black;
+    padding:10px;
+    padding-top:18px;
+    padding-bottom: 18px;
+    font-size: 24px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.22);
+    border-radius:3px;
+    width:160px;
+    background-color: gray;
+    background: rgb(255, 255, 255, 255);
+    background: rgba(255,255, 255, 0.15);
+    display: block;
+    text-align: center;
+}
+.menuleft ul li a:hover {
+    color: black;
+    padding:10px;
+    padding-top:18px;
+    padding-bottom: 18px;
+    font-size: 24px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:160px;
+    background-color: gray;
+    background: rgb(255, 255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;
+}
+.menuleft ul li a span{
+    text-align: center;
+}
+/*********************
+DROPDOWN MENU
+**********************/
+
+.menuleft ul li ul{display:none;}
+.menuleft ul li:hover ul{display:block;}
+.dropdownmenu{
+    position:absolute;
+    left:190px;
+    top:40px;
+}
+.menuleft ul li ul li a {
+    color: black;
+    padding:10px;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.22);
+    border-radius:3px;
+    width:130px;
+    background-color: gray;
+    background: rgb(255, 255, 255, 255);
+    background: rgba(255,255, 255, 0.15);
+    display: block;
+    text-align: center;
+}
+.menuleft ul li ul li a:hover {
+    color: black;
+    padding:10px;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:130px;
+    background-color: gray;
+    background: rgb(255, 255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;
+}
+
+.menuleft ul li ul li a:visited {
+    color: black;
+    padding:10px;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:130px;
+    background-color: gray;
+    background: rgb(255, 255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;
+}
+
+/************
+FOOTER
+***********/
+
+footer{
+    position:fixed;
+    left:0;
+    bottom:0;
+    padding:10px;
+    color:white;
+    font-size:14px;
+}

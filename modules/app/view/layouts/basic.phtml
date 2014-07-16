@@ -5,29 +5,43 @@
         <meta http-equiv="Content-Language" content="cs" />
         <meta http-equiv="CACHE-CONTROL" content="public">
         <meta name="viewport" content="width=device-width, maximum-scale=2.0, minimum-scale=1.0, initial-scale=1.0" />
-        <meta name="keywords" content="" />
-        <meta name="description" content="" />
+        <meta name="keywords" content="{echo $keywords}" />
+        <meta name="description" content="{echo $description}" />
         <meta name="author" content="Tomas Hodan" />
         <meta name="robots" content="INDEX,NOFOLLOW" />
 
         <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/style_basic.css" media="screen" rel="stylesheet" type="text/css" />
         <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
 
         <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
         <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
 
-        <title></title>
+        <title>{echo $title}</title>
     </head>
     <body lang="cs">
-        <div>
+        <!--   *Alternativa pozadí*
+        <div id="bg">
+            <img src="../../../../public/images/karneval_bg.jpg" alt="">
+        </div>  -->
+        <header>
+            <article id="logo">
+                <h1 class="visuallyhidden">Logo</h1>
+                <img src="../../../../public/images/logo_final.png" alt="">
+            </article>
+            <nav class="menuleft">
+                {include menu.phtml}
+            </nav>
+        </header>
+        <section class="content">
             {yield action}
-        </div>
+        </section>
+        <footer>
+            © 2014 Kantors Creative Club, Petr Vaněk, Grafico.
+        </footer>
 
-        <!-- JS scripts --> 
-        
-        <!-- End JS scripts -->
     </body>
 </html>

@@ -5,6 +5,31 @@ and open the template in the editor.
 */
 /* 
     Created on : 23.5.2014, 21:40:16
-    Author     : Tomy
+    Author     : Sabre
 */
+
+body{
+    font: 16px 'Calibri', sans-serif;
+}
+.content{
+    margin-bottom:20px;
+    margin-top:60px;
+    margin-left:380px;
+    margin-right:10px;
+    max-width:1120px;
+    height:800px;
+    border:10px solid black;
+}
+
+/* třída pro skrývání H1 u articlu*/
+.visuallyhidden {
+    border: 0 none;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px; 
+}
 

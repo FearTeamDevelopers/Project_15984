@@ -1,0 +1,33 @@
+<ul>
+    <li><a href="#"><span>O nás</span></a></li>
+    <li><a href="#"><span>Kostýmy</span></a>
+
+        <ul class="dropdownmenu">
+            {if !empty($category)}
+            {foreach $cat in $category}
+            <li>
+                <a href="/kategorie/{echo $cat->urlKey}/">
+                    <span>{echo $cat->title}</span></a>
+            </li>
+            {/foreach}
+            {/if}
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+            <li><a href="#"><span>test</span></a></li>
+        </ul>
+
+    </li>
+    <li><a href="#"><span>Reference</span></a></li>
+    <li><a href="#"><span>Ceník</span></a></li>
+    <li><a href="#"><span>Kontakty</span></a></li>
+</ul>
