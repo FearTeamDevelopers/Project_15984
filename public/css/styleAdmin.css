@@ -342,8 +342,8 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
 .stdtable2 tbody tr td:first-child { border-left: 1px solid #ddd; }
 .stdtable2 tbody tr td:last-child { border-right: 1px solid #ddd; }
 .stdtable2 tbody tr:hover td, .stdtable2 tbody tr.selected td { background: #ddd; color: #333; }
-.stdtable2 tbody tr.togglerow td { background: #fff; }
-.stdtable2 tbody tr.togglerow:hover td { background: #fff; }
+.stdtable2 tbody tr.togglerow td { background: #999; }
+.stdtable2 tbody tr.togglerow:hover td { background: #bbb; }
 .stdtable2 tbody tr.hiderow { display: none; }
 .stdtable2 tbody tr td input[type=checkbox]{width: 20px;}
 

@@ -303,7 +303,10 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $products = App_Model_Product::all(array('deleted = ?' => false, 'variantFor = ?' => 0), array('*'), array('id' => 'ASC'), 50, 1);
+        $products = App_Model_Product::all(
+                array('deleted = ?' => false, 'variantFor = ?' => 0), 
+                array('*'), 
+                array('id' => 'ASC'), 50, 1);
         $view->set('products', $products);
     }
 
@@ -594,7 +597,7 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('submitSaveRecommended')) {
             $this->checkToken();
-            
+
             $recomprod = App_Model_Product::first(array(
                         'deleted = ?' => false,
                         'productCode = ?' => RequestMethods::post('recomproductcode')
@@ -602,19 +605,19 @@ class Admin_Controller_Product extends Controller
 
             if ($recomprod === null) {
                 $view->warningMessage('Doporučený produkt nebyl nalezen');
-                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+                self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
 
             $recomExists = App_Model_RecommendedProduct::first(array(
-                'productId = ?' => (int) $productId,
-                'recommendedId = ?' => $recomprod->getId()
+                        'productId = ?' => (int) $productId,
+                        'recommendedId = ?' => $recomprod->getId()
             ));
-            
-            if($recomExists !== null){
+
+            if ($recomExists !== null) {
                 $view->warningMessage('Doporučený produkt je již přiřazen');
-                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+                self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
-            
+
             $recommended = new App_Model_RecommendedProduct(array(
                 'productId' => (int) $productId,
                 'recommendedId' => $recomprod->getId()
@@ -624,11 +627,11 @@ class Admin_Controller_Product extends Controller
                 $recommended->save();
                 Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' add recommended ' . $recomprod->getId()));
                 $view->successMessage('Doporučený produkt byl úspěšně přidán');
-                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+                self::redirect('/admin/product/edit/' . $productId . '#recommended');
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $productId));
                 $view->errorMessage('Nastala chyba při ukládání doporučeného produktu');
-                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+                self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
         }
     }
@@ -740,149 +743,147 @@ class Admin_Controller_Product extends Controller
      */
     public function massAction()
     {
-        $view = $this->getActionView();
+        $this->_willRenderLayoutView = false;
+        $this->_willRenderActionView = false;
         $errors = array();
         $errorsIds = array();
 
-        if (RequestMethods::post('performProductAction')) {
-            $this->checkToken();
-            $ids = RequestMethods::post('productsids');
-            $action = RequestMethods::post('action');
+        $this->checkToken();
+        $ids = RequestMethods::post('productsids');
+        $action = RequestMethods::post('action');
+        
+        if(empty($ids)){
+            echo 'Nějaký řádek musí být označen';
+        }
 
-            switch ($action) {
-                case 'delete':
-                    $products = App_Model_Product::all(array(
-                                'deleted = ?' => false,
-                                'id IN ?' => $ids
-                    ));
-                    if (NULL !== $products) {
-                        foreach ($products as $product) {
-                            $product->deleted = true;
+        switch ($action) {
+            case 'delete':
+                $products = App_Model_Product::all(array(
+                            'deleted = ?' => false,
+                            'id IN ?' => $ids
+                ));
+                if (NULL !== $products) {
+                    foreach ($products as $product) {
+                        $product->deleted = true;
 
-                            if ($product->validate()) {
-                                $product->save();
-                            } else {
-                                $errors[] = 'Nastala chyba během mazání' . $product->getTitle();
-                                $errorsIds [] = $product->getId();
-                            }
+                        if ($product->validate()) {
+                            $product->save();
+                        } else {
+                            $errors[] = 'Nastala chyba během mazání' . $product->getTitle();
+                            $errorsIds [] = $product->getId();
                         }
                     }
+                }
 
-                    if (empty($errors)) {
-                        Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Produkty byly úspěšně smazány');
-                    } else {
-                        Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
-                        $message = join(PHP_EOL, $errors);
-                        $view->longFlashMessage($message);
-                    }
+                if (empty($errors)) {
+                    Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
+                    echo 'Produkty byly úspěšně smazány';
+                } else {
+                    Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
+                    $message = join('<br/>', $errors);
+                    echo $message;
+                }
 
-                    self::redirect('/admin/product/');
-                    break;
+                break;
+            case 'overprice':
+                $products = App_Model_Product::all(array(
+                            'deleted = ?' => false,
+                            'id IN ?' => $ids
+                ));
 
-                case 'overprice':
-                    $products = App_Model_Product::all(array(
-                                'deleted = ?' => false,
-                                'id IN ?' => $ids
-                    ));
+                $val = (int)RequestMethods::post('price');
+                $oper = RequestMethods::post('operation');
 
-                    $val = RequestMethods::post('price');
-                    $oper = RequestMethods::post('operation');
+                if (NULL !== $products) {
+                    foreach ($products as $product) {
+                        if ($val > 0 && $val < 1) {
+                            $product->priceOldTwo = $product->priceOldOne;
+                            $product->priceOldOne = $product->currentPrice;
+                            $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * ($product->currentPrice * $val);
+                        } else {
+                            $product->priceOldTwo = $product->priceOldOne;
+                            $product->priceOldOne = $product->currentPrice;
+                            $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * $val;
+                        }
 
-                    if (NULL !== $products) {
-                        foreach ($products as $product) {
-                            if ($val > 0 && $val < 1) {
-                                $product->priceOldTwo = $product->priceOldOne;
-                                $product->priceOldOne = $product->currentPrice;
-                                $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * ($product->currentPrice * $val);
-                            } else {
-                                $product->priceOldTwo = $product->priceOldOne;
-                                $product->priceOldOne = $product->currentPrice;
-                                $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * $val;
-                            }
-
-                            if ($product->validate()) {
-                                $product->save();
-                            } else {
-                                $errors[] = 'Nastala chyba během přeceňování produktů ' . $product->getTitle();
-                                $errorsIds [] = $product->getId();
-                            }
+                        if ($product->validate()) {
+                            $product->save();
+                        } else {
+                            $errors[] = 'Nastala chyba během přeceňování produktů ' . $product->getTitle();
+                            $errorsIds [] = $product->getId();
                         }
                     }
+                }
 
-                    if (empty($errors)) {
-                        Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Produkty byly úspěšně přeceněny');
-                    } else {
-                        Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
-                        $message = join(PHP_EOL, $errors);
-                        $view->longFlashMessage($message);
-                    }
+                if (empty($errors)) {
+                    Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
+                    echo 'Produkty byly úspěšně přeceněny';
+                } else {
+                    Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
+                    $message = join('<br/>', $errors);
+                    echo $message;
+                }
 
-                    self::redirect('/admin/product/');
-                    break;
-                case 'activate':
-                    $products = App_Model_Product::all(array(
-                                'deleted = ?' => false,
-                                'id IN ?' => $ids
-                    ));
-                    if (NULL !== $products) {
-                        foreach ($products as $product) {
-                            $product->active = true;
+                break;
+            case 'activate':
+                $products = App_Model_Product::all(array(
+                            'deleted = ?' => false,
+                            'id IN ?' => $ids
+                ));
+                if (NULL !== $products) {
+                    foreach ($products as $product) {
+                        $product->active = true;
 
-                            if ($product->validate()) {
-                                $product->save();
-                            } else {
-                                $errors[] = 'Nastala chyba při aktivování ' . $product->getTitle();
-                                $errorsIds [] = $product->getId();
-                            }
+                        if ($product->validate()) {
+                            $product->save();
+                        } else {
+                            $errors[] = 'Nastala chyba při aktivování ' . $product->getTitle();
+                            $errorsIds [] = $product->getId();
                         }
                     }
+                }
 
-                    if (empty($errors)) {
-                        Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Produkty byly úspěšně aktivovány');
-                    } else {
-                        Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
-                        $message = join(PHP_EOL, $errors);
-                        $view->longFlashMessage($message);
-                    }
+                if (empty($errors)) {
+                    Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
+                    echo 'Produkty byly úspěšně aktivovány';
+                } else {
+                    Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
+                    $message = join('<br/>', $errors);
+                    echo $message;
+                }
 
-                    self::redirect('/admin/product/');
-                    break;
-                case 'deactivate':
-                    $products = App_Model_Product::all(array(
-                                'deleted = ?' => false,
-                                'id IN ?' => $ids
-                    ));
-                    if (NULL !== $products) {
-                        foreach ($products as $product) {
-                            $product->active = false;
+                break;
+            case 'deactivate':
+                $products = App_Model_Product::all(array(
+                            'deleted = ?' => false,
+                            'id IN ?' => $ids
+                ));
+                if (NULL !== $products) {
+                    foreach ($products as $product) {
+                        $product->active = false;
 
-                            if ($product->validate()) {
-                                $product->save();
-                            } else {
-                                $errors[] = 'Nastala chyba během deaktivování' . $product->getTitle();
-                                $errorsIds [] = $product->getId();
-                            }
+                        if ($product->validate()) {
+                            $product->save();
+                        } else {
+                            $errors[] = 'Nastala chyba během deaktivování' . $product->getTitle();
+                            $errorsIds [] = $product->getId();
                         }
                     }
+                }
 
-                    if (empty($errors)) {
-                        Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Produkty byly úspěšně deaktivovány');
-                    } else {
-                        Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
-                        $message = join(PHP_EOL, $errors);
-                        $view->longFlashMessage($message);
-                    }
+                if (empty($errors)) {
+                    Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
+                    echo 'Produkty byly úspěšně deaktivovány';
+                } else {
+                    Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
+                    $message = join('<br/>', $errors);
+                    echo $message;
+                }
 
-                    self::redirect('/admin/product/');
-                    break;
-                default:
-                    self::redirect('/admin/product/');
-                    break;
-            }
+                break;
+            default:
+                echo 'Neplatná akce';
+                break;
         }
     }
 
@@ -897,17 +898,11 @@ class Admin_Controller_Product extends Controller
         $page = RequestMethods::post('page');
         $search = empty(RequestMethods::post('sSearch')) ? '' : RequestMethods::post('sSearch');
 
-        if (strtolower($search) == 's variantami') {
-            $search = 2;
-        } elseif (strtolower($search) == 'bez variant') {
-            $search = 1;
-        }
-
         if ($search != '') {
-            $whereCond = "pr.deleted = 0 AND variantFor = 0 "
+            $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
                     . "AND (pr.productCode='" . $search . "' OR pr.productType='" . $search . "' "
                     . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
-
+            \THCFrame\Core\Core::log($whereCond);
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
@@ -915,7 +910,7 @@ class Admin_Controller_Product extends Controller
                             array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond)
                     ->order('pr.id', 'asc')
-                    ->limit(50, $page+1);
+                    ->limit(50, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
 
             $productCountQuery = App_Model_Product::getQuery(array('pr.id'))
@@ -926,7 +921,7 @@ class Admin_Controller_Product extends Controller
                     ->wheresql($whereCond);
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
-            
+
             $count = count($productsCount);
             unset($productsCount);
         } else {
@@ -938,7 +933,7 @@ class Admin_Controller_Product extends Controller
                     ->where('pr.deleted = ?', false)
                     ->where('pr.variantFor = ?', 0)
                     ->order('pr.id', 'asc')
-                    ->limit(50, $page+1);
+                    ->limit(50, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
             $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
         }
@@ -950,10 +945,10 @@ class Admin_Controller_Product extends Controller
         $prodArr = array();
         foreach ($products as $product) {
             $arr = array();
-            $arr [] = "[ \"<input type='checkbox' name='productsids[]' value='" . $product->getId() . "' />\"";
+            $arr [] = "[ \"{$product->getId()}\"";
             $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
             $arr [] = "\"{$product->getTitle()}\"";
-            $arr [] = "\"".ucfirst($product->getProductType())."\"";
+            $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
             $arr [] = "\"{$product->catTitle}\"";
             $arr [] = "\"{$product->getProductCode()}\"";
             $arr [] = "\"{$product->getCurrentPrice()}\"";

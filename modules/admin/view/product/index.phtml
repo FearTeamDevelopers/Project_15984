@@ -7,7 +7,6 @@
         <h2 class="form"><span>Produkty</span></h2>
     </div>
     
-    <form method="post" class="massActionForm" action="/admin/product/massAction/">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         
         <table cellpadding="0" cellspacing="0" border="0" class="stdtable2">
@@ -19,7 +18,7 @@
             </colgroup>
             <thead>
                 <tr>
-                    <th class="head0 width50"><input type="checkbox" class="checkall" /></th>
+                    <th class="head0 width50">ID</th>
                     <th class="head1">Obrázek</th>
                     <th class="head0">Název</th>
                     <th class="head1">Typ</th>
@@ -48,8 +47,7 @@
                 </select>
                 <input class="microinput" name="price" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" />
             </span>
-            <input class="radius3" type="submit" name="performProductAction" value="Execute"/>
+            <a class="btn btn_document ajax-massaction" href="/admin/product/massAction/"><span>Proveď</span></a>
         </div><!--tableoptions-->
         {/if}
-    </form>
 </div>

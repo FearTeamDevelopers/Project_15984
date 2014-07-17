@@ -28,6 +28,8 @@ jQuery(document).ready(function() {
         'sPaginationType': 'full_numbers'
     });
 
+    var selected = [];
+
     jQuery('.stdtable2').dataTable({
         'aaSorting': [],
         'iDisplayLength': 50,
@@ -39,7 +41,25 @@ jQuery(document).ready(function() {
         "sAjaxSource": "/admin/product/load/",
         "fnServerParams": function(aoData) {
             aoData.push({"name": "page", "value": this.fnPagingInfo().iPage});
+        },
+        "rowCallback": function(row, data, displayIndex) {
+            if (jQuery.inArray(data[0], selected) !== -1) {
+                jQuery(row).addClass('togglerow');
+            }
         }
+    });
+
+    jQuery('.stdtable2 tbody').on('click', 'tr', function() {
+        var id = jQuery(this).find('td:first').text();
+        var index = jQuery.inArray(id, selected);
+
+        if (index === -1) {
+            selected.push(id);
+        } else {
+            selected.splice(index, 1);
+        }
+
+        jQuery(this).toggleClass('togglerow');
     });
 
     jQuery('.datepicker').datepicker({
@@ -69,6 +89,57 @@ jQuery(document).ready(function() {
         return false;
     });
 
+    jQuery('a.ajax-massaction').click(function(event) {
+        event.preventDefault();
+
+        var url = jQuery(this).attr('href');
+        var action = jQuery('.tableoptions select').children('option:selected').val();
+        var tk = jQuery('#tk').val();
+
+        if (action == 'overprice') {
+            var operation = jQuery('.overprice-option select').children('option:selected').val();
+            var price = jQuery('.overprice-option').children('input.microinput').val();
+
+            jQuery.post(url, {tk: tk, action: action, productsids: selected, price: price, operation: operation}, function(msg) {
+                jQuery('#dialog p').text(msg);
+
+                jQuery('#dialog').dialog({
+                    title: 'Vysledek',
+                    width: 600,
+                    modal: true,
+                    position: {my: 'center', at: 'top', of: window},
+                    buttons: {
+                        Close: function() {
+                            jQuery(this).dialog('close');
+                            jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
+                            selected = [];
+                        }
+                    }
+                });
+            });
+        } else {
+            jQuery.post(url, {tk: tk, action: action, productsids: selected}, function(msg) {
+                jQuery('#dialog p').text(msg);
+
+                jQuery('#dialog').dialog({
+                    title: 'Vysledek',
+                    width: 600,
+                    modal: true,
+                    position: {my: 'center', at: 'top', of: window},
+                    buttons: {
+                        Close: function() {
+                            jQuery(this).dialog('close');
+                            jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
+                            selected = [];
+                        }
+                    }
+                });
+            });
+        }
+
+        return false;
+    });
+    
     //userinfo
     jQuery('.userinfo').click(function() {
         if (!jQuery(this).hasClass('userinfodrop')) {
