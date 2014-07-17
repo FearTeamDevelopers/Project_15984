@@ -4,7 +4,7 @@
 </ul>
 
 <div class="content">
-    <div class="contenttitle">
+    <div class="contenttitle radiusbottom0">
         <h2 class="form"><span>Informace o uživateli</span></h2>
     </div>
     
@@ -13,7 +13,7 @@
         <p>
             <label>Jméno*</label>
             <span class="field">
-                <input type="text" name="firstname" class="longinput" value="{echo isset($user)? $user->firstname: ""}" />
+                <input required type="text" name="firstname" class="longinput" value="{echo isset($user)? $user->firstname: ""}" />
             </span>
             {if isset($errors["firstname"])}
             <label class="error">
@@ -24,7 +24,7 @@
         <p>
             <label>Příjmení*</label>
             <span class="field">
-                <input type="text" name="lastname" class="longinput" value="{echo isset($user)? $user->lastname: ""}" />
+                <input required type="text" name="lastname" class="longinput" value="{echo isset($user)? $user->lastname: ""}" />
             </span>
             {if isset($errors["lastname"])}
             <label class="error">
@@ -35,7 +35,7 @@
         <p>
             <label>Email*</label>
             <span class="field">
-                <input type="email" name="email" class="longinput" value="{echo isset($user)? $user->email: ""}" />
+                <input required type="email" name="email" class="longinput" value="{echo isset($user)? $user->email: ""}" />
             </span>
             {if isset($errors["email"])}
             <label class="error">
@@ -46,7 +46,7 @@
         <p>
             <label>Heslo*</label>
             <span class="field">
-                <input type="password" name="password" class="longinput" value=""/>
+                <input required type="password" name="password" class="longinput" value=""/>
             </span>
             {if isset($errors["password"])}
             <label class="error">
@@ -57,7 +57,7 @@
         <p>
             <label>Potvrdit heslo*</label>
             <span class="field">
-                <input type="password" name="password2" class="longinput" value=""/>
+                <input required type="password" name="password2" class="longinput" value=""/>
             </span>
             {if isset($errors["password2"])}
             <label class="error">
@@ -65,12 +65,13 @@
             </label>
             {/if}
         </p>
-        {if ($superadmin)}
+        
+        {if ($isSuperAdmin)}
         <p>
             <label>Role</label>
             <span class="field">
                 <select name="role" class="longinput">
-                    <option value="role_publisher">Publisher</option>
+                    <option value="role_member">Member</option>
                     <option value="role_admin">Admin</option>
                     <option value="role_superadmin">Super Admin</option>
                 </select>
@@ -84,8 +85,7 @@
         {/if}
 
         <p class="stdformbutton">
-            <input type="submit" name="submitAddUser" value="Vytvořit uživatelský účet" />
+            <input type="submit" name="submitAddUser" value="Vytvořit účet" />
         </p>
     </form>
 </div>
-<br clear="all" />

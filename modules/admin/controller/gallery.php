@@ -97,6 +97,11 @@ class Admin_Controller_Gallery extends Controller
         $view = $this->getActionView();
 
         $gallery = App_Model_Gallery::fetchGalleryById($id);
+        
+        if($gallery === null){
+            $view->warningMessage('Galerie nebyla nalezena');
+            self::redirect('/admin/gallery/');
+        }
 
         $view->set('gallery', $gallery);
     }
@@ -112,12 +117,10 @@ class Admin_Controller_Gallery extends Controller
     {
         $view = $this->getActionView();
 
-        $gallery = App_Model_Gallery::first(array(
-                    'id = ?' => (int) $id
-        ));
+        $gallery = App_Model_Gallery::first(array('id = ?' => (int) $id));
 
         if (NULL === $gallery) {
-            $view->warningMessage('Gallery not found');
+            $view->warningMessage('Galerie nebyla nalezena ');
             self::redirect('/admin/gallery/');
         }
 
@@ -144,7 +147,7 @@ class Admin_Controller_Gallery extends Controller
                 $gallery->save();
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('All changes were successfully saved');
+                $view->successMessage('Všechny změny byly úspěšne uloženy');
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail', 'Gallery id: ' . $id));
@@ -289,7 +292,7 @@ class Admin_Controller_Gallery extends Controller
             }
 
             if (empty($errors)) {
-                $view->successMessage('Fotky byly úspěšně nahrány');
+                $view->successMessage('Fotografie byly úspěšně nahrány');
                 self::redirect('/admin/gallery/detail/'.$gallery->getId());
             } else {
                 $view->set('errors', $errors);
@@ -314,13 +317,14 @@ class Admin_Controller_Gallery extends Controller
             );
 
             if (null === $photo) {
-                echo 'Photo not found';
+                echo 'Fotografie nebyla nalezena';
             } else {
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
+                    
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
                     echo 'Nastala neznámá chyba';
@@ -347,14 +351,15 @@ class Admin_Controller_Gallery extends Controller
             $photo = App_Model_Photo::first(array('id = ?' => $id));
 
             if (null === $photo) {
-                echo 'Fotka nenalezena';
+                echo 'Fotografie nebyla nalezena';
             } else {
                 if (!$photo->active) {
                     $photo->active = true;
+                    
                     if ($photo->validate()) {
                         $photo->save();
                         Event::fire('admin.log', array('success', 'ID: ' . $id));
-                        echo 'aktivní';
+                        echo 'active';
                     } else {
                         echo join('<br/>', $photo->getErrors());
                     }
@@ -363,7 +368,7 @@ class Admin_Controller_Gallery extends Controller
                     if ($photo->validate()) {
                         $photo->save();
                         Event::fire('admin.log', array('success', 'ID: ' . $id));
-                        echo 'neaktivní';
+                        echo 'inactive';
                     } else {
                         echo join('<br/>', $photo->getErrors());
                     }

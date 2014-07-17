@@ -65,7 +65,7 @@
             </span>
         </p>
         <p>
-            <label>Skupinové </label>
+            <label>Skupinová kategorie</label>
             <span class="field">
                 <select class="longinput" name="group">
                     {if $category->isGrouped == 0}
@@ -93,23 +93,9 @@
             </span>
         </p>
         <p>
-            <label>Je oddělovač </label>
-            <span class="field">
-                <select class="longinput" name="separator">
-                    {if $category->isSeparator == 0}
-                    <option value="0" selected>Ne</option>
-                    <option value="1">Ano</option>
-                    {/if}{else}
-                    <option value="0">Ne</option>
-                    <option value="1" selected>Ano</option>
-                    {/else}
-                </select>
-            </span>
-        </p>
-        <p>
             <label>Popis</label>
             <span class="field">
-                <textarea cols="85" rows="5" name="text" id="ckeditor">{echo $category->mainText}</textarea>
+                <textarea class="longinput" required rows="5" name="text" id="ckeditor">{echo $category->mainText}</textarea>
                 {if isset($errors["mainText"])}
                 <label class="error">{echo join("<br/>", $errors["mainText"])}</label>
                 {/if}
@@ -136,7 +122,7 @@
         <p>
             <label>Meta-Popis</label>
             <span class="field">
-                <textarea cols="85" rows="5" name="metaDescription" id="ckeditor">{echo $category->metaDescription}</textarea>
+                <textarea class="longinput" rows="5" name="metaDescription">{echo $category->metaDescription}</textarea>
                 {if isset($errors["metaDescription"])}
                 <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                 {/if}

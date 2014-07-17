@@ -53,9 +53,7 @@ class Admin_Controller_News extends Controller
     {
         $view = $this->getActionView();
 
-        $photos = $this->_getPhotos();
-
-        $view->set('photos', $photos);
+        $view->set('photos', $this->_getPhotos());
 
         if (RequestMethods::post('submitAddNews')) {
             $this->checkToken();
@@ -95,28 +93,28 @@ class Admin_Controller_News extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
-        $photos = $this->_getPhotos();
+
         $news = App_Model_News::first(array('id = ?' => (int) $id));
 
         if ($news === null) {
-            $view->errorMessage('Novinka nenalezena');
+            $view->errorMessage('Novinka nebyla nalezena');
             self::redirect('/admin/news/');
         }
 
         $view->set('news', $news)
-                ->set('photos', $photos);
+                ->set('photos', $this->_getPhotos());
 
         if (RequestMethods::post('submitEditNews')) {
             $this->checkToken();
             $errors = array();
-            
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if ($news->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Novinka s tímto názvem již existuje');
             }
-            
+
             $news->title = RequestMethods::post('title');
             $news->urlKey = $urlKey;
             $news->author = RequestMethods::post('author', $this->getUser()->getWholeName());
@@ -150,11 +148,11 @@ class Admin_Controller_News extends Controller
             );
 
             if (NULL === $news) {
-                echo 'Novinka nenalezena';
+                echo 'Novinka nebyla nalezena';
             } else {
                 if ($news->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
                     echo 'Nastala neznámá chyba';

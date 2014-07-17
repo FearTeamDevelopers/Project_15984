@@ -3,11 +3,10 @@
     <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
     <li class="current"><a href="#">Detail Galerie</a></li>
     <li><a href="/admin/gallery/edit/{echo $gallery->id}">Editovat Galerii</a></li>
-    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $collection->id}">Smazat Galerii</a></li>{/if}
+    {if $isAdmin}<li><a href="/admin/gallery/delete/{echo $gallery->id}">Smazat Galerii</a></li>{/if}
 </ul><!--maintabmenu-->
 
 <div class="content">
-    {if !empty($gallery)}
     <div class="contenttitle radiusbottom0">
         <h2 class="table"><span>{echo $gallery->title}</span></h2>
     </div><!--contenttitle-->
@@ -27,6 +26,7 @@
         </p>
     </div>
     <hr/>
+    
     <div id="tabs-1">
         {script $photos = $gallery->getPhotos()}
         {if !empty($photos)}
@@ -35,8 +35,7 @@
                 {foreach $photo in $photos}
                 {if $photo->active}
                 <li class="photoactive">
-                    {/if} 
-                    {else}
+                    {/if}{else}
                 <li class="photoinactive">
                     {/else}
                     <img src="{echo $photo->imgThumb}" alt="" height="120px" />
@@ -49,8 +48,7 @@
                 {/foreach}
             </ul>
         </div>
-        {/if} 
-        {else}
+        {/if}{else}
         <div class="notification msginfo"><a class="close"></a><p>Žádné foto v galerii</p></div>
         {/else}
     </div>

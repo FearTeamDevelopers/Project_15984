@@ -57,7 +57,7 @@ class Controller extends BaseController
         } else {
             $view = $this->getActionView();
 
-            $view->infoMessage('You has been logged out for long inactivity');
+            $view->infoMessage('Byl jste odhlášen z důvodu dlouhé neaktivity');
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -71,7 +71,7 @@ class Controller extends BaseController
         $view = $this->getActionView();
 
         if ($this->_security->getUser() && !$this->_security->isGranted('role_member')) {
-            $view->infoMessage('Access denied! Member access level required.');
+            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -98,7 +98,7 @@ class Controller extends BaseController
         $view = $this->getActionView();
 
         if ($this->_security->getUser() && !$this->_security->isGranted('role_admin')) {
-            $view->infoMessage('Access denied! Administrator access level required.');
+            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -125,7 +125,7 @@ class Controller extends BaseController
         $view = $this->getActionView();
 
         if ($this->_security->getUser() && !$this->_security->isGranted('role_superadmin')) {
-            $view->infoMessage('Access denied! Super admin access level required.');
+            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -165,7 +165,7 @@ class Controller extends BaseController
         $view = $this->getActionView();
 
         if (base64_decode(RequestMethods::post('tk')) !== $session->get('csrftoken')) {
-            $view->errorMessage('Security token is not valid');
+            $view->errorMessage('Bezpečnostní token není validní');
             //$security->logout();
             self::redirect('/');
         }

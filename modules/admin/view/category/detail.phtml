@@ -11,41 +11,44 @@
 
     <form class="stdform stdform2" action="#" method="post">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+
         <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
             <colgroup>
                 <col class="con0" /> <col class="con1" />
                 <col class="con0" /> <col class="con1" />
             </colgroup>
             <thead>
-            <td class="head0">Podkategorie</td>
-            <td class="head1">Typ</td>
-            <td class="head0">Pořadí</td>
-            <td class="head1">&nbsp;</td>
+                <tr>
+                    <th class="head0">Podkategorie</th>
+                    <th class="head1">Typ</th>
+                    <th class="head0">Pořadí</th>
+                    <th class="head1">&nbsp;</th>
+                </tr>
             </thead>
             <tbody>
                 {if !empty($categories)}
-                {foreach $category in $categories}
-                <tr>
-                    <td>{echo $category->getTitle()}</td>
-                    <td>
-                        {if $category->isGrouped == 1}
-                        Pro skupinové
-                        {/if}{elseif $category->isSelable == 1}
-                        Pro prodejné
-                        {/elseif}{else}
-                        Pro běžné
-                        {/else}
-                    </td>
-                    <td>
-                        <input type="text" pattern="[\d]{0,2}" name="rank[{echo $category->id}]" value="{echo $category->getRank()}" />
-                    </td>
-                    <td>
-                        <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Detail"></a>
-                        <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
-                        {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
-                    </td>
-                </tr>
-                {/foreach}
+                    {foreach $category in $categories}
+                        <tr>
+                            <td>{echo $category->getTitle()}</td>
+                            <td>
+                                {if $category->isGrouped == 1}
+                                    Pro skupinové
+                                {/if}{elseif $category->isSelable == 1}
+                                    Pro prodejné
+                                {/elseif}{else}
+                                    Pro běžné
+                                {/else}
+                            </td>
+                            <td>
+                                <input type="text" pattern="[\d]{0,2}" name="rank[{echo $category->id}]" value="{echo $category->getRank()}" />
+                            </td>
+                            <td>
+                                <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Detail"></a>
+                                <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
+                                {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
+                            </td>
+                        </tr>
+                    {/foreach}
                 {/if}
             </tbody>
         </table>

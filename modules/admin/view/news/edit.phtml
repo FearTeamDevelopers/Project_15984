@@ -25,7 +25,7 @@
                 <p>
                     <label>Autor</label>
                     <span class="field">
-                        <input type="text" name="author" class="longinput" value="{echo $news->getAuthor}"/>
+                        <input type="text" name="author" class="longinput" value="{echo $news->getAuthor()}"/>
                     </span>
                 </p>
                 <p>
@@ -43,7 +43,7 @@
                     <label>Aktivní</label>
                     <span class="field">
                         <select name="active" class="longinput">
-                            {if $news->active}
+                            {if $news->active == 1}
                             <option value="0">Inactive</option>
                             <option value="1" selected>Active</option>
                             {/if}
@@ -55,7 +55,7 @@
                     </span>
                 </p>
                 <p class="stdformbutton">
-                    <input name="submitEditNews" type="submit" value="Save" class="submit radius2" />
+                    <input name="submitEditNews" type="submit" value="Uložit" class="submit radius2" />
                     <input type="reset" class="reset radius2" value="Reset" />
                 </p>
             </form>

@@ -31,6 +31,13 @@ class Admin_Etc_Module extends Module
             'module' => 'admin',
             'controller' => 'user',
             'action' => 'logout',
+        ),
+        array(
+            'pattern' => '/admin/product/deleterecommended/:productId/:recommendedId',
+            'module' => 'admin',
+            'controller' => 'product',
+            'action' => 'deleteRecommended',
+            'args' => array(':productId', ':recommendedId')
         )
     );
 

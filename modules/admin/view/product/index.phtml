@@ -9,7 +9,8 @@
     
     <form method="post" class="massActionForm" action="/admin/product/massAction/">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
-        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+        
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable2">
             <colgroup>
                 <col class="con0" /> <col class="con1" />
                 <col class="con0" /> <col class="con1" />
@@ -27,51 +28,24 @@
                     <th class="head0">&nbsp;</th>
                 </tr>
             </thead>
-            <tbody>
-                {if !empty($products)}
-                    {foreach $product in $products}
-                        <tr>
-                            <td class="center">
-                                <input type="checkbox" name="productsids[]" value="{echo $product->getId()}" />
-                            </td>
-                            <td class="center"><img alt="" src="{echo $product->imgThumb}" height="80px"/></td>
-                            <td>{echo $product->getTitle()}</td>
-                            <td>
-                                {if $product->getProductType() == 1}
-                                    Bez variant
-                                {/if}{elseif $product->getProductType() == 2}
-                                    S variantami
-                                {/elseif}{else}
-                                    Varianta
-                                {/else}
-                            </td>
-                            <td>{echo $product->getProductCode()}</td>
-                            <td>{echo $product->getCurrentPrice()}</td>
-                            <td>
-                                <a href="/kostym/{echo $product->getUrlKey}/" class="btn btn3 btn_video" title="Live preview"></a>
-                                <a href="/admin/product/edit/{echo $product->id}" class="btn btn3 btn_pencil" title="Edit"></a>
-                                {if $isAdmin}<a href="/admin/product/delete/{echo $product->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
-                            </td>
-                        </tr>
-                    {/foreach}
-                {/if}
-            </tbody>
+            
         </table>
         {if $isAdmin}
         <div class="tableoptions">
-            Selected:
+            Označené:
             <select class="radius3" name="action">
                 <option value="activate">Aktivovat</option>
                 <option value="deactivate">Deaktivovat</option>
                 <option value="overprice">Přecenit</option>
                 <option value="delete">Smazat</option>
             </select> &nbsp;
+            
             <span class="overprice-option nodisplay">
                 <select name="operation">
                     <option value="+">+</option>
                     <option value="-">-</option>
                 </select>
-                <input class="microinput" name="price" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+" />
+                <input class="microinput" name="price" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" />
             </span>
             <input class="radius3" type="submit" name="performProductAction" value="Execute"/>
         </div><!--tableoptions-->

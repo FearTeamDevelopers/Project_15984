@@ -33,9 +33,7 @@ class Admin_Controller_Category extends Controller
     public function index()
     {
         $view = $this->getActionView();
-
         $categories = App_Model_Category::all(array('parentId = ?' => 0));
-
         $view->set('categories', $categories);
 
         if (RequestMethods::post('submitSaveCategoryRank')) {
@@ -70,7 +68,7 @@ class Admin_Controller_Category extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if (!$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Produkt s tímto názvem již existuje');
+                $errors['title'] = array('Kategorie s tímto názvem již existuje');
             }
 
             $category = new App_Model_Category(array(
@@ -129,7 +127,7 @@ class Admin_Controller_Category extends Controller
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
             if ($category->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Produkt s tímto názvem již existuje');
+                $errors['title'] = array('Kategorie s tímto názvem již existuje');
             }
 
             $category->parentId = RequestMethods::post('parent', 0);
@@ -137,7 +135,6 @@ class Admin_Controller_Category extends Controller
             $category->urlKey = $urlKey;
             $category->isGrouped = RequestMethods::post('group', 0);
             $category->isSelable = RequestMethods::post('selable', 0);
-            $category->isSeparator = RequestMethods::post('separator', 0);
             $category->rank = RequestMethods::post('rank', 1);
             $category->mainText = RequestMethods::post('text');
             $category->metaTitle = RequestMethods::post('metaTitle');
@@ -185,7 +182,7 @@ class Admin_Controller_Category extends Controller
                 $cat->rank = $value;
                 $cat->save();
             }
-            Event::fire('admin.log', array('success', 'Category update rank: ' . $cat->getId()));
+            Event::fire('admin.log', array('success', 'Update subcategories rank in category '. $parentCat->getId() ));
             $view->successMessage('Pořadí kategorií bylo úspěšně uloženo');
             self::redirect('/admin/category/');
         }
@@ -209,7 +206,7 @@ class Admin_Controller_Category extends Controller
             } else {
                 if ($category->delete()) {
                     Event::fire('admin.log', array('success', 'Category id: ' . $id));
-                    echo 'Úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'Category id: ' . $id));
                     echo 'Nastala neznámá chyba';

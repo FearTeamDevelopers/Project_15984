@@ -25,7 +25,7 @@ class Admin_Controller_Content extends Controller
             return false;
         }
     }
-    
+
     /**
      * @before _secured, _member
      */
@@ -49,26 +49,25 @@ class Admin_Controller_Content extends Controller
     }
 
     /**
-     * @before _secured, _admin
+     * @before _secured, _superadmin
      */
     public function add()
     {
         $view = $this->getActionView();
-        $photos = $this->_getPhotos();
 
-        $view->set('photos', $photos);
+        $view->set('photos', $this->_getPhotos());
 
         if (RequestMethods::post('submitAddContent')) {
             $this->checkToken();
             $errors = array();
-            
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
 
             if (!$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Stránka s tímto názvem již existuje');
             }
-            
+
             $content = new App_Model_PageContent(array(
                 'pageName' => RequestMethods::post('page'),
                 'urlKey' => $urlKey,
@@ -84,7 +83,8 @@ class Admin_Controller_Content extends Controller
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail'));
-                $view->set('errors', $content->getErrors());
+                $view->set('errors', $content->getErrors())
+                    ->set('content', $content);
             }
         }
     }
@@ -105,22 +105,20 @@ class Admin_Controller_Content extends Controller
             self::redirect('/admin/content/');
         }
 
-        $photos = $this->_getPhotos();
-
-        $view->set('photos', $photos)
+        $view->set('photos', $this->_getPhotos())
                 ->set('content', $content);
 
         if (RequestMethods::post('submitEditContent')) {
             $this->checkToken();
             $errors = array();
-            
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
 
             if ($content->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Obsah s tímto názvem již existuje');
             }
-            
+
             $content->pageName = RequestMethods::post('page');
             $content->urlKey = $urlKey;
             $content->body = RequestMethods::post('text', '');
@@ -175,5 +173,4 @@ class Admin_Controller_Content extends Controller
 //            self::redirect('/admin/content/');
 //        }
 //    }
-
 }

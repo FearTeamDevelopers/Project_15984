@@ -19,7 +19,7 @@
             </span>
         </p>
         <p>
-            <label>Veřejná/soukromá </label>
+            <label>Veřejná/soukromá</label>
             <span class="field">
                 <select class="longinput" name="active">
                     <option value="0">Soukromá</option>
@@ -30,7 +30,7 @@
         <p>
             <label>Popis<small>Max. 5000 znaků</small></label>
             <span class="field">
-                <textarea rows="20" name="description" id="ckeditor">{echo isset($gallery)? $gallery->description: ""}</textarea>
+                <textarea class="longinput" name="description" id="ckeditor">{echo isset($gallery)? $gallery->description: ""}</textarea>
                 {if isset($errors["description"])}
                 <label class="error">{echo join("<br/>", $errors["description"])}</label>
                 {/if}

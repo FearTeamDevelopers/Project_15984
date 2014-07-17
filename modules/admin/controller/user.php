@@ -83,9 +83,9 @@ class Admin_Controller_User extends Controller
         $superAdmin = $security->isGranted('role_superadmin');
 
         $users = App_Model_User::all(
-                        array('role <> ?' => 'role_superadmin'), 
-                        array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created'), 
-                        array('id' => 'asc')
+                    array('role <> ?' => 'role_superadmin'), 
+                    array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created'), 
+                    array('id' => 'asc')
         );
 
         $view->set('users', $users)
@@ -99,14 +99,14 @@ class Admin_Controller_User extends Controller
     {
         $security = Registry::get('security');
         $view = $this->getActionView();
-
-        $errors = array();
+        
         $superAdmin = $security->isGranted('role_superadmin');
         $view->set('superadmin', $superAdmin);
 
         if (RequestMethods::post('submitAddUser')) {
             $this->checkToken();
-            
+            $errors = array();
+
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
                 $errors['password2'] = array('Hesla se neshodují');
             }
@@ -142,7 +142,7 @@ class Admin_Controller_User extends Controller
             }
         }
     }
-    
+
     /**
      * @before _secured, _member
      */
@@ -150,36 +150,35 @@ class Admin_Controller_User extends Controller
     {
         $view = $this->getActionView();
         $loggedUser = $this->getUser();
-        
+
         $user = App_Model_User::first(array('id = ?' => $loggedUser->getId()));
-        
+
         if (NULL === $user) {
-            $view->errorMessage('User not found');
+            $view->errorMessage('Uživatel nebyl nalezen');
             self::redirect('/admin/user/');
         }
         $view->set('user', $user);
-        
+
         if (RequestMethods::post('submitUpdateProfile')) {
             $security = Registry::get('security');
             $this->checkToken();
-            
+
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
                 $errors['password2'] = array('Hesla se neshodují');
             }
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                            array('email = ?' => RequestMethods::post('email', $user->email)), 
-                            array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
                 );
-                
+
                 if ($email) {
                     $errors['email'] = array('Tento email je již použit');
                 }
             }
 
             $pass = RequestMethods::post('password');
-            
+
             if ($pass === null || $pass == '') {
                 $salt = $user->getSalt();
                 $hash = $user->getPassword();
@@ -223,36 +222,35 @@ class Admin_Controller_User extends Controller
         $user = App_Model_User::first(array('id = ?' => $id));
 
         if (NULL === $user) {
-            $view->errorMessage('Uživatel nenalezen');
+            $view->errorMessage('Uživatel nebyl nalezen');
             self::redirect('/admin/user/');
         } elseif ($user->role == 'role_superadmin' && !$superAdmin) {
             $view->errorMessage('Nemáte práva pro editování tohoto uživatele');
             self::redirect('/admin/user/');
         }
-        
+
         $view->set('user', $user)
                 ->set('superadmin', $superAdmin);
 
         if (RequestMethods::post('submitEditUser')) {
             $this->checkToken();
-            
+
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
                 $errors['password2'] = array('Hesla se neshodují');
             }
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                            array('email = ?' => RequestMethods::post('email', $user->email)), 
-                            array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
                 );
-                
+
                 if ($email) {
                     $errors['email'] = array('Tento email je již použit');
                 }
             }
 
             $pass = RequestMethods::post('password');
-            
+
             if ($pass === null || $pass == '') {
                 $salt = $user->getSalt();
                 $hash = $user->getPassword();
@@ -297,11 +295,11 @@ class Admin_Controller_User extends Controller
             $user = App_Model_User::first(array('id = ?' => $id));
 
             if (NULL === $user) {
-                echo 'Uživatel nenalezen';
+                echo 'Uživatel nebyl nalezen';
             } else {
                 if ($user->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'ok';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
                     echo 'Nastala neznámá chyba';

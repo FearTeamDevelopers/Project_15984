@@ -62,18 +62,9 @@
             </span>
         </p>
         <p>
-            <label>Oddělovač </label>
-            <span class="field">
-                <select name="separator">
-                    <option value="0">Ne</option>
-                    <option value="1">Ano</option>
-                </select>
-            </span>
-        </p>
-        <p>
             <label>Popis</label>
             <span class="field">
-                <textarea cols="85" rows="5" required name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
+                <textarea rows="5" required name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
                 {if isset($errors["mainText"])}
                 <label class="error">{echo join("<br/>", $errors["mainText"])}</label>
                 {/if}
@@ -100,7 +91,7 @@
         <p>
             <label>Meta-Popis</label>
             <span class="field">
-                <textarea required class="longinput" cols="85" rows="5" name="metaDescription" id="ckeditor">{echo isset($category)? $category->metaDescription: ""}</textarea>
+                <textarea required class="longinput" rows="5" name="metaDescription">{echo isset($category)? $category->metaDescription: ""}</textarea>
                 {if isset($errors["metaDescription"])}
                 <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                 {/if}
