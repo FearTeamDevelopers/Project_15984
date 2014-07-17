@@ -2,8 +2,8 @@
     <li><a href="/admin/product/">Produkty</a></li>
     <li class="current"><a href="#">Nový produkt</a></li>
 </ul>
-<div class="content">
 
+<div class="content">
     <div class="contenttitle radiusbottom0">
         <h2 class="table"><span>Nový produkt</span></h2>
     </div><!--contenttitle-->
@@ -11,12 +11,12 @@
     <form class="stdform stdform2 uploadPhotoForm" method="post" action="#" enctype="multipart/form-data">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
+        
         <div id="tabs">
             <ul class="maintabmenu multipletabmenu">
                 <li><a href="#basic">Základní informace</a></li>
                 <li><a href="#additional">Dodatečné informace</a></li>
                 <li><a href="#meta">Meta informace</a></li>
-                <li><a href="#recommended">Doporučené produkty</a></li>
                 <li><a href="#photos">Dodatečné fotografie</a></li>
             </ul>
 
@@ -56,7 +56,7 @@
                 <p>
                     <label>Popis*<small>Max. 5000 znaků</small></label>
                     <span class="field">
-                        <textarea required rows="20" name="description" id="ckeditor">{echo isset($product)? $product->description: ""}</textarea>
+                        <textarea required class="longinput" name="description" id="ckeditor">{echo isset($product)? $product->description: ""}</textarea>
                         {if isset($errors["description"])}
                         <label class="error">{echo join("<br/>", $errors["description"])}</label>
                         {/if}
@@ -100,9 +100,9 @@
                     </span>
                 </p>
                 <p>
-                    <label>Současná cena*</label>
+                    <label>Aktuální cena*</label>
                     <span class="field">
-                        <input required class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
                                value="{echo isset($product)? $product->currentPrice: ""}" />
                         {if isset($errors["currentPrice"])}
                         <label class="error">{echo join("<br/>", $errors["currentPrice"])}</label>
@@ -147,7 +147,7 @@
                  <p>
                     <label>Základní cena</label>
                     <span class="field">
-                        <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
                                value="{echo isset($product)? $product->basicPrice: ""}" />
                         {if isset($errors["basicPrice"])}
                         <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
@@ -157,7 +157,7 @@
                 <p>
                     <label>Obvyklá cena</label>
                     <span class="field">
-                        <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="regularprice" 
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="regularprice" 
                                value="{echo isset($product)? $product->regularPrice: ""}" />
                         {if isset($errors["regularPrice"])}
                         <label class="error">{echo join("<br/>", $errors["regularPrice"])}</label>
@@ -167,7 +167,7 @@
                 <p>
                     <label>Sleva</label>
                     <span class="field">
-                        <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
                                value="{echo isset($product)? $product->discount: ""}" />
                         {if isset($errors["discount"])}
                         <label class="error">{echo join("<br/>", $errors["discount"])}</label>
@@ -197,7 +197,7 @@
                 <p>
                     <label>EAN</label>
                     <span class="field" >
-                        <input class="longinput" type="text" title="numbers only" pattern="[\d]*[\.,]?[\d]+" name="eancode" 
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="eancode" 
                                value="{echo isset($product)? $product->eanCode: ""}" />
                         {if isset($errors["eanCode"])}
                         <label class="error">{echo join("<br/>", $errors["eanCode"])}</label>
@@ -218,8 +218,8 @@
                     <label>V akci</label>
                     <span class="field">
                         <select class="longinput" name="inaction">
-                            <option value="0" selected>No</option>
-                            <option value="1">Yes</option>
+                            <option value="0">Ne</option>
+                            <option value="1">Ano</option>
                         </select>
                     </span>
                 </p>
@@ -270,41 +270,12 @@
                 <p>
                     <label>Meta-Popis<small>Max. 5000 znaků</small></label>
                     <span class="field">
-                        <textarea rows="20" name="metadescription" id="ckeditor" class="longinput">{echo isset($product)? $product->metaDescription: ""}</textarea>
+                        <textarea name="metadescription" class="longinput">{echo isset($product)? $product->metaDescription: ""}</textarea>
                         {if isset($errors["metaDescription"])}
                         <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                         {/if}
                     </span>
                 </p>                                   
-            </div>
-            
-            <div id="recommended">
-               <div class="contenttitle radiusbottom0">
-                    <h2 class="table"><span>Doporučené produkty</span></h2>
-                </div><!--contenttitle-->
-                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
-                    <colgroup>
-                        <col class="con0" /> <col class="con1" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th class="head0"><input type="checkbox" class="checkall" /></th>
-                            <th class="head1">Title</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {if !empty($allproducts)}
-                            {foreach $reproduct in $allproducts}
-                                <tr>
-                                    <td class="center">
-                                        <input type="checkbox" name="recomproductids[]" value="{echo $reproduct->getId()}" />
-                                    </td>
-                                    <td>{echo $reproduct->getTitle()}</td>
-                                </tr>
-                            {/foreach}
-                        {/if}
-                    </tbody>
-                </table>
             </div>
 
             <div id="photos">

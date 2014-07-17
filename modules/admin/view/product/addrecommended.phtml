@@ -1,0 +1,14 @@
+<div class="content">
+    <form class="stdform stdform2" method="post" action="/admin/product/addrecommended/{echo $productid}">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <p>
+            <label>Kód produktu</label>
+            <span class="field" >
+                <input class="longinput" type="text" name="recomproductcode" />
+            </span>
+        </p>
+        <p class="stdformbutton">
+            <input name="submitSaveRecommended" type="submit" value="Uložit" class="submit radius2" />
+        </p>
+    </form>
+</div>

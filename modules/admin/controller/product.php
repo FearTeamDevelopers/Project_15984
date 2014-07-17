@@ -303,7 +303,7 @@ class Admin_Controller_Product extends Controller
     {
         $view = $this->getActionView();
 
-        $products = App_Model_Product::all(array('deleted = ?' => false, 'variantFor = ?' => 0));
+        $products = App_Model_Product::all(array('deleted = ?' => false, 'variantFor = ?' => 0), array('*'), array('id' => 'ASC'), 50, 1);
         $view->set('products', $products);
     }
 
@@ -316,11 +316,8 @@ class Admin_Controller_Product extends Controller
 
         $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
         $categories = App_Model_Category::fetchAllCategories();
-        $allProducts = App_Model_Product::all(
-                        array('active = ?' => true, 'deleted = ?' => false, 'productType IN ?' => array(1, 2)));
 
         $view->set('sizes', $sizes)
-                ->set('allproducts', $allProducts)
                 ->set('categories', $categories);
 
         if (RequestMethods::post('submitAddProduct')) {
@@ -371,7 +368,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function edit($id)
     {
@@ -380,34 +377,43 @@ class Admin_Controller_Product extends Controller
         $product = App_Model_Product::fetchProductById($id);
 
         if ($product === null) {
-            $view->warningMessage('Produkt nenalezen');
+            $view->warningMessage('Produkt nebyl nalezen');
             self::redirect('/admin/product/');
         }
 
         $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
         $categories = App_Model_Category::fetchAllCategories();
-        $allProducts = App_Model_Product::all(
-                        array('active = ?' => true, 'deleted = ?' => false, 'productType IN ?' => array(1, 2)));
 
-        if (!empty($product->inCategories)) {
+        $productCategor = $product->inCategories;
+        if (!empty($productCategor)) {
             $productCategoryIds = array();
-            foreach ($product->inCategories as $prcat) {
-                $productCategoryIds[] = $prcat->getCategoryId();
+            foreach ($productCategor as $prodcat) {
+                $productCategoryIds[] = $prodcat->categoryId;
             }
         }
 
-        if (!empty($product->recommendedProducts)) {
+        $productRecomm = $product->recommendedProducts;
+        if (!empty($productRecomm)) {
             $recomProductIds = array();
-            foreach ($product->recommendedProducts as $recprod) {
+            foreach ($productRecomm as $recprod) {
                 $recomProductIds[] = $recprod->getRecommendedId();
             }
         }
 
+        if (!empty($recomProductIds)) {
+            $recomproducts = App_Model_Product::all(array(
+                        'deleted = ?' => false,
+                        'active = ?' => true,
+                        'id IN ?' => $recomProductIds
+            ));
+        } else {
+            $recomproducts = array();
+        }
+
         $view->set('product', $product)
                 ->set('categories', $categories)
-                ->set('allproducts', $allProducts)
+                ->set('recomproducts', $recomproducts)
                 ->set('productcategoryids', $productCategoryIds)
-                ->set('recommendedproductids', $recomProductIds)
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
@@ -513,7 +519,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * 
+     * @before _secured, _admin
      * @param type $id
      */
     public function delete($id)
@@ -526,15 +532,15 @@ class Admin_Controller_Product extends Controller
                             array('id = ?' => (int) $id));
 
             if (NULL === $product) {
-                echo 'Produkt nenalezen';
+                echo 'Produkt nebyl nalezen';
             } else {
                 $product->deleted = true;
-                
+
                 if ($product->validate()) {
                     $product->save();
-                    
+
                     Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                    echo 'úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'Product id: ' . $id));
                     echo 'Nastala neznámá chyba';
@@ -546,7 +552,89 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * 
+     * @before _secured, _admin
+     * @param type $id
+     */
+    public function deleteRecommended($productId, $recommendedId)
+    {
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+
+        if ($this->checkTokenAjax()) {
+            $product = App_Model_RecommendedProduct::first(array(
+                        'productId' => (int) $productId,
+                        'recommendedId = ?' => (int) $recommendedId
+            ));
+
+            if (NULL === $product) {
+                echo 'Produkt nebyl nalezen';
+            } else {
+                if ($product->delete()) {
+                    Event::fire('admin.log', array('success', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
+                    echo 'success';
+                } else {
+                    Event::fire('admin.log', array('fail', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
+                    echo 'Nastala neznámá chyba';
+                }
+            }
+        } else {
+            echo 'Bezpečnostní token není validní';
+        }
+    }
+
+    /**
+     * @before _secured, _admin
+     * @param type $id
+     */
+    public function addrecommended($productId)
+    {
+        $this->_willRenderLayoutView = false;
+        $view = $this->getActionView();
+        $view->set('productid', $productId);
+
+        if (RequestMethods::post('submitSaveRecommended')) {
+            $this->checkToken();
+            
+            $recomprod = App_Model_Product::first(array(
+                        'deleted = ?' => false,
+                        'productCode = ?' => RequestMethods::post('recomproductcode')
+            ));
+
+            if ($recomprod === null) {
+                $view->warningMessage('Doporučený produkt nebyl nalezen');
+                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+            }
+
+            $recomExists = App_Model_RecommendedProduct::first(array(
+                'productId = ?' => (int) $productId,
+                'recommendedId = ?' => $recomprod->getId()
+            ));
+            
+            if($recomExists !== null){
+                $view->warningMessage('Doporučený produkt je již přiřazen');
+                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+            }
+            
+            $recommended = new App_Model_RecommendedProduct(array(
+                'productId' => (int) $productId,
+                'recommendedId' => $recomprod->getId()
+            ));
+
+            if ($recommended->validate()) {
+                $recommended->save();
+                Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' add recommended ' . $recomprod->getId()));
+                $view->successMessage('Doporučený produkt byl úspěšně přidán');
+                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+            } else {
+                Event::fire('admin.log', array('fail', 'Product id: ' . $productId));
+                $view->errorMessage('Nastala chyba při ukládání doporučeného produktu');
+                self::redirect('/admin/product/edit/' . $productId.'#recommended');
+            }
+        }
+    }
+
+    /**
+     * @before _secured, _admin
      * @param type $photoId
      */
     public function changePhotoStatus($photoId)
@@ -557,14 +645,14 @@ class Admin_Controller_Product extends Controller
         $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $photoId));
 
         if (null === $photo) {
-            echo 'Fotka nenalezena';
+            echo 'Fotografie nebyla nalezena';
         } else {
             if (!$photo->active) {
                 $photo->active = true;
                 if ($photo->validate()) {
                     $photo->save();
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
-                    echo 'aktivní';
+                    echo 'active';
                 } else {
                     echo join('<br/>', $photo->getErrors());
                 }
@@ -573,7 +661,7 @@ class Admin_Controller_Product extends Controller
                 if ($photo->validate()) {
                     $photo->save();
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photoId));
-                    echo 'neaktivní';
+                    echo 'inactive';
                 } else {
                     echo join('<br/>', $photo->getErrors());
                 }
@@ -582,7 +670,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function deleteProductPhoto($id)
     {
@@ -593,17 +681,17 @@ class Admin_Controller_Product extends Controller
             $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
 
             if ($photo === null) {
-                echo 'Fotka produktu nenalezena';
+                echo 'Fotografie nebyla nalezena';
             } else {
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
 
                     Event::fire('app.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('app.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'Nastala chyba během mazání fotky';
+                    echo 'Nastala chyba během mazání fotografie';
                 }
             }
         } else {
@@ -612,7 +700,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function deleteProductMainPhoto($id)
     {
@@ -623,7 +711,7 @@ class Admin_Controller_Product extends Controller
             $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
 
             if ($product === null) {
-                echo 'Product not found';
+                echo 'Product nebyl nalezen';
             } else {
                 $unlinkMainImg = $product->getUnlinkPath();
                 $unlinkThumbImg = $product->getUnlinkThumbPath();
@@ -636,7 +724,7 @@ class Admin_Controller_Product extends Controller
                     @unlink($unlinkThumbImg);
 
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
-                    echo 'úspěch';
+                    echo 'success';
                 } else {
                     Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
                     echo 'Nastala chyba během mazání fotky';
@@ -648,7 +736,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function massAction()
     {
@@ -674,7 +762,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'Nastala chyba během aktivování' . $product->getTitle();
+                                $errors[] = 'Nastala chyba během mazání' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -716,7 +804,7 @@ class Admin_Controller_Product extends Controller
                             if ($product->validate()) {
                                 $product->save();
                             } else {
-                                $errors[] = 'Nastala chyba během aktivování' . $product->getTitle();
+                                $errors[] = 'Nastala chyba během přeceňování produktů ' . $product->getTitle();
                                 $errorsIds [] = $product->getId();
                             }
                         }
@@ -724,7 +812,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
-                        $view->successMessage('Produkty byly úspěšně smazány');
+                        $view->successMessage('Produkty byly úspěšně přeceněny');
                     } else {
                         Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
                         $message = join(PHP_EOL, $errors);
@@ -796,6 +884,70 @@ class Admin_Controller_Product extends Controller
                     break;
             }
         }
+    }
+
+    /**
+     * @before _secured, _member
+     */
+    public function load()
+    {
+        $this->_willRenderActionView = false;
+        $this->_willRenderLayoutView = false;
+
+        $page = RequestMethods::post('page');
+        $search = empty(RequestMethods::post('sSearch')) ? '' : RequestMethods::post('sSearch');
+
+        if (strtolower($search) == 's variantami') {
+            $search = 2;
+        } elseif (strtolower($search) == 'bez variant') {
+            $search = 1;
+        }
+
+        if ($search != '') {
+            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+                    ->wheresql("pr.deleted = 0 AND variantFor = 0 AND (pr.title LIKE '%" . $search . "%' OR pr.productType='" . $search . "' OR pr.productCode='" . $search . "')")
+                    ->order('pr.id', 'asc')
+                    ->limit(50, $page);
+            $products = App_Model_Product::initialize($productQuery);
+        } else {
+            $products = App_Model_Product::all(
+                            array('deleted = ?' => false, 'variantFor = ?' => 0), array('*'), array('id' => 'ASC'), 50, $page + 1);
+        }
+
+        $draw = $page + 1 + time();
+        $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
+
+        $str = '{ "draw": ' . $draw . ', "recordsTotal": ' . $count . ', "recordsFiltered": ' . $count . ', "data": [';
+
+        $prodArr = array();
+        foreach ($products as $product) {
+            $arr = array();
+            $arr [] = "[ \"<input type='checkbox' name='productsids[]' value='" . $product->getId() . "' />\"";
+            $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
+            $arr [] = "\"{$product->getTitle()}\"";
+
+            if ($product->getProductType() == 1) {
+                $arr [] = "\"Bez variant\"";
+            } elseif ($product->getProductType() == 2) {
+                $arr [] = "\"S variantami\"";
+            } else {
+                $arr [] = "\"Varianta\"";
+            }
+            $arr [] = "\"{$product->getProductCode()}\"";
+            $arr [] = "\"{$product->getCurrentPrice()}\"";
+
+            $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
+            $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
+            if ($this->isAdmin()) {
+                $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash deleteRow' title='Delete'></a>";
+            }
+            $arr [] = $tempStr . "\"]";
+            $prodArr[] = join(',', $arr);
+        }
+
+        $str .= join(',', $prodArr) . "]}";
+
+        echo $str;
     }
 
 }

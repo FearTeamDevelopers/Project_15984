@@ -3,8 +3,9 @@
     <li><a href="/admin/user/add/">Nový uživatel</a></li>
     <li class="current"><a href="#">Editovat uživatele</a></li>
 </ul>
+
 <div class="content">
-    <div class="contenttitle">
+    <div class="contenttitle radiusbottom0">
         <h2 class="form"><span>Informace o uživateli</span></h2>
     </div>
     
@@ -13,7 +14,7 @@
         <p>
             <label>Jméno*</label>
             <span class="field">
-                <input type="text" name="firstname" class="longinput" required value="{echo $user->firstname}"/>
+                <input required type="text" name="firstname" class="longinput" required value="{echo $user->firstname}"/>
             </span>
             {if isset($errors["firstname"])}
             <label class="error">
@@ -24,7 +25,7 @@
         <p>
             <label>Příjmení*</label>
             <span class="field">
-                <input type="text" name="lastname" class="longinput" required value="{echo $user->lastname}"/>
+                <input required type="text" name="lastname" class="longinput" required value="{echo $user->lastname}"/>
             </span>
             {if isset($errors["lastname"])}
             <label class="error">
@@ -35,7 +36,7 @@
         <p>
             <label>Email*</label>
             <span class="field">
-                <input type="email" name="email" class="longinput" required value="{echo $user->email}"/>
+                <input required type="email" name="email" class="longinput" required value="{echo $user->email}"/>
             </span>
             {if isset($errors["email"])}
             <label class="error">
@@ -65,23 +66,24 @@
             </label>
             {/if}
         </p>
-        {if ($superadmin)}
+        
+        {if ($isSuperAdmin)}
         <p>
             <label>Role</label>
             <span class="field">
                 <select name="role" class="longinput">
                     {if $user->role == "role_superadmin"}
-                    <option value="role_publisher">Publisher</option>
+                    <option value="role_member">Member</option>
                     <option value="role_admin">Admin</option>
                     <option value="role_superadmin" selected>Super Admin</option>
                     {/if}
                     {elseif $user->role == "role_admin"}
-                    <option value="role_publisher">Publisher</option>
+                    <option value="role_member">Member</option>
                     <option value="role_admin" selected>Admin</option>
                     <option value="role_superadmin">Super Admin</option>
                     {/elseif}
                     {else}
-                    <option value="role_publisher" selected>Publisher</option>
+                    <option value="role_member" selected>Member</option>
                     <option value="role_admin">Admin</option>
                     <option value="role_superadmin">Super Admin</option>
                     {/else}
@@ -97,7 +99,7 @@
             <label>Aktivní</label>
             <span class="field">
                 <select name="active" class="longinput">
-                    {if $user->active}
+                    {if $user->active == 1}
                     <option value="0">Neaktivní</option>
                     <option value="1" selected>Aktivní</option>
                     {/if}
@@ -113,4 +115,4 @@
             <input type="submit" name="submitEditUser" value="Uložit změny" />
         </p>
     </form>
-</article>
+</div>

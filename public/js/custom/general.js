@@ -9,17 +9,44 @@ jQuery(document).ready(function() {
     jQuery('a.view').lightBox();
     jQuery('#tabs, .tabs').tabs();
 
-    jQuery('.datepicker').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd',
-        firstDay: 1
-    });
+    jQuery.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
+    {
+        return {
+            "iStart": oSettings._iDisplayStart,
+            "iEnd": oSettings.fnDisplayEnd(),
+            "iLength": oSettings._iDisplayLength,
+            "iTotal": oSettings.fnRecordsTotal(),
+            "iFilteredTotal": oSettings.fnRecordsDisplay(),
+            "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+            "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+        };
+    };
 
     jQuery('.stdtable').dataTable({
         'aaSorting': [],
         'iDisplayLength': 25,
         'sPaginationType': 'full_numbers'
+    });
+
+    jQuery('.stdtable2').dataTable({
+        'aaSorting': [],
+        'iDisplayLength': 50,
+        'sPaginationType': 'full_numbers',
+        "serverSide": true,
+        "bProcessing": true,
+        "sServerMethod": "POST",
+        "sAjaxDataProp": "data",
+        "sAjaxSource": "/admin/product/load/",
+        "fnServerParams": function(aoData) {
+            aoData.push({"name": "page", "value": this.fnPagingInfo().iPage});
+        }
+    });
+
+    jQuery('.datepicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd',
+        firstDay: 1
     });
 
     jQuery('button.dialog, a.dialog').click(function() {
@@ -342,6 +369,10 @@ jQuery(document).ready(function() {
         jQuery('.headerinner2').remove();
     }
 
+    /* ---------------------- DATATABLES --------------------------------*/
+
+
+
     /* ---------------------- CUSTOM SCRIPTS --------------------------------*/
     //Collection
     jQuery('.uploadPhotoForm .multi_upload').click(function() {
@@ -389,25 +420,25 @@ jQuery(document).ready(function() {
             }
         });
     });
-    
-    jQuery('.product-select').change(function(){
+
+    jQuery('.product-select').change(function() {
         var selected = jQuery(this).children('option:selected').val();
-        
-        if(selected == 1){
+
+        if (selected == 1) {
             jQuery('.check-size').addClass('nodisplay');
             jQuery('.select-size').removeClass('nodisplay');
-        }else if(selected == 2){
+        } else if (selected == 2) {
             jQuery('.select-size').addClass('nodisplay');
             jQuery('.check-size').removeClass('nodisplay');
         }
     });
-    
-    jQuery('.tableoptions > select').change(function(){
+
+    jQuery('.tableoptions > select').change(function() {
         var selected = jQuery(this).children('option:selected').val();
-        
-        if(selected == 'overprice'){
+
+        if (selected == 'overprice') {
             jQuery('.overprice-option').removeClass('nodisplay');
-        }else{
+        } else {
             jQuery('.overprice-option').addClass('nodisplay');
         }
     });
@@ -425,12 +456,12 @@ jQuery(document).ready(function() {
         event.preventDefault();
         var parent = jQuery(this).parents('li');
         var c = confirm('Delete this image?');
-        
+
         if (c) {
             var url = jQuery(this).attr('href');
             var tk = jQuery('#tk').val();
 
-            jQuery.post(url, {tk:tk}, function(msg) {
+            jQuery.post(url, {tk: tk}, function(msg) {
                 if (msg == 'success') {
                     parent.hide('explode', 500);
                 } else {

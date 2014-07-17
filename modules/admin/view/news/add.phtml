@@ -8,6 +8,7 @@
             <div class="contenttitle radiusbottom0">
                 <h2 class="table"><span>Obsah novinky</span></h2>
             </div><!--contenttitle-->
+            
             <form class="stdform stdform2" method="post" action="#" >
                 <input type="hidden" name="tk" id="tk" value="{echo $token}" />
                 <p>
@@ -28,7 +29,7 @@
                 <p>
                     <label>Text*<small>Max. 5000 characters</small></label>
                     <span class="field">
-                        <textarea rows="20" name="text" id="ckeditor">{echo isset($news)? $news->body: ""}</textarea>
+                        <textarea class="longinput" name="text" id="ckeditor">{echo isset($news)? $news->body: ""}</textarea>
                         {if isset($errors["text"])}
                         <label class="error">{echo join("<br/>", $errors["text"])}</label>
                         {/if}

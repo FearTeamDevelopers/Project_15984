@@ -1,6 +1,7 @@
 <ul class="maintabmenu multipletabmenu">
     <li class="current"><a href="#">Můj profil</a></li>
 </ul>
+
 <div class="content">
     <div class="contenttitle">
         <h2 class="form"><span>Můj profil</span></h2>
@@ -11,7 +12,7 @@
         <p>
             <label>Jméno*</label>
             <span class="field">
-                <input type="text" name="firstname" class="longinput" required value="{echo $user->firstname}"/>
+                <input required type="text" name="firstname" class="longinput" required value="{echo $user->firstname}"/>
             </span>
             {if isset($errors["firstname"])}
             <label class="error">
@@ -22,7 +23,7 @@
         <p>
             <label>Příjmení*</label>
             <span class="field">
-                <input type="text" name="lastname" class="longinput" required value="{echo $user->lastname}"/>
+                <input required type="text" name="lastname" class="longinput" required value="{echo $user->lastname}"/>
             </span>
             {if isset($errors["lastname"])}
             <label class="error">
@@ -33,7 +34,7 @@
         <p>
             <label>Email*</label>
             <span class="field">
-                <input type="email" name="email" class="longinput" required value="{echo $user->email}"/>
+                <input required type="email" name="email" class="longinput" required value="{echo $user->email}"/>
             </span>
             {if isset($errors["email"])}
             <label class="error">
@@ -68,4 +69,4 @@
             <input type="submit" name="submitUpdateProfile" value="Uložit změny" />
         </p>
     </form>
-</article>
+</div>

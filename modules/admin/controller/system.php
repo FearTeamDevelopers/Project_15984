@@ -18,7 +18,7 @@ class Admin_Controller_System extends Controller
      */
     public function index()
     {
-
+        
     }
 
     /**
@@ -78,29 +78,181 @@ class Admin_Controller_System extends Controller
         $view = $this->getActionView();
         $config = Config::all();
         $view->set('config', $config);
-        
-        if(RequestMethods::post('submitEditSet')){
+
+        if (RequestMethods::post('submitEditSet')) {
             $this->checkToken();
             $errors = array();
-            
-            foreach($config as $conf){
+
+            foreach ($config as $conf) {
                 $conf->value = RequestMethods::post($conf->getXkey(), '');
-                if($conf->validate()){
-                    Event::fire('admin.log', array('success', $conf->getXkey().': ' . $conf->getValue()));
+                if ($conf->validate()) {
+                    Event::fire('admin.log', array('success', $conf->getXkey() . ': ' . $conf->getValue()));
                     $conf->save();
-                }else{
-                    Event::fire('admin.log', array('fail', $conf->getXkey().': ' . $conf->getValue()));
+                } else {
+                    Event::fire('admin.log', array('fail', $conf->getXkey() . ': ' . $conf->getValue()));
                     $errors[$conf->xkey] = array_shift($conf->getErrors());
                 }
             }
 
-            if(empty($errors)){
+            if (empty($errors)) {
                 $view->successMessage('Nastavení bylo úspěšně změněno');
                 self::redirect('/admin/system/');
-            }else{
+            } else {
                 $view->set('errors', $errors);
             }
         }
+    }
+
+    /**
+     * @before _secured, _admin
+     */
+    public function generateDummyProducts()
+    {
+        if (ENV != 'dev') {
+            return;
+        }
+
+        ini_set('max_execution_time', 1800);
+        
+        $view = $this->getActionView();
+        $numOfProducts = 3000;
+
+        for ($i = 1; $i <= $numOfProducts; $i++) {
+            //create variants
+            if ($i % 250 == 0) {
+                $product = new App_Model_Product(array(
+                    'sizeId' => 0,
+                    'urlKey' => time() . '-' . time().'-'.$i,
+                    'productType' => 2,
+                    'variantFor' => 0,
+                    'productCode' => time().'-'.$i,
+                    'title' => time().'-'.$i,
+                    'description' => time().'-'.$i,
+                    'basicPrice' => 0,
+                    'regularPrice' => 0,
+                    'currentPrice' => (int) substr(time(), 1, 3),
+                    'discount' => 0,
+                    'discountFrom' => '',
+                    'discountTo' => '',
+                    'eanCode' => '',
+                    'isInAction' => '',
+                    'newFrom' => '',
+                    'newTo' => '',
+                    'imgMain' => '',
+                    'imgThumb' => '',
+                    'metaTitle' => '',
+                    'metaKeywords' => '',
+                    'metaDescription' => '',
+                    'rssFeedTitle' => '',
+                    'rssFeedDescription' => '',
+                    'rssFeedImg' => ''
+                ));
+
+                if ($product->validate()) {
+                    $pid = $product->save();
+                    $catId = rand(1, 4);
+                    $size = rand(1, 17);
+
+                    $productCategory = new App_Model_ProductCategory(array(
+                        'productId' => $pid,
+                        'categoryId' => $catId
+                    ));
+                    $productCategory->save();
+
+                    if ($i > 1000) {
+                        $recomProduct = new App_Model_RecommendedProduct(array(
+                            'productId' => $pid,
+                            'recommendedId' => rand(1, 990)
+                        ));
+                        $recomProduct->save();
+                    }
+
+                    $productVariant = new App_Model_Product(array(
+                        'sizeId' => $size,
+                        'urlKey' => time() . '-' . time().'-'.$i.'-'.$i,
+                        'productType' => 3,
+                        'variantFor' => $pid,
+                        'productCode' => time().'-'.$i.'-'.$i,
+                        'title' => time().'-'.$i.'-'.$i,
+                        'description' => time().'-'.$i.'-'.$i,
+                        'basicPrice' => 0,
+                        'regularPrice' => 0,
+                        'currentPrice' => (int) substr(time(), 1, 3),
+                        'discount' => 0,
+                        'discountFrom' => '',
+                        'discountTo' => '',
+                        'eanCode' => '',
+                        'isInAction' => '',
+                        'newFrom' => '',
+                        'newTo' => '',
+                        'imgMain' => '',
+                        'imgThumb' => '',
+                        'metaTitle' => '',
+                        'metaKeywords' => '',
+                        'metaDescription' => '',
+                        'rssFeedTitle' => '',
+                        'rssFeedDescription' => '',
+                        'rssFeedImg' => ''
+                    ));
+
+                    if ($productVariant->validate()) {
+                        $productVariant->save();
+                    }
+                }
+            } else {
+                $size = rand(1, 17);
+
+                $product = new App_Model_Product(array(
+                    'sizeId' => $size,
+                    'urlKey' => time() . '-' . time().'-'.$i,
+                    'productType' => 1,
+                    'variantFor' => 0,
+                    'productCode' => time().'-'.$i,
+                    'title' => time().'-'.$i,
+                    'description' => time().'-'.$i,
+                    'basicPrice' => 0,
+                    'regularPrice' => 0,
+                    'currentPrice' => (int) substr(time(), 1, 3),
+                    'discount' => 0,
+                    'discountFrom' => '',
+                    'discountTo' => '',
+                    'eanCode' => '',
+                    'isInAction' => '',
+                    'newFrom' => '',
+                    'newTo' => '',
+                    'imgMain' => '',
+                    'imgThumb' => '',
+                    'metaTitle' => '',
+                    'metaKeywords' => '',
+                    'metaDescription' => '',
+                    'rssFeedTitle' => '',
+                    'rssFeedDescription' => '',
+                    'rssFeedImg' => ''
+                ));
+
+                if ($product->validate()) {
+                    $pid = $product->save();
+                    $catId = rand(1, 4);
+                    $size = rand(1, 17);
+
+                    $productCategory = new App_Model_ProductCategory(array(
+                        'productId' => $pid,
+                        'categoryId' => $catId
+                    ));
+                    $productCategory->save();
+
+                    if ($i > 1000) {
+                        $recomProduct = new App_Model_RecommendedProduct(array(
+                            'productId' => $pid,
+                            'recommendedId' => rand(1, 990)
+                        ));
+                        $recomProduct->save();
+                    }
+                }
+            }
+        }
+        $view->infoMessage('Product import completed');
+        self::redirect('/admin/');
     }
 
 }
