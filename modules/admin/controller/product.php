@@ -142,7 +142,7 @@ class Admin_Controller_Product extends Controller
             $product = new App_Model_Product(array(
                 'sizeId' => $size,
                 'urlKey' => $urlKey,
-                'productType' => 3,
+                'productType' => 'varianta',
                 'variantFor' => $productConf->getId(),
                 'productCode' => RequestMethods::post('productcode'),
                 'title' => RequestMethods::post('title'),
@@ -328,7 +328,7 @@ class Admin_Controller_Product extends Controller
                 $this->_errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
             }
 
-            if (RequestMethods::post('producttype') == 2) {
+            if (RequestMethods::post('producttype') == 's variantami') {
                 $product = $this->createMainProduct(true);
                 if (empty($this->_errors)) {
                     $this->createVariants($product);
@@ -904,18 +904,46 @@ class Admin_Controller_Product extends Controller
         }
 
         if ($search != '') {
+            $whereCond = "pr.deleted = 0 AND variantFor = 0 "
+                    . "AND (pr.productCode='" . $search . "' OR pr.productType='" . $search . "' "
+                    . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
+
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                    ->wheresql("pr.deleted = 0 AND variantFor = 0 AND (pr.title LIKE '%" . $search . "%' OR pr.productType='" . $search . "' OR pr.productCode='" . $search . "')")
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                            array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
+                            array('ca.title' => 'catTitle'))
+                    ->wheresql($whereCond)
                     ->order('pr.id', 'asc')
-                    ->limit(50, $page);
+                    ->limit(50, $page+1);
             $products = App_Model_Product::initialize($productQuery);
+
+            $productCountQuery = App_Model_Product::getQuery(array('pr.id'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                            array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
+                            array('ca.title' => 'catTitle'))
+                    ->wheresql($whereCond);
+            $productsCount = App_Model_Product::initialize($productCountQuery);
+            unset($productCountQuery);
+            
+            $count = count($productsCount);
+            unset($productsCount);
         } else {
-            $products = App_Model_Product::all(
-                            array('deleted = ?' => false, 'variantFor = ?' => 0), array('*'), array('id' => 'ASC'), 50, $page + 1);
+            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                            array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
+                            array('ca.title' => 'catTitle'))
+                    ->where('pr.deleted = ?', false)
+                    ->where('pr.variantFor = ?', 0)
+                    ->order('pr.id', 'asc')
+                    ->limit(50, $page+1);
+            $products = App_Model_Product::initialize($productQuery);
+            $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
         }
 
         $draw = $page + 1 + time();
-        $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
 
         $str = '{ "draw": ' . $draw . ', "recordsTotal": ' . $count . ', "recordsFiltered": ' . $count . ', "data": [';
 
@@ -925,14 +953,8 @@ class Admin_Controller_Product extends Controller
             $arr [] = "[ \"<input type='checkbox' name='productsids[]' value='" . $product->getId() . "' />\"";
             $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
             $arr [] = "\"{$product->getTitle()}\"";
-
-            if ($product->getProductType() == 1) {
-                $arr [] = "\"Bez variant\"";
-            } elseif ($product->getProductType() == 2) {
-                $arr [] = "\"S variantami\"";
-            } else {
-                $arr [] = "\"Varianta\"";
-            }
+            $arr [] = "\"".ucfirst($product->getProductType())."\"";
+            $arr [] = "\"{$product->catTitle}\"";
             $arr [] = "\"{$product->getProductCode()}\"";
             $arr [] = "\"{$product->getCurrentPrice()}\"";
 

@@ -45,8 +45,8 @@
                     <label>Typ produktu*</label>
                     <span class="field">
                         <select name="producttype" class="longinput product-select">
-                            <option value="1">Product bez variant</option>
-                            <option value="2">Product s variantami</option>
+                            <option value="bez variant">Product bez variant</option>
+                            <option value="s variantami">Product s variantami</option>
                         </select>
                         {if isset($errors["productType"])}
                         <label class="error">{echo join("<br/>", $errors["productType"])}</label>

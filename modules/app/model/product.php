@@ -46,9 +46,10 @@ class App_Model_Product extends Model
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type text
+     * @length 30
      *      
-     * @validate numeric, max(2)
+     * @validate alpha, max(30)
      * @label product type
      */
     protected $_productType;
@@ -451,7 +452,6 @@ class App_Model_Product extends Model
      */
     public function getProductById()
     {
-        
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
                 ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
                         array('cb.title' => 'sizeTitle'))

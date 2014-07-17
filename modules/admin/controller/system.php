@@ -123,7 +123,7 @@ class Admin_Controller_System extends Controller
                 $product = new App_Model_Product(array(
                     'sizeId' => 0,
                     'urlKey' => time() . '-' . time().'-'.$i,
-                    'productType' => 2,
+                    'productType' => 's variantami',
                     'variantFor' => 0,
                     'productCode' => time().'-'.$i,
                     'title' => time().'-'.$i,
@@ -170,7 +170,7 @@ class Admin_Controller_System extends Controller
                     $productVariant = new App_Model_Product(array(
                         'sizeId' => $size,
                         'urlKey' => time() . '-' . time().'-'.$i.'-'.$i,
-                        'productType' => 3,
+                        'productType' => 'varianta',
                         'variantFor' => $pid,
                         'productCode' => time().'-'.$i.'-'.$i,
                         'title' => time().'-'.$i.'-'.$i,
@@ -205,7 +205,7 @@ class Admin_Controller_System extends Controller
                 $product = new App_Model_Product(array(
                     'sizeId' => $size,
                     'urlKey' => time() . '-' . time().'-'.$i,
-                    'productType' => 1,
+                    'productType' => 'bez variant',
                     'variantFor' => 0,
                     'productCode' => time().'-'.$i,
                     'title' => time().'-'.$i,
