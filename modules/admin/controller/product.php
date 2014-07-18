@@ -527,30 +527,33 @@ class Admin_Controller_Product extends Controller
      */
     public function delete($id)
     {
-        $this->willRenderActionView = false;
-        $this->willRenderLayoutView = false;
+        $view = $this->getActionView();
 
-        if ($this->checkTokenAjax()) {
-            $product = App_Model_Product::first(
-                            array('id = ?' => (int) $id));
+        $product = App_Model_Product::first(
+                array('id = ?' => (int) $id));
 
-            if (NULL === $product) {
-                echo 'Produkt nebyl nalezen';
+        if (NULL === $product) {
+            $view->warningMessage('Produkt nebyl nalezen');
+            self::redirect('/admin/product/');
+        }
+
+        $view->set('product', $product);
+        
+        if (RequestMethods::post('submitDeleteProduct')) {
+            $this->checkToken();
+            $product->deleted = true;
+
+            if ($product->validate()) {
+                $product->save();
+
+                Event::fire('admin.log', array('success', 'Product id: ' . $id));
+                $view->successMessage('Produkt byl úspěšně smazán');
+                self::redirect('/admin/product/');
             } else {
-                $product->deleted = true;
-
-                if ($product->validate()) {
-                    $product->save();
-
-                    Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'Product id: ' . $id));
-                    echo 'Nastala neznámá chyba';
-                }
+                Event::fire('admin.log', array('fail', 'Product id: ' . $id));
+                $view->errorMessage('Nastala neznámá chyba');
+                self::redirect('/admin/product/');
             }
-        } else {
-            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -754,6 +757,7 @@ class Admin_Controller_Product extends Controller
 
         if (empty($ids)) {
             echo 'Nějaký řádek musí být označen';
+            return;
         }
 
         switch ($action) {
@@ -931,7 +935,8 @@ class Admin_Controller_Product extends Controller
                 $productQuery->order('pr.id', 'asc');
             }
 
-            $productQuery->limit(50, $page + 1);
+            $limit = (int)RequestMethods::post('iDisplayLength');
+            $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
 
             $productCountQuery = App_Model_Product::getQuery(array('pr.id'))
@@ -974,7 +979,9 @@ class Admin_Controller_Product extends Controller
             } else {
                 $productQuery->order('pr.id', 'asc');
             }
-            $productQuery->limit(50, $page + 1);
+            
+            $limit = (int)RequestMethods::post('iDisplayLength');
+            $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
             $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
         }
@@ -997,7 +1004,7 @@ class Admin_Controller_Product extends Controller
             $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
             $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
             if ($this->isAdmin()) {
-                $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash deleteRow' title='Delete'></a>";
+                $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
             }
             $arr [] = $tempStr . "\"]";
             $prodArr[] = join(',', $arr);

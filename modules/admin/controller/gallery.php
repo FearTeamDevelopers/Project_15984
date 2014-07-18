@@ -29,7 +29,7 @@ class Admin_Controller_Gallery extends Controller
             return false;
         }
     }
-    
+
     /**
      * Action method returns list of all galleries
      * 
@@ -58,12 +58,12 @@ class Admin_Controller_Gallery extends Controller
             $errors = array();
 
             $urlKey = strtolower(
-                str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
-            
+                    str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+
             if (!$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Galerie s tímto názvem již existuje');
             }
-            
+
             $gallery = new App_Model_Gallery(array(
                 'title' => RequestMethods::post('title'),
                 'isPublic' => RequestMethods::post('public', 1),
@@ -97,8 +97,8 @@ class Admin_Controller_Gallery extends Controller
         $view = $this->getActionView();
 
         $gallery = App_Model_Gallery::fetchGalleryById($id);
-        
-        if($gallery === null){
+
+        if ($gallery === null) {
             $view->warningMessage('Galerie nebyla nalezena');
             self::redirect('/admin/gallery/');
         }
@@ -129,7 +129,7 @@ class Admin_Controller_Gallery extends Controller
         if (RequestMethods::post('submitEditGallery')) {
             $this->checkToken();
             $errors = array();
-            
+
             $urlKey = strtolower(
                     str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
@@ -169,7 +169,8 @@ class Admin_Controller_Gallery extends Controller
         $view = $this->getActionView();
 
         $gallery = App_Model_Gallery::first(
-                        array('id = ?' => $id), array('id', 'title', 'created')
+                        array('id = ?' => (int)$id), 
+                        array('id', 'title', 'created')
         );
 
         if (NULL === $gallery) {
@@ -177,44 +178,52 @@ class Admin_Controller_Gallery extends Controller
             self::redirect('/admin/gallery/');
         }
 
-        $photos = App_Model_Photo::all(array('galleryId = ?' => $gallery->getId()));
-        
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitDeleteGallery')) {
             $this->checkToken();
 
-            if ($gallery->delete()) {
-                if (RequestMethods::post('action') == 1) {
-                    $fm = new FileManager();
-                    $configuration = Registry::get('config');
+            if (RequestMethods::post('action') == 1) {
+                $fm = new FileManager();
+                $configuration = Registry::get('config');
 
-                    if (!empty($configuration->files)) {
-                        $pathToImages = trim($configuration->files->pathToImages, '/');
-                        $pathToThumbs = trim($configuration->files->pathToThumbs, '/');
-                    } else {
-                        $pathToImages = 'public/uploads/images';
-                        $pathToThumbs = 'public/uploads/images';
-                    }
-
-                    $ids = array();
-                    foreach ($photos as $colPhoto) {
-                        $ids[] = $colPhoto->getPhotoId();
-                    }
-
-                    App_Model_Photo::deleteAll(array('id IN ?' => $ids));
-
-                    $path = APP_PATH . '/' . $pathToImages . '/gallery/' . $gallery->getId();
-                    $pathThumbs = APP_PATH . '/' . $pathToThumbs . '/gallery/' . $gallery->getId();
-
-                    if ($path == $pathThumbs) {
-                        $fm->remove($path);
-                    } else {
-                        $fm->remove($path);
-                        $fm->remove($pathThumbs);
-                    }
+                if (!empty($configuration->files)) {
+                    $pathToImages = trim($configuration->files->pathToImages, '/');
+                    $pathToThumbs = trim($configuration->files->pathToThumbs, '/');
+                } else {
+                    $pathToImages = 'public/uploads/images';
+                    $pathToThumbs = 'public/uploads/images';
                 }
 
+                $photos = App_Model_Photo::all(array('galleryId = ?' => (int)$id));
+                
+                $ids = array();
+                foreach ($photos as $colPhoto) {
+                    $ids[] = $colPhoto->getId();
+                }
+
+                App_Model_Photo::deleteAll(array('id IN ?' => $ids));
+
+                $path = APP_PATH . '/' . $pathToImages . '/gallery/' . $gallery->getId();
+                $pathThumbs = APP_PATH . '/' . $pathToThumbs . '/gallery/' . $gallery->getId();
+
+                if ($path == $pathThumbs) {
+                    $fm->remove($path);
+                } else {
+                    $fm->remove($path);
+                    $fm->remove($pathThumbs);
+                }
+            } elseif (RequestMethods::post('action') == 2) {
+                $photos = App_Model_Photo::all(array('galleryId = ?' => $id));
+                $ids = array();
+                foreach ($photos as $colPhoto) {
+                    $ids[] = $colPhoto->getId();
+                }
+
+                App_Model_Photo::deleteAll(array('id IN ?' => $ids));
+            }
+
+            if ($gallery->delete()) {
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
                 $view->successMessage('Galerie byla smazána');
                 self::redirect('/admin/gallery/');
@@ -243,6 +252,11 @@ class Admin_Controller_Gallery extends Controller
                     'active = ?' => true
                         ), array('id', 'title')
         );
+
+        if ($gallery === null) {
+            $view->warningMessage('Galerie nebyla nalezena');
+            self::redirect('/admin/gallery/');
+        }
 
         $view->set('gallery', $gallery);
 
@@ -293,7 +307,7 @@ class Admin_Controller_Gallery extends Controller
 
             if (empty($errors)) {
                 $view->successMessage('Fotografie byly úspěšně nahrány');
-                self::redirect('/admin/gallery/detail/'.$gallery->getId());
+                self::redirect('/admin/gallery/detail/' . $gallery->getId());
             } else {
                 $view->set('errors', $errors);
             }
@@ -322,7 +336,7 @@ class Admin_Controller_Gallery extends Controller
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
-                    
+
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     echo 'success';
                 } else {
@@ -355,7 +369,7 @@ class Admin_Controller_Gallery extends Controller
             } else {
                 if (!$photo->active) {
                     $photo->active = true;
-                    
+
                     if ($photo->validate()) {
                         $photo->save();
                         Event::fire('admin.log', array('success', 'ID: ' . $id));

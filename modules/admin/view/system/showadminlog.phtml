@@ -17,9 +17,13 @@
         </colgroup>
         <thead>
             <tr>
-                <th class="head0">Vytvořeno</th><th class="head1">Uživatelské jméno</th>
-                <th class="head0">Modul</th><th class="head1">Kontroler</th>
-                <th class="head0">Akce</th><th class="head1">Parametry</th>
+                <th class="head0">Vytvořeno</th>
+                <th class="head1">Uživatelské jméno</th>
+                <th class="head0">Modul</th>
+                <th class="head1">Kontroler</th>
+                <th class="head0">Akce</th>
+                <th class="head1">Status</th>
+                <th class="head0">Parametry</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +35,7 @@
                 <td>{echo $logitem->module}</td>
                 <td>{echo $logitem->controller}</td>
                 <td>{echo $logitem->action}</td>
+                <td>{echo $logitem->result}</td>
                 <td>{echo $logitem->params}</td>
             </tr>
             {/foreach}

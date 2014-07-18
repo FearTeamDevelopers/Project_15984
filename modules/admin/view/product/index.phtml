@@ -10,7 +10,10 @@
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         {if $isAdmin}
         <div class="tableoptions">
-            Označené:
+            <select class="radius3" name="selection">
+                <option value="1">Označené</option>
+                <option value="2">Aktuální stránka</option>
+            </select>
             <select class="radius3" name="action">
                 <option value="activate">Aktivovat</option>
                 <option value="deactivate">Deaktivovat</option>
@@ -51,7 +54,10 @@
         </table>
         {if $isAdmin}
         <div class="tableoptions">
-            Označené:
+            <select class="radius3" name="selection">
+                <option value="1">Označené</option>
+                <option value="2">Aktuální stránka</option>
+            </select>
             <select class="radius3" name="action">
                 <option value="activate">Aktivovat</option>
                 <option value="deactivate">Deaktivovat</option>

@@ -100,9 +100,6 @@ class Admin_Controller_User extends Controller
         $security = Registry::get('security');
         $view = $this->getActionView();
         
-        $superAdmin = $security->isGranted('role_superadmin');
-        $view->set('superadmin', $superAdmin);
-
         if (RequestMethods::post('submitAddUser')) {
             $this->checkToken();
             $errors = array();
@@ -151,7 +148,8 @@ class Admin_Controller_User extends Controller
         $view = $this->getActionView();
         $loggedUser = $this->getUser();
 
-        $user = App_Model_User::first(array('id = ?' => $loggedUser->getId()));
+        $user = App_Model_User::first(
+                array('active = ?' => true, 'id = ?' => $loggedUser->getId()));
 
         if (NULL === $user) {
             $view->errorMessage('Uživatel nebyl nalezen');
@@ -169,7 +167,8 @@ class Admin_Controller_User extends Controller
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), 
+                                array('email')
                 );
 
                 if ($email) {
@@ -217,23 +216,21 @@ class Admin_Controller_User extends Controller
         $view = $this->getActionView();
         $security = Registry::get('security');
 
-        $errors = array();
-        $superAdmin = $security->isGranted('role_superadmin');
-        $user = App_Model_User::first(array('id = ?' => $id));
+        $user = App_Model_User::first(array('id = ?' => (int)$id));
 
         if (NULL === $user) {
             $view->errorMessage('Uživatel nebyl nalezen');
             self::redirect('/admin/user/');
-        } elseif ($user->role == 'role_superadmin' && !$superAdmin) {
+        } elseif ($user->role == 'role_superadmin' && $this->getUser()->getRole() != 'role_superadmin') {
             $view->errorMessage('Nemáte práva pro editování tohoto uživatele');
             self::redirect('/admin/user/');
         }
 
-        $view->set('user', $user)
-                ->set('superadmin', $superAdmin);
+        $view->set('user', $user);
 
         if (RequestMethods::post('submitEditUser')) {
             $this->checkToken();
+            $errors = array();
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
                 $errors['password2'] = array('Hesla se neshodují');
@@ -241,7 +238,8 @@ class Admin_Controller_User extends Controller
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), 
+                                array('email')
                 );
 
                 if ($email) {

@@ -42,7 +42,7 @@ class App_Model_Product extends Model
      * @label variant for
      */
     protected $_variantFor;
-    
+
     /**
      * @column
      * @readwrite
@@ -53,7 +53,7 @@ class App_Model_Product extends Model
      * @label product type
      */
     protected $_productType;
-    
+
     /**
      * @column
      * @readwrite
@@ -358,22 +358,22 @@ class App_Model_Product extends Model
      * @readwrite
      */
     protected $_additionalPhotos;
-    
+
     /**
      * @readwrite
      */
     protected $_variants;
-    
+
     /**
      * @readwrite
      */
     protected $_inCategories;
-    
+
     /**
      * @readwrite
      */
     protected $_recommendedProducts;
-    
+
     /**
      * 
      */
@@ -435,7 +435,7 @@ class App_Model_Product extends Model
             return $this->_imgThumb;
         }
     }
-    
+
     /**
      * 
      * @param type $id
@@ -443,10 +443,10 @@ class App_Model_Product extends Model
      */
     public static function fetchProductById($id)
     {
-        $product = self::first(array('id = ?' => (int)$id, 'deleted = ?' => false));
+        $product = self::first(array('id = ?' => (int) $id, 'deleted = ?' => false));
         return $product->getProductById();
     }
-    
+
     /**
      * 
      */
@@ -458,11 +458,33 @@ class App_Model_Product extends Model
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
         $this->_variants = App_Model_Product::initialize($variantsQuery);
-        
+
         $this->_additionalPhotos = App_Model_ProductPhoto::all(array('productId = ?' => $this->getId()));
         $this->_inCategories = App_Model_ProductCategory::all(array('productId = ?' => $this->getId()));
         $this->_recommendedProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $this->getId()));
-        
+
         return $this;
     }
+
+    /**
+     * 
+     * @return type
+     */
+    public static function fetchLatestProducts()
+    {
+        $productQuery = App_Model_Product::getQuery(
+                    array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.title', 'pr.currentPrice', 'pr.imgThumb', 'pr.created'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc',
+                        array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
+                        array('ca.title' => 'catTitle'))
+                ->where('pr.deleted = ?', false)
+                ->where('pr.active = ?', true)
+                ->where('pr.variantFor = ?', 0)
+                ->order('pr.created', 'desc')
+                ->limit(10);
+        
+        return App_Model_Product::initialize($productQuery);
+    }
+
 }

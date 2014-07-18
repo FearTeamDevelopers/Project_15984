@@ -9,6 +9,33 @@ jQuery(document).ready(function() {
     jQuery('a.view').lightBox();
     jQuery('#tabs, .tabs').tabs();
 
+    jQuery('.datepicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd',
+        firstDay: 1
+    });
+
+    jQuery('button.dialog, a.dialog').click(function() {
+        var href = jQuery(this).attr('href');
+        var val = jQuery(this).attr('value');
+
+        jQuery('#dialog p').load(href);
+
+        jQuery('#dialog').dialog({
+            title: val,
+            width: 600,
+            modal: true,
+            position: {my: 'center', at: 'top', of: window},
+            buttons: {
+                Close: function() {
+                    jQuery(this).dialog('close');
+                }
+            }
+        });
+        return false;
+    });
+
     jQuery.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
     {
         return {
@@ -22,7 +49,7 @@ jQuery(document).ready(function() {
         };
     };
 
-    jQuery('.stdtable').dataTable({
+    jQuery('.stdtable').DataTable({
         'aaSorting': [],
         'iDisplayLength': 25,
         'sPaginationType': 'full_numbers'
@@ -30,7 +57,7 @@ jQuery(document).ready(function() {
 
     var selected = [];
 
-    jQuery('.stdtable2').dataTable({
+    var table = jQuery('.stdtable2').DataTable({
         'aaSorting': [],
         'iDisplayLength': 50,
         'sPaginationType': 'full_numbers',
@@ -72,38 +99,52 @@ jQuery(document).ready(function() {
         jQuery(this).toggleClass('togglerow');
     });
 
-    jQuery('.datepicker').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd',
-        firstDay: 1
-    });
+    jQuery('.tableoptions select').change(function() {
+        var val = jQuery(this).children('option:selected').val();
+        var name = jQuery(this).attr('name');
 
-    jQuery('button.dialog, a.dialog').click(function() {
-        var href = jQuery(this).attr('href');
-        var val = jQuery(this).attr('value');
+        jQuery('.tableoptions select[name=' + name + ']').val(val);
+        
+        if (val == 2) {
+            var tr = jQuery('.stdtable2 tbody tr');
 
-        jQuery('#dialog p').load(href);
+            tr.each(function() {
+                var id = jQuery(this).find('td:first').text();
+                var index = jQuery.inArray(id, selected);
 
-        jQuery('#dialog').dialog({
-            title: val,
-            width: 600,
-            modal: true,
-            position: {my: 'center', at: 'top', of: window},
-            buttons: {
-                Close: function() {
-                    jQuery(this).dialog('close');
+                if (index === -1) {
+                    selected.push(id);
+                } else {
+                    selected.splice(index, 1);
                 }
-            }
-        });
-        return false;
+                jQuery(this).addClass('togglerow');
+            });
+        } else if(val == 1) {
+            jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
+            selected = [];
+        }
     });
+
+    jQuery('.tableoptions select[name=action]').change(function() {
+        var selected = jQuery(this).children('option:selected').val();
+
+        if (selected == 'overprice') {
+            jQuery('.overprice-option').removeClass('nodisplay');
+            jQuery('.overprice-option input[name=price]').blur(function(){
+                var price = jQuery(this).val();
+                jQuery('.overprice-option input[name=price]').val(price);
+            });
+        } else {
+            jQuery('.overprice-option').addClass('nodisplay');
+        }
+    });
+
 
     jQuery('a.ajax-massaction').click(function(event) {
         event.preventDefault();
 
         var url = jQuery(this).attr('href');
-        var action = jQuery('.tableoptions select').children('option:selected').val();
+        var action = jQuery('.tableoptions select[name=action]').children('option:selected').val();
         var tk = jQuery('#tk').val();
 
         if (action == 'overprice') {
@@ -122,7 +163,9 @@ jQuery(document).ready(function() {
                         Close: function() {
                             jQuery(this).dialog('close');
                             jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
+                            jQuery('.tableoptions select[name=selection]').val('1');
                             selected = [];
+                            table.ajax.reload();
                         }
                     }
                 });
@@ -140,7 +183,9 @@ jQuery(document).ready(function() {
                         Close: function() {
                             jQuery(this).dialog('close');
                             jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
+                            jQuery('.tableoptions select[name=selection]').val('1');
                             selected = [];
+                            table.ajax.reload();
                         }
                     }
                 });
@@ -514,15 +559,7 @@ jQuery(document).ready(function() {
         }
     });
 
-    jQuery('.tableoptions > select').change(function() {
-        var selected = jQuery(this).children('option:selected').val();
 
-        if (selected == 'overprice') {
-            jQuery('.overprice-option').removeClass('nodisplay');
-        } else {
-            jQuery('.overprice-option').addClass('nodisplay');
-        }
-    });
 
     /* ------------ MEDIA ---------------*/
     //a little image effectts
@@ -558,8 +595,9 @@ jQuery(document).ready(function() {
         event.preventDefault();
         var parent = jQuery(this).parents('li');
         var url = jQuery(this).attr('href');
+        var tk = jQuery('#tk').val();
 
-        jQuery.post(url, function(msg) {
+        jQuery.post(url, {tk: tk}, function(msg) {
             if (msg == 'active') {
                 parent.removeClass('photoinactive').addClass('photoactive');
             } else if (msg == 'inactive') {

@@ -10,9 +10,9 @@
     <div class="contenttitle radiusbottom0">
         <h2 class="table"><span>{echo $gallery->title}</span></h2>
     </div><!--contenttitle-->
+    <input type="hidden" name="tk" id="tk" value="{echo $token}" />
 
     <div class="collectiondetail">
-        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
             Created: {echo $gallery->created}<br/>
             Popis galerie:

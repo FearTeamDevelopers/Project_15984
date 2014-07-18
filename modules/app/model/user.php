@@ -53,10 +53,10 @@ class App_Model_User extends Model implements UserInterface
      * @column
      * @readwrite
      * @type text
-     * @length 50
+     * @length 40
      * @unique
      *
-     * @validate min(45), max(50)
+     * @validate max(40)
      */
     protected $_salt;
 

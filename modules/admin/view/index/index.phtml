@@ -1,6 +1,6 @@
 <script type="text/javascript" src="/public/js/custom/dashboard.js"></script>
 <ul class="maintabmenu">
-    <li class="current"><a href="/admin/">Nástěnka</a></li>
+    <li class="current"><a href="/admin/">Dashboard</a></li>
 </ul><!--maintabmenu-->
 
 <div class="content">
@@ -8,69 +8,14 @@
         <li><a href="/admin/news/add/" class="message">Nová novinka</a></li>
         <li><a href="/admin/product/add/" class="message">Nový produkt</a></li>
         <li><a href="/admin/category/" class="upload">Kategorie</a></li>
-        <li><a href="/admin/photo/add/" class="upload">Nahrát foto</a></li>
-        <li><a href="/admin/analytics/" class="events">analytika</a></li>
+        <li><a href="/admin/analytics/" class="events">Analytics</a></li>
     </ul>
 
     <br clear="all" /><br />
 
     <div class="one_half">
         <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Nejnovější Novinky</span></h2></div>
-            <div class="widgetcontent announcement">
-                {if !empty($latestnews)}
-                    {foreach $news in $latestnews}
-                        <p>
-                            <span class="radius2">Název: {echo $news->getTitle()}</span>
-                            <span class="radius2">Vytvořeno: {echo $news->getCreated()}</span>
-                            <br/><br/>
-                            {echo $news->shortBody}
-                        </p>
-                        <hr/>
-                    {/foreach}
-                {/if}
-                {else}
-                    <p>Žádné novinky</p>
-                {/else}
-            </div><!--widgetcontent-->
-        </div><!--widgetbox-->
-
-    </div><!--one_half-->
-
-    <div class="one_half last">
-
-        <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Nejnovější oznámení</span></h2></div>
-            <div class="widgetcontent announcement">
-                {if !empty($activeannounc)}
-                    {foreach $announc in $activeannounc}
-                        <p>
-                            <span class="radius2">Název: {echo $announc->getTitle()}</span>
-                            <span class="radius2">Vytvořeno: {echo $announc->getCreated()}</span><br/>
-                            {echo substr($announc->getBody(), 0, 200)}
-                        </p>
-                        <hr/>
-                    {/foreach}
-                {/if} 
-                {else}
-                    <p>Žádné oznámení</p>
-                {/else}
-            </div><!--widgetcontent-->
-        </div><!--widgetbox-->
-
-    </div><!--one_half-->
-
-    <br clear="all" /><br />
-
-    <div class="one_half">
-
-                            
-    
-
-    
-
-        <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Galerie</span></h2></div>
+            <div class="title"><h2 class="tabbed"><span>Nejnovější galerie</span></h2></div>
             <div class="widgetcontent padding0 statement">
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
@@ -85,22 +30,93 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {if !empty($collectionlist)}
-                            {foreach $collection in $collectionlist}
+                        {if !empty($latestgallery)}
+                            {foreach $gallery in $latestgallery}
                                 <tr>
-                                    <td>
-                                        <a href="/admin/gallery/detail/{echo $collection->getId()}">{echo $collection->getTitle()}</a>
-                                    </td>
-                                    <td>{echo $collection->getCreated()}</td>
+                                    <td>{echo $gallery->getTitle()}</td>
+                                    <td>{echo $gallery->getCreated()}</td>
                                 </tr>
                             {/foreach}
                         {/if} 
                     </tbody>
                 </table>
             </div><!--widgetcontent-->
-        </div><!--widgetbox-->                        
+        </div><!--widgetbox-->
     </div><!--one_half-->
 
-    <br clear="all" /><br />
+    <div class="one_half last">
+        <div class="widgetbox">
+            <div class="title"><h2 class="tabbed"><span>Nejnovější novinky</span></h2></div>
+            <div class="widgetcontent padding0 statement">
+                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+                    <colgroup>
+                        <col class="con0" />
+                        <col class="con1" />
+                        <col class="con0" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="head0">Název</th>
+                            <th class="head1">Autor</th>
+                            <th class="head0">Vytvořeno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($latestnews)}
+                            {foreach $news in $latestnews}
+                                <tr>
+                                    <td>{echo $news->getTitle()}</td>
+                                    <td>{echo $news->getAuthor()}</td>
+                                    <td>{echo $news->getCreated()}</td>
+                                </tr>
+                            {/foreach}
+                        {/if} 
+                    </tbody>
+                </table>
+            </div><!--widgetcontent-->
+        </div><!--widgetbox-->
+    </div><!--one_half-->
+
+    <br class="clear-all"/><br />
+
+    <div class="two_third">
+        <div class="widgetbox">
+            <div class="title"><h2 class="tabbed"><span>Nejnovější produkty</span></h2></div>
+            <div class="widgetcontent padding0 statement">
+                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+                    <colgroup>
+                        <col class="con0" /><col class="con1" />
+                        <col class="con0" /><col class="con1" />
+                        <col class="con0" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="head0">Foto</th>
+                            <th class="head1">Název</th>
+                            <th class="head0">Kód produktu</th>
+                            <th class="head1">Aktuální cena</th>
+                            <th class="head0">Vytovřeno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($latestproducts)}
+                            {foreach $product in $latestproducts}
+                                <tr>
+                                    <td><img src="{echo $product->getImgThumb()}" alt="" height="80" /></td>
+                                    <td>{echo $product->getTitle()}</td>
+                                    <td>{echo $product->getProductCode()}</td>
+                                    <td>{echo $product->getCurrentPrice()}</td>
+                                    <td>{echo $product->getCreated()}</td>
+                                </tr>
+                            {/foreach}
+                        {/if} 
+                    </tbody>
+                </table>
+            </div><!--widgetcontent-->
+        </div><!--widgetbox--> 
+    </div><!--one_half-->
+    
+    
+    <br class="clear-all"/><br />
 
 </div><!--content-->

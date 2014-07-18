@@ -1,0 +1,31 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/product/">Produkty</a></li>
+    <li><a href="/admin/product/add/">Nový Produkt</a></li>
+    <li class="current"><a href="#">Smazat Produkt</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Smazat Produkt</span></h2>
+    </div><!--contenttitle-->
+    
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="tk" value="{echo $token}" />
+        <p>
+            <label>Název</label>
+            <span class="field">{echo $product->title}</span>
+        </p>
+        <p>
+            <label>Kód produktu</label>
+            <span class="field">{echo $product->productCode}</span>
+        </p>
+        <p>
+            <label>Vytvořen</label>
+            <span class="field">{echo $product->created}</span>
+        </p>
+       
+        <p class="stdformbutton">
+            <input name="submitDeleteProduct" type="submit" value="Smazat" class="submit radius2" />
+        </p>
+    </form>
+</div>
