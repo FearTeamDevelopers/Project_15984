@@ -905,6 +905,7 @@ class Admin_Controller_Product extends Controller
         if ($search != '') {
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
                     . "AND (pr.productCode='" . $search . "' OR pr.productType='" . $search . "' "
+                    . "OR pr.currentPrice='" . $search . "' "
                     . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
 
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
