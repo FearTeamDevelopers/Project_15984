@@ -304,9 +304,9 @@ class Admin_Controller_Product extends Controller
         $view = $this->getActionView();
 
         $products = App_Model_Product::all(
-                array('deleted = ?' => false, 'variantFor = ?' => 0), 
-                array('*'), 
-                array('id' => 'ASC'), 50, 1);
+                        array('deleted = ?' => false, 'variantFor = ?' => 0), 
+                        array('*'), 
+                        array('id' => 'ASC'), 50, 1);
         $view->set('products', $products);
     }
 
@@ -751,8 +751,8 @@ class Admin_Controller_Product extends Controller
         $this->checkToken();
         $ids = RequestMethods::post('productsids');
         $action = RequestMethods::post('action');
-        
-        if(empty($ids)){
+
+        if (empty($ids)) {
             echo 'Nějaký řádek musí být označen';
         }
 
@@ -791,7 +791,7 @@ class Admin_Controller_Product extends Controller
                             'id IN ?' => $ids
                 ));
 
-                $val = (int)RequestMethods::post('price');
+                $val = (int) RequestMethods::post('price');
                 $oper = RequestMethods::post('operation');
 
                 if (NULL !== $products) {
@@ -902,15 +902,36 @@ class Admin_Controller_Product extends Controller
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
                     . "AND (pr.productCode='" . $search . "' OR pr.productType='" . $search . "' "
                     . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
-            \THCFrame\Core\Core::log($whereCond);
+
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                            array('ca.title' => 'catTitle'))
-                    ->wheresql($whereCond)
-                    ->order('pr.id', 'asc')
-                    ->limit(50, $page + 1);
+                           array('ca.title' => 'catTitle'))
+                    ->wheresql($whereCond);
+
+            if (RequestMethods::issetpost('iSortCol_0')) {
+                $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
+                $column = RequestMethods::post('iSortCol_0');
+                
+                if ($column == 0) {
+                    $productQuery->order('pr.id', $dir);
+                } elseif ($column == 2) {
+                    $productQuery->order('pr.title', $dir);
+                } elseif ($column == 3) {
+                    $productQuery->order('pr.productType', $dir);
+                } elseif ($column == 4) {
+                    $productQuery->order('pc.categoryId', $dir);
+                } elseif ($column == 5) {
+                    $productQuery->order('pr.productCode', $dir);
+                } elseif ($column == 6) {
+                    $productQuery->order('pr.currentPrice', $dir);
+                }
+            } else {
+                $productQuery->order('pr.id', 'asc');
+            }
+
+            $productQuery->limit(50, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
 
             $productCountQuery = App_Model_Product::getQuery(array('pr.id'))
@@ -931,9 +952,29 @@ class Admin_Controller_Product extends Controller
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
                     ->where('pr.deleted = ?', false)
-                    ->where('pr.variantFor = ?', 0)
-                    ->order('pr.id', 'asc')
-                    ->limit(50, $page + 1);
+                    ->where('pr.variantFor = ?', 0);
+
+            if (RequestMethods::issetpost('iSortCol_0')) {
+                $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
+                $column = RequestMethods::post('iSortCol_0');
+                
+                if ($column == 0) {
+                    $productQuery->order('pr.id', $dir);
+                } elseif ($column == 2) {
+                    $productQuery->order('pr.title', $dir);
+                } elseif ($column == 3) {
+                    $productQuery->order('pr.productType', $dir);
+                } elseif ($column == 4) {
+                    $productQuery->order('pc.categoryId', $dir);
+                } elseif ($column == 5) {
+                    $productQuery->order('pr.productCode', $dir);
+                } elseif ($column == 6) {
+                    $productQuery->order('pr.currentPrice', $dir);
+                }
+            } else {
+                $productQuery->order('pr.id', 'asc');
+            }
+            $productQuery->limit(50, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
             $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
         }

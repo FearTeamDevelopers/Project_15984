@@ -46,7 +46,17 @@ jQuery(document).ready(function() {
             if (jQuery.inArray(data[0], selected) !== -1) {
                 jQuery(row).addClass('togglerow');
             }
-        }
+        },
+        "aoColumns": [
+            null,
+            {"bSortable": false},
+            null,
+            null,
+            null,
+            null,
+            null,
+            {"bSortable": false}
+        ]
     });
 
     jQuery('.stdtable2 tbody').on('click', 'tr', function() {
@@ -139,7 +149,7 @@ jQuery(document).ready(function() {
 
         return false;
     });
-    
+
     //userinfo
     jQuery('.userinfo').click(function() {
         if (!jQuery(this).hasClass('userinfodrop')) {
