@@ -137,11 +137,11 @@ class Admin_Controller_Gallery extends Controller
                 $errors['title'] = array('Galerie s tímto názvem již existuje');
             }
 
-            $collection->title = RequestMethods::post('title');
-            $collection->isPublic = RequestMethods::post('public');
-            $collection->active = RequestMethods::post('active');
-            $collection->urlKey = $urlKey;
-            $collection->description = RequestMethods::post('description', '');
+            $gallery->title = RequestMethods::post('title');
+            $gallery->isPublic = RequestMethods::post('public');
+            $gallery->active = RequestMethods::post('active');
+            $gallery->urlKey = $urlKey;
+            $gallery->description = RequestMethods::post('description', '');
 
             if (empty($errors) && $gallery->validate()) {
                 $gallery->save();
