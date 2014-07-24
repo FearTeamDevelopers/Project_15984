@@ -959,7 +959,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderLayoutView = false;
 
         $page = RequestMethods::post('page');
-        $search = RequestMethods::issetpost('sSearch') ? '' : RequestMethods::post('sSearch');
+        $search = RequestMethods::issetpost('sSearch') ? RequestMethods::post('sSearch') : '';
 
         if ($search != '') {
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
