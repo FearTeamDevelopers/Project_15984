@@ -47,6 +47,9 @@ class Admin_Controller_Product extends Controller
         }
 
         if ($configurable) {
+            $title = RequestMethods::post('title');
+            $desc =  RequestMethods::post('description');
+            
             $product = new App_Model_Product(array(
                 'sizeId' => 0,
                 'urlKey' => $urlKey,
@@ -58,50 +61,55 @@ class Admin_Controller_Product extends Controller
                 'basicPrice' => RequestMethods::post('basicprice'),
                 'regularPrice' => RequestMethods::post('regularprice'),
                 'currentPrice' => RequestMethods::post('currentprice'),
+                'quantity' => RequestMethods::post('quantity', 1),
                 'discount' => RequestMethods::post('discount'),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
                 'eanCode' => RequestMethods::post('eancode'),
-                'weight' => RequestMethods::post('weight'),
+                'weight' => RequestMethods::post('weight', 1),
                 'isInAction' => RequestMethods::post('inaction'),
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
                 'imgMain' => trim($uploadedFile->file->path, '.'),
                 'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                'metaTitle' => RequestMethods::post('metatitle', RequestMethods::post('title')),
+                'metaTitle' => RequestMethods::post('metatitle', $title),
                 'metaKeywords' => RequestMethods::post('metakeywords'),
-                'metaDescription' => RequestMethods::post('metadescription', RequestMethods::post('description')),
-                'rssFeedTitle' => RequestMethods::post('title'),
-                'rssFeedDescription' => RequestMethods::post('description'),
+                'metaDescription' => RequestMethods::post('metadescription', $desc),
+                'rssFeedTitle' => $title,
+                'rssFeedDescription' => $desc,
                 'rssFeedImg' => trim($uploadedFile->file->path, '.')
             ));
         } else {
+            $title = RequestMethods::post('title');
+            $desc =  RequestMethods::post('description');
+            
             $product = new App_Model_Product(array(
                 'sizeId' => RequestMethods::post('size'),
                 'urlKey' => $urlKey,
                 'productType' => RequestMethods::post('producttype'),
                 'variantFor' => 0,
                 'productCode' => RequestMethods::post('productcode'),
-                'title' => RequestMethods::post('title'),
-                'description' => RequestMethods::post('description'),
+                'title' => $title,
+                'description' => $desc,
                 'basicPrice' => RequestMethods::post('basicprice'),
                 'regularPrice' => RequestMethods::post('regularprice'),
                 'currentPrice' => RequestMethods::post('currentprice'),
+                'quantity' => RequestMethods::post('quantity', 1),
                 'discount' => RequestMethods::post('discount'),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
                 'eanCode' => RequestMethods::post('eancode'),
-                'weight' => RequestMethods::post('weight'),
+                'weight' => RequestMethods::post('weight', 1),
                 'isInAction' => RequestMethods::post('inaction'),
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
                 'imgMain' => trim($uploadedFile->file->path, '.'),
                 'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                'metaTitle' => RequestMethods::post('metatitle', RequestMethods::post('title')),
+                'metaTitle' => RequestMethods::post('metatitle', $title),
                 'metaKeywords' => RequestMethods::post('metakeywords'),
-                'metaDescription' => RequestMethods::post('metadescription', RequestMethods::post('description')),
-                'rssFeedTitle' => RequestMethods::post('title'),
-                'rssFeedDescription' => RequestMethods::post('description'),
+                'metaDescription' => RequestMethods::post('metadescription', $desc),
+                'rssFeedTitle' => $title,
+                'rssFeedDescription' => $desc,
                 'rssFeedImg' => trim($uploadedFile->file->path, '.')
             ));
         }
@@ -150,6 +158,7 @@ class Admin_Controller_Product extends Controller
                 'basicPrice' => 0,
                 'regularPrice' => 0,
                 'currentPrice' => RequestMethods::post('currentprice'),
+                'quantity' => RequestMethods::post('quantity-' . $size),
                 'discount' => 0,
                 'discountFrom' => '',
                 'discountTo' => '',
@@ -301,13 +310,7 @@ class Admin_Controller_Product extends Controller
      */
     public function index()
     {
-        $view = $this->getActionView();
-
-        $products = App_Model_Product::all(
-                        array('deleted = ?' => false, 'variantFor = ?' => 0), 
-                        array('*'), 
-                        array('id' => 'ASC'), 50, 1);
-        $view->set('products', $products);
+        
     }
 
     /**
@@ -322,7 +325,7 @@ class Admin_Controller_Product extends Controller
 
         $view->set('sizes', $sizes)
                 ->set('categories', $categories);
-
+        
         if (RequestMethods::post('submitAddProduct')) {
             $this->checkToken();
 
@@ -388,16 +391,16 @@ class Admin_Controller_Product extends Controller
         $categories = App_Model_Category::fetchAllCategories();
 
         $productCategor = $product->inCategories;
+        $productCategoryIds = array();
         if (!empty($productCategor)) {
-            $productCategoryIds = array();
             foreach ($productCategor as $prodcat) {
                 $productCategoryIds[] = $prodcat->categoryId;
             }
         }
 
         $productRecomm = $product->recommendedProducts;
+        $recomProductIds = array();
         if (!empty($productRecomm)) {
-            $recomProductIds = array();
             foreach ($productRecomm as $recprod) {
                 $recomProductIds[] = $recprod->getRecommendedId();
             }
@@ -421,102 +424,123 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('submitEditProduct')) {
             $this->checkToken();
-            $errors = array();
 
-            $urlKey = strtolower(
-                    str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+            if ($product->getProductType() == 'varianta') {
+                $product->sizeId = RequestMethods::post('size');
+                $product->productCode = RequestMethods::post('productcode');
+                $product->currentPrice = RequestMethods::post('currentprice');
+                $product->quantity = RequestMethods::post('quantity', 1);
+                $product->eanCode = RequestMethods::post('eancode');
+                $product->weight = RequestMethods::post('weight', 1);
 
+                if ($product->validate()) {
+                    $product->save();
 
-            if ($product->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                $errors['title'] = array('Produkt s tímto názvem již existuje');
-            }
-
-            $uploadTo = substr($product->getUrlKey(), 0, 3);
-            if ($product->imgMain == '') {
-                try {
-                    $fileManager = new FileManager(array(
-                        'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                        'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                        'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                        'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                        'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
-                    ));
-
-                    try {
-                        $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
-                        $uploadedFile = ArrayMethods::toObject($data);
-                    } catch (Exception $ex) {
-                        $errors['mainfile'] = array($ex->getMessage());
-                    }
-                    $imgMain = trim($uploadedFile->file->path, '.');
-                    $imgThumb = trim($uploadedFile->thumb->path, '.');
-                } catch (Exception $ex) {
-                    $errors['mainfile'] = $ex->getMessage();
-                }
-            } else {
-                $imgMain = $product->imgMain;
-                $imgThumb = $product->imgThumb;
-            }
-
-            $product->sizeId = RequestMethods::post('size');
-            $product->urlKey = $urlKey;
-            $product->productCode = RequestMethods::post('productcode');
-            $product->title = RequestMethods::post('title');
-            $product->description = RequestMethods::post('description');
-            $product->basicPrice = RequestMethods::post('basicprice');
-            $product->regularPrice = RequestMethods::post('regularprice');
-            $product->currentPrice = RequestMethods::post('currentprice');
-            $product->discount = RequestMethods::post('discount');
-            $product->discountFrom = RequestMethods::post('discountfrom');
-            $product->discountTo = RequestMethods::post('discountto');
-            $product->eanCode = RequestMethods::post('eancode');
-            $product->weight = RequestMethods::post('weight');
-            $product->isInAction = RequestMethods::post('inaction');
-            $product->newFrom = RequestMethods::post('newfrom');
-            $product->newTo = RequestMethods::post('newto');
-            $product->imgMain = $imgMain;
-            $product->imgThumb = $imgThumb;
-            $product->metaTitle = RequestMethods::post('metatitle', RequestMethods::post('title'));
-            $product->metaKeywords = RequestMethods::post('metakeywords');
-            $product->metaDescription = RequestMethods::post('metadescription', RequestMethods::post('description'));
-            $product->rssFeedTitle = RequestMethods::post('title');
-            $product->rssFeedDescription = RequestMethods::post('description');
-            $product->rssFeedImg = $imgMain;
-
-            $categoryArr = RequestMethods::post('rcat');
-            if (empty($categoryArr)) {
-                $errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
-            }
-
-            if (empty($errors) && $product->validate()) {
-                $product->save();
-
-                /* category */
-                $this->createCategoryRecords($product->getId(), $categoryArr, true);
-
-                /* recommended products */
-                $recomProducts = RequestMethods::post('recomproductids');
-                if (!empty($recomProducts)) {
-                    $this->createRecommendedProductsRecords($product->getId(), $recomProducts, true);
-                }
-
-                if (RequestMethods::post('uplMoreImages') == 1) {
-                    $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
-                }
-
-                if (empty($this->_errors)) {
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
                     $view->successMessage('Produkt byl úspěšně uložen');
-                    self::redirect('/admin/product/');
+                    self::redirect('/admin/product/edit/' . $product->getVariantFor());
                 } else {
-                    Event::fire('app.log', array('fail'));
+                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
                     $view->set('product', $product)
-                            ->set('errors', $this->_errors + $product->getErrors());
+                            ->set('errors', $product->getErrors());
                 }
-            } else {
-                Event::fire('app.log', array('fail'));
-                $view->set('product', $product)
-                        ->set('errors', $errors + $this->_errors + $product->getErrors());
+            }else{
+                $urlKey = strtolower(
+                        str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+
+
+                if ($product->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
+                    $errors['title'] = array('Produkt s tímto názvem již existuje');
+                }
+
+                $uploadTo = substr($product->getUrlKey(), 0, 3);
+                if ($product->imgMain == '') {
+                    try {
+                        $fileManager = new FileManager(array(
+                            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+                            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+                            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+                            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+                            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                        ));
+
+                        try {
+                            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
+                            $uploadedFile = ArrayMethods::toObject($data);
+                        } catch (Exception $ex) {
+                            $errors['mainfile'] = array($ex->getMessage());
+                        }
+                        $imgMain = trim($uploadedFile->file->path, '.');
+                        $imgThumb = trim($uploadedFile->thumb->path, '.');
+                    } catch (Exception $ex) {
+                        $errors['mainfile'] = $ex->getMessage();
+                    }
+                } else {
+                    $imgMain = $product->imgMain;
+                    $imgThumb = $product->imgThumb;
+                }
+
+                $product->sizeId = RequestMethods::post('size');
+                $product->urlKey = $urlKey;
+                $product->productCode = RequestMethods::post('productcode');
+                $product->title = RequestMethods::post('title');
+                $product->description = RequestMethods::post('description');
+                $product->basicPrice = RequestMethods::post('basicprice');
+                $product->regularPrice = RequestMethods::post('regularprice');
+                $product->currentPrice = RequestMethods::post('currentprice');
+                $product->quantity = RequestMethods::post('quantity', 1);
+                $product->discount = RequestMethods::post('discount');
+                $product->discountFrom = RequestMethods::post('discountfrom');
+                $product->discountTo = RequestMethods::post('discountto');
+                $product->eanCode = RequestMethods::post('eancode');
+                $product->weight = RequestMethods::post('weight', 1);
+                $product->isInAction = RequestMethods::post('inaction');
+                $product->newFrom = RequestMethods::post('newfrom');
+                $product->newTo = RequestMethods::post('newto');
+                $product->imgMain = $imgMain;
+                $product->imgThumb = $imgThumb;
+                $product->metaTitle = RequestMethods::post('metatitle', RequestMethods::post('title'));
+                $product->metaKeywords = RequestMethods::post('metakeywords');
+                $product->metaDescription = RequestMethods::post('metadescription', RequestMethods::post('description'));
+                $product->rssFeedTitle = RequestMethods::post('title');
+                $product->rssFeedDescription = RequestMethods::post('description');
+                $product->rssFeedImg = $imgMain;
+
+                $categoryArr = RequestMethods::post('rcat');
+                if (empty($categoryArr)) {
+                    $errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
+                }
+
+                if (empty($errors) && $product->validate()) {
+                    $product->save();
+
+                    /* category */
+                    $this->createCategoryRecords($product->getId(), $categoryArr, true);
+
+                    /* recommended products */
+                    $recomProducts = RequestMethods::post('recomproductids');
+                    if (!empty($recomProducts)) {
+                        $this->createRecommendedProductsRecords($product->getId(), $recomProducts, true);
+                    }
+
+                    if (RequestMethods::post('uplMoreImages') == 1) {
+                        $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
+                    }
+
+                    if (empty($this->_errors)) {
+                        Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
+                        $view->successMessage('Produkt byl úspěšně uložen');
+                        self::redirect('/admin/product/');
+                    } else {
+                        Event::fire('app.log', array('fail','Product id: ' . $product->getId()));
+                        $view->set('product', $product)
+                                ->set('errors', $this->_errors + $product->getErrors());
+                    }
+                } else {
+                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
+                    $view->set('product', $product)
+                            ->set('errors', $errors + $this->_errors + $product->getErrors());
+                }
             }
         }
     }
@@ -530,7 +554,7 @@ class Admin_Controller_Product extends Controller
         $view = $this->getActionView();
 
         $product = App_Model_Product::first(
-                array('id = ?' => (int) $id));
+                        array('id = ?' => (int) $id));
 
         if (NULL === $product) {
             $view->warningMessage('Produkt nebyl nalezen');
@@ -538,7 +562,7 @@ class Admin_Controller_Product extends Controller
         }
 
         $view->set('product', $product);
-        
+
         if (RequestMethods::post('submitDeleteProduct')) {
             $this->checkToken();
             $product->deleted = true;
@@ -554,6 +578,40 @@ class Admin_Controller_Product extends Controller
                 $view->errorMessage('Nastala neznámá chyba');
                 self::redirect('/admin/product/');
             }
+        }
+    }
+    
+    /**
+     * @before _secured, _admin
+     * @param type $id
+     */
+    public function undelete($id)
+    {
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+
+        if ($this->checkTokenAjax()) {
+            $product = App_Model_Product::first(
+                            array('id = ?' => (int) $id, 'deleted = ?' => true));
+
+            if (NULL === $product) {
+                echo 'Produkt nebyl nalezen';
+                return;
+            }
+
+            $product->deleted = false;
+
+            if ($product->validate()) {
+                $product->save();
+
+                Event::fire('admin.log', array('success', 'Product id: ' . $id));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'Product id: ' . $id));
+                echo 'Nastala neznámá chyba';
+            }
+        } else {
+            echo 'Bezpečnostní token není validní';
         }
     }
 
@@ -590,11 +648,11 @@ class Admin_Controller_Product extends Controller
 
     /**
      * @before _secured, _admin
-     * @param type $id
+     * @param type $productId
      */
     public function addrecommended($productId)
     {
-        $this->_willRenderLayoutView = false;
+        $this->willRenderLayoutView = false;
         $view = $this->getActionView();
         $view->set('productid', $productId);
 
@@ -628,6 +686,7 @@ class Admin_Controller_Product extends Controller
 
             if ($recommended->validate()) {
                 $recommended->save();
+                
                 Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' add recommended ' . $recomprod->getId()));
                 $view->successMessage('Doporučený produkt byl úspěšně přidán');
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
@@ -746,8 +805,8 @@ class Admin_Controller_Product extends Controller
      */
     public function massAction()
     {
-        $this->_willRenderLayoutView = false;
-        $this->_willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+        $this->willRenderActionView = false;
         $errors = array();
         $errorsIds = array();
 
@@ -896,11 +955,11 @@ class Admin_Controller_Product extends Controller
      */
     public function load()
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
 
         $page = RequestMethods::post('page');
-        $search = empty(RequestMethods::post('sSearch')) ? '' : RequestMethods::post('sSearch');
+        $search = RequestMethods::issetpost('sSearch') ? '' : RequestMethods::post('sSearch');
 
         if ($search != '') {
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
@@ -908,17 +967,19 @@ class Admin_Controller_Product extends Controller
                     . "OR pr.currentPrice='" . $search . "' "
                     . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
 
-            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+            $productQuery = App_Model_Product::getQuery(
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode', 
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                           array('ca.title' => 'catTitle'))
+                            array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond);
 
             if (RequestMethods::issetpost('iSortCol_0')) {
                 $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
                 $column = RequestMethods::post('iSortCol_0');
-                
+
                 if ($column == 0) {
                     $productQuery->order('pr.id', $dir);
                 } elseif ($column == 2) {
@@ -936,7 +997,7 @@ class Admin_Controller_Product extends Controller
                 $productQuery->order('pr.id', 'asc');
             }
 
-            $limit = (int)RequestMethods::post('iDisplayLength');
+            $limit = (int) RequestMethods::post('iDisplayLength');
             $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
 
@@ -946,13 +1007,16 @@ class Admin_Controller_Product extends Controller
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond);
+            
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
 
             $count = count($productsCount);
             unset($productsCount);
         } else {
-            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+            $productQuery = App_Model_Product::getQuery(
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode', 
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -963,7 +1027,7 @@ class Admin_Controller_Product extends Controller
             if (RequestMethods::issetpost('iSortCol_0')) {
                 $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
                 $column = RequestMethods::post('iSortCol_0');
-                
+
                 if ($column == 0) {
                     $productQuery->order('pr.id', $dir);
                 } elseif ($column == 2) {
@@ -978,10 +1042,10 @@ class Admin_Controller_Product extends Controller
                     $productQuery->order('pr.currentPrice', $dir);
                 }
             } else {
-                $productQuery->order('pr.id', 'asc');
+                $productQuery->order('pr.id', 'DESC');
             }
-            
-            $limit = (int)RequestMethods::post('iDisplayLength');
+
+            $limit = (int) RequestMethods::post('iDisplayLength');
             $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
             $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
@@ -994,13 +1058,13 @@ class Admin_Controller_Product extends Controller
         $prodArr = array();
         foreach ($products as $product) {
             $arr = array();
-            $arr [] = "[ \"{$product->getId()}\"";
+            $arr [] = "[ \"" .$product->getId(). "\"";
             $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
-            $arr [] = "\"{$product->getTitle()}\"";
+            $arr [] = "\"" .$product->getTitle(). "\"";
             $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
-            $arr [] = "\"{$product->catTitle}\"";
-            $arr [] = "\"{$product->getProductCode()}\"";
-            $arr [] = "\"{$product->getCurrentPrice()}\"";
+            $arr [] = "\"" .$product->catTitle. "\"";
+            $arr [] = "\"" .$product->getProductCode(). "\"";
+            $arr [] = "\"" .$product->getCurrentPrice(). "\"";
 
             $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
             $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";

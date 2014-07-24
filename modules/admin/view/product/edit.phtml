@@ -13,14 +13,15 @@
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
 
-        <div id="tabs">
+        {if $product->productType != "varianta"}
+       <div id="tabs">
             <ul class="maintabmenu multipletabmenu">
                 <li><a href="#basic">Základní informace</a></li>
                 <li><a href="#additional">Doplňující informace</a></li>
                 <li><a href="#meta">Meta informace</a></li>
                 <li><a href="#recommended">Doporučené produkty</a></li>
                 <li><a href="#photos">Doplňující fotografie</a></li>
-                <li><a href="#variants">Varianty</a></li>
+                {if $product->productType == "s variantami"}<li><a href="#variants">Varianty</a></li>{/if}
             </ul>
 
             <div id="basic">
@@ -76,6 +77,7 @@
                     </span> 
                     {/else}
                 </p>
+                {if $product->sizeId != 0}
                 <p>
                     <label>Velikost*</label>
                     <span class="field">
@@ -95,6 +97,7 @@
                         {/if}
                     </span>
                 </p>
+                {/if}
                 <p>
                     <label>Aktuální cena*</label>
                     <span class="field">
@@ -105,6 +108,18 @@
                         {/if}
                     </span>
                 </p>
+                {if $product->productType == "bez variant"}
+                <p>
+                    <label>Počet kusů*</label>
+                    <span class="field">
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*+"  name="quantity" 
+                               value="{echo $product->quantity}" />
+                        {if isset($errors["quantity"])}
+                        <label class="error">{echo join("<br/>", $errors["quantity"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                {/if}
                 <div class="par">
                     <label>Kategorie*</label>
                     <div class="field">
@@ -284,7 +299,7 @@
                     <label>Meta-Klíčová slova</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metakeywords" 
-                               value="{echo $product->metaKeaywords}" />
+                               value="{echo $product->metaKeywords}" />
                         {if isset($errors["metaKeaywords"])}
                         <label class="error">{echo join("<br/>", $errors["metaKeaywords"])}</label>
                         {/if}
@@ -388,6 +403,7 @@
                 </div>
             </div>
 
+            {if $product->productType == "s variantami"}
             <div id="variants">
                 <div class="contenttitle radiusbottom0">
                     <h2 class="form"><span>Varianty produktu</span></h2>
@@ -396,7 +412,7 @@
                     <colgroup>
                         <col class="con0" /> <col class="con1" />
                         <col class="con0" /> <col class="con1" />
-                        <col class="con0" />
+                        <col class="con0" /> <col class="con1" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -404,7 +420,8 @@
                             <th class="head1">Velikost</th>
                             <th class="head0">Kód produktu</th>
                             <th class="head1">Aktuální cena</th>
-                            <th class="head0">&nbsp;</th>
+                            <th class="head0">Množství</th>
+                            <th class="head1">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -416,6 +433,7 @@
                             <td>{echo $variant->sizeTitle}</td>
                             <td>{echo $variant->getProductCode()}</td>
                             <td>{echo $variant->getCurrentPrice()}</td>
+                            <td>{echo $variant->getQuantity()}</td>
                             <td>
                                 <a href="/admin/product/edit/{echo $variant->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
                                 {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
@@ -426,7 +444,105 @@
                     </tbody>
                 </table>
             </div>
+            {/if}
         </div>
+        
+        {/if}{else}
+         <div id="tabs">
+            <ul class="maintabmenu multipletabmenu">
+                <li><a href="#basic">Základní informace</a></li>
+            </ul>
+
+            <div id="basic">
+                <p>
+                    <label>Hlavní produkt</label>
+                    <span class="field">
+                        <a class="stdbtn btn_blue" href="/admin/product/edit/{echo $product->variantFor}">Zpět na hlavní produkt</a>
+                    </span>
+                </p>
+                <p>
+                    <label>Název*</label>
+                    <span class="field" >
+                        <input required class="longinput" type="text" name="title" 
+                               value="{echo $product->title}" />
+                        {if isset($errors["title"])}
+                        <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Kód produktu*</label>
+                    <span class="field">
+                        <input required class="longinput" type="text" name="productcode" 
+                               value="{echo $product->productCode}" />
+                        {if isset($errors["productcode"])}
+                        <label class="error">{echo join("<br/>", $errors["productcode"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Velikost*</label>
+                    <span class="field">
+                        <select required class="longinput" name="size">
+                            {if !empty($sizes)}
+                            {foreach $size in $sizes}
+                            {script $s = ""}
+                            {if $product->sizeId == $size->id}
+                            {script $s = "selected"}
+                            {/if}
+                            <option value="{echo $size->id}" {echo $s}>{echo $size->title}</option>
+                            {/foreach}
+                            {/if}
+                        </select>
+                        {if isset($errors["size"])}
+                        <label class="error">{echo join("<br/>", $errors["size"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Aktuální cena*</label>
+                    <span class="field">
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
+                               value="{echo $product->currentPrice}" />
+                        {if isset($errors["currentPrice"])}
+                        <label class="error">{echo join("<br/>", $errors["currentPrice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Počet kusů*</label>
+                    <span class="field">
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*+"  name="quantity" 
+                               value="{echo $product->quantity}" />
+                        {if isset($errors["quantity"])}
+                        <label class="error">{echo join("<br/>", $errors["quantity"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>EAN</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="eancode" 
+                               value="{echo $product->eanCode}" />
+                        {if isset($errors["eanCode"])}
+                        <label class="error">{echo join("<br/>", $errors["eanCode"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Hmotnost</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="weight" 
+                               value="{echo $product->weight}" />
+                        {if isset($errors["weight"])}
+                        <label class="error">{echo join("<br/>", $errors["weight"])}</label>
+                        {/if}
+                    </span>
+                </p>
+            </div>
+        </div>
+        {/else}
+        
         <p class="stdformbutton">
             <input name="submitEditProduct" type="submit" value="Uložit" class="submit radius2" />
         </p>

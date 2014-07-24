@@ -28,16 +28,18 @@
                         <tr>
                             <td>{echo $category->getTitle()}</td>
                             <td>
+                                {script $typ=""}
                                 {if $category->isGrouped == 1}
-                                    Pro skupinove
+                                    {script $typ.="Skupinové "}
                                 {/if}{elseif $category->isSelable == 1}
-                                    Pro prodejne
+                                    {script $typ.="Prodejné "}
                                 {/elseif}{else}
-                                    Pro bezne
+                                    {script $typ.="Běžné"}
                                 {/else}
+                                {echo $typ}
                             </td>
                             <td>
-                                <input type="text" pattern="[\d]{0,2}" name="rank[{echo $category->id}]" value="{echo $category->getRank()}" />
+                                <input type="text" title="Celá čísla 1-99" pattern="[\d]{0,2}" name="rank[{echo $category->id}]" value="{echo $category->getRank()}" />
                             </td>
                             <td>
                                 <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Podkategorie"></a>

@@ -31,6 +31,35 @@
                     </span>
                 </p>
                 <p>
+                    <label>Meta-Název</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="metatitle" 
+                               value="{echo $content->metaTitle}" />
+                        {if isset($errors["metaTitle"])}
+                        <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-Klíčová slova</label>
+                    <span class="field" >
+                        <input class="longinput" type="text" name="metakeywords" 
+                               value="{echo $content->metaKeywords}" />
+                        {if isset($errors["metaKeaywords"])}
+                        <label class="error">{echo join("<br/>", $errors["metaKeaywords"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-Popis<small>Max. 5000 znaků</small></label>
+                    <span class="field">
+                        <textarea rows="5" name="metadescription" class="longinput">{echo $content->metaDescription}</textarea>
+                        {if isset($errors["metaDescription"])}
+                        <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
                     <label>Aktivní</label>
                     <span class="field">
                         <select name="active" class="longinput">

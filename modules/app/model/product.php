@@ -163,6 +163,16 @@ class App_Model_Product extends Model
      * @readwrite
      * @type integer
      *      
+     * @validate numeric, max(3)
+     * @label quantity
+     */
+    protected $_quantity;
+    
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     *      
      * @validate numeric
      * @label discount
      */
@@ -473,11 +483,8 @@ class App_Model_Product extends Model
     public static function fetchLatestProducts()
     {
         $productQuery = App_Model_Product::getQuery(
-                    array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.title', 'pr.currentPrice', 'pr.imgThumb', 'pr.created'))
-                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc',
-                        array('productId', 'categoryId'))
-                ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                        array('ca.title' => 'catTitle'))
+                    array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.title', 
+                        'pr.currentPrice', 'pr.imgThumb', 'pr.created'))
                 ->where('pr.deleted = ?', false)
                 ->where('pr.active = ?', true)
                 ->where('pr.variantFor = ?', 0)

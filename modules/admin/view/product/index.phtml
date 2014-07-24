@@ -1,78 +1,81 @@
 <ul class="maintabmenu multipletabmenu">
     <li class="current"><a href="#">Produkty</a></li>
-    <li><a href="/admin/product/add/">Nový produkty</a></li>
+    <li><a href="/admin/product/add/">Nový produkt</a></li>
 </ul>
 <div class="content">
     <div class="contenttitle radiusbottom0">
         <h2 class="form"><span>Produkty</span></h2>
     </div>
+
+    <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+    {if $isAdmin}
+    <div class="tableoptions">
+        <select class="radius3" name="selection">
+            <option value="1">Označené</option>
+            <option value="2">Aktuální stránka</option>
+        </select>
+        <select class="radius3" name="action">
+            <option value="activate">Aktivovat</option>
+            <option value="deactivate">Deaktivovat</option>
+            <option value="overprice">Přecenit</option>
+            <option value="delete">Smazat</option>
+        </select> &nbsp;
+
+        <span class="overprice-option nodisplay">
+            <select name="operation">
+                <option value="+">+</option>
+                <option value="-">-</option>
+            </select>
+            <input class="microinput" name="price" type="text" pattern="[\d]*[\.,]?[\d]+" 
+                   title="Čísla mezi 0 a 1 - přecenění o procento | Celá čísla - přecenění o danou hodnotu"/>
+        </span>
+        <a class="btn btn_document ajax-massaction" href="/admin/product/massaction/"><span>Proveď</span></a>
+    </div><!--tableoptions-->
+    {/if}
     
-        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
-        {if $isAdmin}
-        <div class="tableoptions">
-            <select class="radius3" name="selection">
-                <option value="1">Označené</option>
-                <option value="2">Aktuální stránka</option>
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable2">
+        <colgroup>
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="head0 width50">ID</th>
+                <th class="head1">Obrázek</th>
+                <th class="head0">Název</th>
+                <th class="head1">Typ</th>
+                <th class="head0">Kategorie</th>
+                <th class="head1">Kód produktu</th>
+                <th class="head0">Současná cena</th>
+                <th class="head1">&nbsp;</th>
+            </tr>
+        </thead>
+    </table>
+    
+    {if $isAdmin}
+    <div class="tableoptions">
+        <select class="radius3" name="selection">
+            <option value="1">Označené</option>
+            <option value="2">Aktuální stránka</option>
+        </select>
+        <select class="radius3" name="action">
+            <option value="activate">Aktivovat</option>
+            <option value="deactivate">Deaktivovat</option>
+            <option value="overprice">Přecenit</option>
+            <option value="delete">Smazat</option>
+        </select> &nbsp;
+
+        <span class="overprice-option nodisplay">
+            <select name="operation">
+                <option value="+">+</option>
+                <option value="-">-</option>
             </select>
-            <select class="radius3" name="action">
-                <option value="activate">Aktivovat</option>
-                <option value="deactivate">Deaktivovat</option>
-                <option value="overprice">Přecenit</option>
-                <option value="delete">Smazat</option>
-            </select> &nbsp;
-            
-            <span class="overprice-option nodisplay">
-                <select name="operation">
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                </select>
-                <input class="microinput" name="price" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" />
-            </span>
-            <a class="btn btn_document ajax-massaction" href="/admin/product/massAction/"><span>Proveď</span></a>
-        </div><!--tableoptions-->
-        {/if}
-        <table cellpadding="0" cellspacing="0" border="0" class="stdtable2">
-            <colgroup>
-                <col class="con0" /> <col class="con1" />
-                <col class="con0" /> <col class="con1" />
-                <col class="con0" /> <col class="con1" />
-                <col class="con0" /> <col class="con1" />
-            </colgroup>
-            <thead>
-                <tr>
-                    <th class="head0 width50">ID</th>
-                    <th class="head1">Obrázek</th>
-                    <th class="head0">Název</th>
-                    <th class="head1">Typ</th>
-                    <th class="head0">Kategorie</th>
-                    <th class="head1">Kód produktu</th>
-                    <th class="head0">Současná cena</th>
-                    <th class="head1">&nbsp;</th>
-                </tr>
-            </thead>
-            
-        </table>
-        {if $isAdmin}
-        <div class="tableoptions">
-            <select class="radius3" name="selection">
-                <option value="1">Označené</option>
-                <option value="2">Aktuální stránka</option>
-            </select>
-            <select class="radius3" name="action">
-                <option value="activate">Aktivovat</option>
-                <option value="deactivate">Deaktivovat</option>
-                <option value="overprice">Přecenit</option>
-                <option value="delete">Smazat</option>
-            </select> &nbsp;
-            
-            <span class="overprice-option nodisplay">
-                <select name="operation">
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                </select>
-                <input class="microinput" name="price" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" />
-            </span>
-            <a class="btn btn_document ajax-massaction" href="/admin/product/massAction/"><span>Proveď</span></a>
-        </div><!--tableoptions-->
-        {/if}
+            <input class="microinput" name="price" type="text" pattern="[\d]*[\.,]?[\d]+" 
+                   title="Čísla mezi 0 a 1 - přecenění o procento | Celá čísla - přecenění o danou hodnotu"/>
+        </span>
+        <a class="btn btn_document ajax-massaction" href="/admin/product/massaction/"><span>Proveď</span></a>
+    </div><!--tableoptions-->
+    {/if}
 </div>

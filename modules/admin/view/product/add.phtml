@@ -63,7 +63,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Hlavní obrázek*</label>
+                    <label>Hlavní foto*<small>*.jpg, *.jpeg, *.png, *.gif</small></label>
                     <span class="field">
                         <input type="file" name="mainfile"/>
                         {if isset($errors["mainfile"])}
@@ -91,11 +91,22 @@
                     <span class="field check-size nodisplay">
                         {if !empty($sizes)}
                             {foreach $size in $sizes}
-                            <input type="checkbox" name="size[]" value="{echo $size->id}">{echo $size->title}<br/>
+                                <input type="checkbox" name="size[{echo $size->id}]" value="{echo $size->id}">{echo $size->title}
+                                <input type="text" class="microinput" title="Pouze čísla" pattern="[\d]+" name="quantity-{echo $size->id}" value="" /><br class="clear-all"/>
                             {/foreach}
                         {/if}
                         {if isset($errors["sizeId"])}
                         <label class="error">{echo join("<br/>", $errors["sizeId"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p class="product-quantity">
+                    <label>Počet kusů*</label>
+                    <span class="field">
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]+" name="quantity" 
+                               value="{echo isset($product)? $product->quantity: ""}" />
+                        {if isset($errors["quantity"])}
+                        <label class="error">{echo join("<br/>", $errors["quantity"])}</label>
                         {/if}
                     </span>
                 </p>
@@ -243,7 +254,6 @@
                         {/if}
                     </span>
                 </p>
-                
             </div>
             
             <div id="meta">
@@ -261,7 +271,7 @@
                     <label>Meta-Klíčová slova</label>
                     <span class="field" >
                         <input class="longinput" type="text" name="metakeywords" 
-                               value="{echo isset($product)? $product->metaKeaywords: ""}" />
+                               value="{echo isset($product)? $product->metaKeywords: ""}" />
                         {if isset($errors["metaKeaywords"])}
                         <label class="error">{echo join("<br/>", $errors["metaKeaywords"])}</label>
                         {/if}
@@ -275,7 +285,7 @@
                         <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                         {/if}
                     </span>
-                </p>                                   
+                </p>
             </div>
 
             <div id="photos">
@@ -289,10 +299,10 @@
                     </span>
                 </p>
                 <p>
-                    <label>Obrázek</label>
+                    <label>Foto<small>*.jpg, *.jpeg, *.png, *.gif</small></label>
                     <span class="field">
-                        <a href="#" class="btn btn_folder multi_upload"><span>+</span></a>
-                        <a href="#" class="btn btn_folder multi_upload_dec"><span>-</span></a>
+                        <a href="#" class="btn btn_folder multi_upload" title="Pridat pole pro fotografii"><span>+</span></a>
+                        <a href="#" class="btn btn_folder multi_upload_dec" title="Odebrat pole pro fotografii"><span>-</span></a>
                     </span>
                     <span class="field file_inputs">
                         <input type="file" name="secondfile[]"/>

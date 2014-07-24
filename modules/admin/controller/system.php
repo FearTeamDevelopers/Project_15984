@@ -84,9 +84,11 @@ class Admin_Controller_System extends Controller
             $errors = array();
 
             foreach ($config as $conf) {
+                $oldVal = $conf->getValue();
                 $conf->value = RequestMethods::post($conf->getXkey(), '');
+
                 if ($conf->validate()) {
-                    Event::fire('admin.log', array('success', $conf->getXkey() . ': ' . $conf->getValue()));
+                    Event::fire('admin.log', array('success', $conf->getXkey() . ': ' . $oldVal . ' - ' . $conf->getValue()));
                     $conf->save();
                 } else {
                     Event::fire('admin.log', array('fail', $conf->getXkey() . ': ' . $conf->getValue()));
@@ -113,24 +115,25 @@ class Admin_Controller_System extends Controller
         }
 
         ini_set('max_execution_time', 1800);
-        
+
         $view = $this->getActionView();
-        $numOfProducts = 3000;
+        $numOfProducts = 500;
 
         for ($i = 1; $i <= $numOfProducts; $i++) {
             //create variants
-            if ($i % 250 == 0) {
+            if ($i % 50 == 0) {
                 $product = new App_Model_Product(array(
                     'sizeId' => 0,
-                    'urlKey' => time() . '-' . time().'-'.$i,
+                    'urlKey' => time() . '-' . time() . '-' . $i,
                     'productType' => 's variantami',
                     'variantFor' => 0,
-                    'productCode' => time().'-'.$i,
-                    'title' => time().'-'.$i,
-                    'description' => time().'-'.$i,
+                    'productCode' => time() . '-' . $i,
+                    'title' => time() . '-' . $i,
+                    'description' => time() . '-' . $i,
                     'basicPrice' => 0,
                     'regularPrice' => 0,
                     'currentPrice' => (int) substr(time(), 1, 3),
+                    'quantity' => 1,
                     'discount' => 0,
                     'discountFrom' => '',
                     'discountTo' => '',
@@ -159,25 +162,26 @@ class Admin_Controller_System extends Controller
                     ));
                     $productCategory->save();
 
-                    if ($i > 1000) {
+                    if ($i > 100) {
                         $recomProduct = new App_Model_RecommendedProduct(array(
                             'productId' => $pid,
-                            'recommendedId' => rand(1, 990)
+                            'recommendedId' => rand(1, 99)
                         ));
                         $recomProduct->save();
                     }
 
                     $productVariant = new App_Model_Product(array(
                         'sizeId' => $size,
-                        'urlKey' => time() . '-' . time().'-'.$i.'-'.$i,
+                        'urlKey' => time() . '-' . time() . '-' . $i . '-' . $i,
                         'productType' => 'varianta',
                         'variantFor' => $pid,
-                        'productCode' => time().'-'.$i.'-'.$i,
-                        'title' => time().'-'.$i.'-'.$i,
-                        'description' => time().'-'.$i.'-'.$i,
+                        'productCode' => time() . '-' . $i . '-' . $i,
+                        'title' => time() . '-' . $i . '-' . $i,
+                        'description' => time() . '-' . $i . '-' . $i,
                         'basicPrice' => 0,
                         'regularPrice' => 0,
                         'currentPrice' => (int) substr(time(), 1, 3),
+                        'quantity' => 1,
                         'discount' => 0,
                         'discountFrom' => '',
                         'discountTo' => '',
@@ -204,15 +208,16 @@ class Admin_Controller_System extends Controller
 
                 $product = new App_Model_Product(array(
                     'sizeId' => $size,
-                    'urlKey' => time() . '-' . time().'-'.$i,
+                    'urlKey' => time() . '-' . time() . '-' . $i,
                     'productType' => 'bez variant',
                     'variantFor' => 0,
-                    'productCode' => time().'-'.$i,
-                    'title' => time().'-'.$i,
-                    'description' => time().'-'.$i,
+                    'productCode' => time() . '-' . $i,
+                    'title' => time() . '-' . $i,
+                    'description' => time() . '-' . $i,
                     'basicPrice' => 0,
                     'regularPrice' => 0,
                     'currentPrice' => (int) substr(time(), 1, 3),
+                    'quantity' => 1,
                     'discount' => 0,
                     'discountFrom' => '',
                     'discountTo' => '',
@@ -241,10 +246,10 @@ class Admin_Controller_System extends Controller
                     ));
                     $productCategory->save();
 
-                    if ($i > 1000) {
+                    if ($i > 100) {
                         $recomProduct = new App_Model_RecommendedProduct(array(
                             'productId' => $pid,
-                            'recommendedId' => rand(1, 990)
+                            'recommendedId' => rand(1, 99)
                         ));
                         $recomProduct->save();
                     }
@@ -255,4 +260,14 @@ class Admin_Controller_System extends Controller
         self::redirect('/admin/');
     }
 
+    /**
+     * @before _secured, _admin
+     */
+    public function deletedProducts()
+    {
+        $view = $this->getActionView();
+        
+        $products = App_Model_Product::all(array('deleted = ?' => true));
+        $view->set('deletedproducts', $products);
+    }
 }

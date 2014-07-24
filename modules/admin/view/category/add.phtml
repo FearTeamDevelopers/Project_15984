@@ -73,7 +73,8 @@
         <p>
             <label>Meta-Název</label>
             <span class="field">
-                <input required class="longinput" type="text" name="metaTitle" value="{echo isset($category)? $category->metaTitle: ""}" />
+                <input required class="longinput" type="text" name="metaTitle" 
+                       value="{echo isset($category)? $category->metaTitle: ""}" />
                 {if isset($errors["metaTitle"])}
                 <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                 {/if}
@@ -82,7 +83,8 @@
         <p>
             <label>Meta-Klíčová slova</label>
             <span class="field">
-                <input required class="longinput" type="text" name="metaKeywords" value="{echo isset($category)? $category->metaKeywords: ""}" />
+                <input required class="longinput" type="text" name="metaKeywords" 
+                       value="{echo isset($category)? $category->metaKeywords: ""}" />
                 {if isset($errors["metaKeywords"])}
                 <label class="error">{echo join("<br/>", $errors["metaKeywords"])}</label>
                 {/if}

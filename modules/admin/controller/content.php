@@ -73,7 +73,10 @@ class Admin_Controller_Content extends Controller
                 'pageName' => RequestMethods::post('page'),
                 'urlKey' => $urlKey,
                 'body' => RequestMethods::post('text', ''),
-                'bodyEn' => RequestMethods::post('texten', '')
+                'bodyEn' => RequestMethods::post('texten', ''),
+                'metaTitle' => RequestMethods::post('metatitle'),
+                'metaKeywords' => RequestMethods::post('metakeywords'),
+                'metaDescription' => RequestMethods::post('metadescription')
             ));
 
             if (empty($errors) && $content->validate()) {
@@ -124,6 +127,9 @@ class Admin_Controller_Content extends Controller
             $content->urlKey = $urlKey;
             $content->body = RequestMethods::post('text', '');
             $content->bodyEn = RequestMethods::post('texten', '');
+            $content->metaTitle = RequestMethods::post('metatitle');
+            $content->metaKeywords = RequestMethods::post('metakeywords');
+            $content->metaDescription = RequestMethods::post('metadescription');
             $content->active = RequestMethods::post('active');
 
             if (empty($errors) && $content->validate()) {

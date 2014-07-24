@@ -6,6 +6,12 @@ jQuery(document).ready(function() {
         jQuery('#loader, .loader').hide();
     });
 
+    jQuery("[title]").tooltip({
+        position: {
+            my: "left top",
+            at: "right+5 top-5"
+        }
+    });
     jQuery('a.view').lightBox();
     jQuery('#tabs, .tabs').tabs();
 
@@ -104,7 +110,7 @@ jQuery(document).ready(function() {
         var name = jQuery(this).attr('name');
 
         jQuery('.tableoptions select[name=' + name + ']').val(val);
-        
+
         if (val == 2) {
             var tr = jQuery('.stdtable2 tbody tr');
 
@@ -119,7 +125,7 @@ jQuery(document).ready(function() {
                 }
                 jQuery(this).addClass('togglerow');
             });
-        } else if(val == 1) {
+        } else if (val == 1) {
             jQuery('.stdtable2 tbody tr.togglerow').removeClass('togglerow');
             selected = [];
         }
@@ -130,7 +136,7 @@ jQuery(document).ready(function() {
 
         if (selected == 'overprice') {
             jQuery('.overprice-option').removeClass('nodisplay');
-            jQuery('.overprice-option input[name=price]').blur(function(){
+            jQuery('.overprice-option input[name=price]').blur(function() {
                 var price = jQuery(this).val();
                 jQuery('.overprice-option input[name=price]').val(price);
             });
@@ -155,7 +161,7 @@ jQuery(document).ready(function() {
                 jQuery('#dialog p').text(msg);
 
                 jQuery('#dialog').dialog({
-                    title: 'Vysledek',
+                    title: 'Výsledek',
                     width: 600,
                     modal: true,
                     position: {my: 'center', at: 'top', of: window},
@@ -175,7 +181,7 @@ jQuery(document).ready(function() {
                 jQuery('#dialog p').text(msg);
 
                 jQuery('#dialog').dialog({
-                    title: 'Vysledek',
+                    title: 'Výsledek',
                     width: 600,
                     modal: true,
                     position: {my: 'center', at: 'top', of: window},
@@ -495,9 +501,7 @@ jQuery(document).ready(function() {
         jQuery('.headerinner2').remove();
     }
 
-    /* ---------------------- DATATABLES --------------------------------*/
-
-
+    
 
     /* ---------------------- CUSTOM SCRIPTS --------------------------------*/
     //Collection
@@ -550,10 +554,12 @@ jQuery(document).ready(function() {
     jQuery('.product-select').change(function() {
         var selected = jQuery(this).children('option:selected').val();
 
-        if (selected == 1) {
+        if (selected == 'bez variant') {
             jQuery('.check-size').addClass('nodisplay');
             jQuery('.select-size').removeClass('nodisplay');
-        } else if (selected == 2) {
+            jQuery('.product-quantity').show();
+        } else if (selected == 's variantami') {
+            jQuery('.product-quantity').hide();
             jQuery('.select-size').addClass('nodisplay');
             jQuery('.check-size').removeClass('nodisplay');
         }
@@ -612,7 +618,7 @@ jQuery(document).ready(function() {
 
     //delete image in table list
     jQuery('.mediatable a.btn_trash').click(function() {
-        var c = confirm('Continue delete?');
+        var c = confirm('Opravdu smazat?');
         var parentTr = jQuery(this).parents('tr');
 
         if (c) {
@@ -720,7 +726,26 @@ jQuery(document).ready(function() {
 
     //delete individual row
     jQuery('.stdtable a.deleteRow').click(function() {
-        var c = confirm('Continue delete?');
+        var c = confirm('Opravdu smazat?');
+        var parentTr = jQuery(this).parents('tr');
+
+        if (c) {
+            var url = jQuery(this).attr('href');
+            var tk = jQuery('#tk').val();
+
+            jQuery.post(url, {tk: tk}, function(msg) {
+                if (msg == 'success') {
+                    parentTr.fadeOut();
+                } else {
+                    alert(msg);
+                }
+            });
+        }
+        return false;
+    });
+    
+    jQuery('.stdtable a.undeleteRow').click(function() {
+        var c = confirm('Pokračovat v obnovení?');
         var parentTr = jQuery(this).parents('tr');
 
         if (c) {

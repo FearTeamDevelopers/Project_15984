@@ -42,7 +42,7 @@ class RequestMethods
      */
     public static function post($key, $default = '')
     {
-        if (isset($_POST[$key])) {
+        if (isset($_POST[$key]) && !empty($_POST[$key])) {
             return $_POST[$key];
         }
         return $default;

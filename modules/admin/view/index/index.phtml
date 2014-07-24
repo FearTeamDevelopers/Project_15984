@@ -103,7 +103,7 @@
                             {foreach $product in $latestproducts}
                                 <tr>
                                     <td><img src="{echo $product->getImgThumb()}" alt="" height="80" /></td>
-                                    <td>{echo $product->getTitle()}</td>
+                                    <td><a href="/admin/product/edit/{echo $product->getId()}">{echo $product->getTitle()}</a></td>
                                     <td>{echo $product->getProductCode()}</td>
                                     <td>{echo $product->getCurrentPrice()}</td>
                                     <td>{echo $product->getCreated()}</td>

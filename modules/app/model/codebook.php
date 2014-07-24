@@ -1,4 +1,3 @@
-
 <?php
 
 use THCFrame\Model\Model;
