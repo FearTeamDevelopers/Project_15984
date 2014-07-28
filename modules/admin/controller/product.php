@@ -37,7 +37,7 @@ class Admin_Controller_Product extends Controller
             'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
         ));
 
-        $uploadTo = substr($urlKey, 0, 3);
+        $uploadTo = trim(substr(str_replace('.','',$urlKey), 0, 3));
 
         try {
             $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
@@ -70,6 +70,7 @@ class Admin_Controller_Product extends Controller
                 'isInAction' => RequestMethods::post('inaction'),
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
+                'hasGroupPhoto' => RequestMethods::post('photoType'),
                 'imgMain' => trim($uploadedFile->file->path, '.'),
                 'imgThumb' => trim($uploadedFile->thumb->path, '.'),
                 'metaTitle' => RequestMethods::post('metatitle', $title),
@@ -103,6 +104,7 @@ class Admin_Controller_Product extends Controller
                 'isInAction' => RequestMethods::post('inaction'),
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
+                'hasGroupPhoto' => RequestMethods::post('photoType'),
                 'imgMain' => trim($uploadedFile->file->path, '.'),
                 'imgThumb' => trim($uploadedFile->thumb->path, '.'),
                 'metaTitle' => RequestMethods::post('metatitle', $title),
@@ -167,6 +169,7 @@ class Admin_Controller_Product extends Controller
                 'isInAction' => '',
                 'newFrom' => '',
                 'newTo' => '',
+                'hasGroupPhoto' => 0,
                 'imgMain' => '',
                 'imgThumb' => '',
                 'metaTitle' => '',
@@ -355,7 +358,7 @@ class Admin_Controller_Product extends Controller
 
                 /* additional photos */
                 if (RequestMethods::post('uplMoreImages') == 1) {
-                    $uploadTo = substr($product, 0, 3);
+                    $uploadTo = trim(substr(str_replace('.','',$product->getUrlKey()), 0, 3));
                     $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
                 }
 
@@ -453,7 +456,7 @@ class Admin_Controller_Product extends Controller
                     $errors['title'] = array('Produkt s tímto názvem již existuje');
                 }
 
-                $uploadTo = substr($product->getUrlKey(), 0, 3);
+                $uploadTo = trim(substr(str_replace('.','',$product->getUrlKey()), 0, 3));
                 if ($product->imgMain == '') {
                     try {
                         $fileManager = new FileManager(array(
@@ -497,6 +500,7 @@ class Admin_Controller_Product extends Controller
                 $product->isInAction = RequestMethods::post('inaction');
                 $product->newFrom = RequestMethods::post('newfrom');
                 $product->newTo = RequestMethods::post('newto');
+                $product->hasGroupPhoto = RequestMethods::post('photoType');
                 $product->imgMain = $imgMain;
                 $product->imgThumb = $imgThumb;
                 $product->metaTitle = RequestMethods::post('metatitle', RequestMethods::post('title'));
@@ -650,10 +654,11 @@ class Admin_Controller_Product extends Controller
      * @before _secured, _admin
      * @param type $productId
      */
-    public function addrecommended($productId)
+    public function addRecommended($productId)
     {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
+        
         $view->set('productid', $productId);
 
         if (RequestMethods::post('submitSaveRecommended')) {
@@ -1056,28 +1061,34 @@ class Admin_Controller_Product extends Controller
         $str = '{ "draw": ' . $draw . ', "recordsTotal": ' . $count . ', "recordsFiltered": ' . $count . ', "data": [';
 
         $prodArr = array();
-        foreach ($products as $product) {
-            $arr = array();
-            $arr [] = "[ \"" .$product->getId(). "\"";
-            $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
-            $arr [] = "\"" .$product->getTitle(). "\"";
-            $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
-            $arr [] = "\"" .$product->catTitle. "\"";
-            $arr [] = "\"" .$product->getProductCode(). "\"";
-            $arr [] = "\"" .$product->getCurrentPrice(). "\"";
+        if ($products !== null) {
+            foreach ($products as $product) {
+                $arr = array();
+                $arr [] = "[ \"" . $product->getId() . "\"";
+                $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
+                $arr [] = "\"" . $product->getTitle() . "\"";
+                $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
+                $arr [] = "\"" . $product->catTitle . "\"";
+                $arr [] = "\"" . $product->getProductCode() . "\"";
+                $arr [] = "\"" . $product->getCurrentPrice() . "\"";
 
-            $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
-            $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
-            if ($this->isAdmin()) {
-                $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
+                $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
+                $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
+                if ($this->isAdmin()) {
+                    $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
+                }
+                $arr [] = $tempStr . "\"]";
+                $prodArr[] = join(',', $arr);
             }
-            $arr [] = $tempStr . "\"]";
-            $prodArr[] = join(',', $arr);
+
+            $str .= join(',', $prodArr) . "]}";
+
+            echo $str;
+        } else {
+            $str .= "[ \"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]]}";
+
+            echo $str;
         }
-
-        $str .= join(',', $prodArr) . "]}";
-
-        echo $str;
     }
 
 }

@@ -25,7 +25,11 @@
             <tbody>
                 {if !empty($categories)}
                     {foreach $category in $categories}
-                        <tr>
+                        {if ($category->active)}
+                            <tr class="rowActive">
+                        {/if}{else}
+                            <tr>
+                        {/else}
                             <td>{echo $category->getTitle()}</td>
                             <td>
                                 {script $typ=""}

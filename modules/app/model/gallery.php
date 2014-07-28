@@ -48,9 +48,9 @@ class App_Model_Gallery extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 200
      * 
-     * @validate required, alphanumeric, max(250)
+     * @validate required, alphanumeric, max(200)
      * @label url key
      */
     protected $_urlKey;
@@ -61,7 +61,7 @@ class App_Model_Gallery extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, alphanumeric, max(2048)
+     * @validate required, html, max(30000)
      * @label description
      */
     protected $_description;

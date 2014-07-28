@@ -58,8 +58,8 @@
                     <label>Hlavní obrázek*</label>
                     {if $product->imgMain != ""}
                     <span class="field" id="currentLogo">
-                        <img src="{echo $product->imgThumb}" alt="" height="100px" />
-                        <a href="#" value="{echo $product->id}" id="delImg" class="btn btn3 btn_trash" title="Smazat"></a>
+                        <img src="{echo $product->imgThumb}" alt="" height="100" />
+                        <a href="/admin/product/deleteProductMainPhoto/{echo $product->id}" id="delImg" class="btn btn3 btn_trash" title="Smazat"></a>
                     </span> 
 
                     <span class="field nodisplay" id="uploadLogo" >
@@ -77,6 +77,21 @@
                     </span> 
                     {/else}
                 </p>
+                <p>
+                    <label>Typ fotografie*</label>
+                    <span class="field">
+                        <select name="photoType" class="longinput">
+                            {if $product->hasGroupPhoto == 1}
+                            <option value="0">Portrét</option>
+                            <option value="1" selected>Skupinová</option>
+                            {/if}{else}
+                            <option value="0" selected>Portrét</option>
+                            <option value="1">Skupinová</option>
+                            {/else}
+                        </select>
+                    </span>
+                </p>
+                
                 {if $product->sizeId != 0}
                 <p>
                     <label>Velikost*</label>
@@ -164,7 +179,7 @@
                 <p>
                     <label>Aktivní</label>
                     <span class="field">
-                        <select name="active">
+                        <select name="active" class="longinput">
                             {if $product->active}
                             <option value="0">Neaktivní</option>
                             <option value="1" selected>Aktivní</option>

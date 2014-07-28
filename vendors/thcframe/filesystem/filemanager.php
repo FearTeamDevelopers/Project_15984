@@ -282,7 +282,7 @@ class FileManager extends Base
         if ($path != '') {
             $name = pathinfo($path, PATHINFO_FILENAME);
             return StringMethods::removeDiacriticalMarks(
-                            str_replace(' ', '_', $name)
+                    str_replace('.', '_', str_replace(' ', '_', $name))
             );
         } else {
             return null;
@@ -371,10 +371,6 @@ class FileManager extends Base
         $path = $this->getPathToImages() . '/' . $uploadto . '/';
         $pathToThumbs = $this->getPathToThumbs() . '/' . $uploadto . '/';
         $pathToDocs = $this->getPathToDocuments() . '/' . $uploadto . '/';
-
-
-
-
 
         if (is_array($_FILES[$postField]['tmp_name'])) {
             $fileDataArray = array('files' => array(), 'errors' => array());

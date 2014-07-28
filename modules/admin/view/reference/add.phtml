@@ -1,0 +1,60 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/reference/">Seznam Referencí</a></li>
+    <li class="current"><a href="#">Nová Reference</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Reference</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" enctype="multipart/form-data">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <p>
+            <label>Název</label>
+            <span class="field">
+                <input class="longinput" type="text" name="title" value="{echo isset($reference)? $reference->title: ""}" />
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Typ*</label>
+            <span class="field">
+                <select name="corporate">
+                    <option value="0">Zákaznická</option>
+                    <option value="1">Firemní</option>
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Autor</label>
+            <span class="field">
+                <input type="text" name="author" class="longinput" value="{echo isset($reference)? $reference->author: ""}"/>
+            </span>
+        </p>
+        <p>
+            <label>Text*</label>
+            <span class="field">
+                <textarea class="longinput" name="text" id="ckeditor">{echo isset($reference)? $reference->body: ""}</textarea>
+                {if isset($errors["text"])}
+                <label class="error">{echo join("<br/>", $errors["text"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Foto / Logo*<small>*.jpg, *.jpeg, *.png, *.gif</small></label>
+            <span class="field">
+                <input type="file" name="mainfile"/>
+                {if isset($errors["mainfile"])}
+                <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
+                {/if}
+            </span> 
+        </p>
+        <p class="stdformbutton">
+            <input name="submitAddReference" type="submit" value="Uložit" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</div>

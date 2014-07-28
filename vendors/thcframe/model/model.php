@@ -200,7 +200,7 @@ class Model extends Base
         if ($value == '') {
             return true;
         } else {
-            return StringMethods::match($value, '#^([a-zA-Z0-9_\\-\/:]*\.[a-z]{2,4})$#');
+            return StringMethods::match($value, '#^([a-zA-Z0-9-_\\\/:\.()]*\.[a-z]{2,4})$#');
         }
     }
 

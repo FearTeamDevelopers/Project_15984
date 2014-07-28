@@ -19,9 +19,9 @@ class Admin_Controller_Index extends Controller
                 array('id', 'title', 'urlKey', 'created'), 
                 array('created' => 'desc'), 5);
         
-        $latestNews = App_Model_News::all(
+        $latestNews = App_Model_Reference::all(
                 array('active = ?' => true), 
-                array('id', 'author', 'urlKey', 'title'),
+                array('id', 'author', 'title'),
                 array('created' => 'desc'), 5);
         
         $view->set('latestproducts', $latestProducts)

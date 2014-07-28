@@ -1,0 +1,76 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Seznam referencí</a></li>
+    <li><a href="/admin/reference/add/">Nová reference</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="image"><span>Seznam referencí</span></h2>
+    </div><!--contenttitle-->
+    
+    <form method="post" class="massActionForm" action="/admin/reference/massaction/">
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+            <colgroup>
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" /> <col class="con1" />
+                <col class="con0" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="head0 width50"><input type="checkbox" class="checkall" /></th>
+                    <td class="head1">Náhled</td>
+                    <td class="head0">Název</td>
+                    <td class="head1">Typ</td>
+                    <td class="head0">Autor</td>
+                    <td class="head1">Vytvořeno</td>
+                    <td class="head0">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                {if !empty($reference)}
+                    {foreach $ref in $reference}
+                        {if ($ref->active)}
+                            <tr class="rowActive">
+                        {/if}{else}
+                            <tr>
+                        {/else}
+                            <td class="center">
+                                <input type="checkbox" name="refids[]" value="{echo $ref->getId()}" />
+                            </td>
+                            
+                            <td><img src="{echo $ref->imgThumb}" alt="" height="100"/></td>
+                            <td>{echo $ref->getTitle()}</td>
+                            <td>{echo $ref->getAuthor()}</td>
+                            <td>
+                                {if ($ref->isCorporate)}
+                                Firemní
+                            {/if}{else}
+                                Zákaznická
+                            {/else}
+                            </td>
+                            <td>{echo $ref->getCreated()}</td>
+                            <td>
+                                <a href="/admin/reference/edit/{echo $ref->id}" alt= "Editovat"class="btn btn3 btn_pencil" title="Edit"></a>
+                                {if $isAdmin}<a href="/admin/reference/delete/{echo $ref->id}" alt="Smazat" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                            </td>
+                        </tr>
+                    {/foreach}
+                {/if}
+            </tbody>
+        </table>
+        
+        {if $isAdmin}
+        <div class="tableoptions">
+            Označené:
+            <select class="radius3" name="action">
+                <option value="activate">Aktivovat</option>
+                <option value="deactivate">Deaktivovat</option>
+                <option value="delete">Smazat</option>
+            </select> &nbsp;
+            <input class="radius3" type="submit" name="performReferenceAction" value="Provést"/>
+        </div><!--tableoptions-->
+        {/if}
+    </form>
+</div>

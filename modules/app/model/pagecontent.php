@@ -37,10 +37,10 @@ class App_Model_PageContent extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 200
      * @unique
      * 
-     * @validate required, alpha, max(250)
+     * @validate required, alpha, max(200)
      * @label url key
      */
     protected $_urlKey;
@@ -62,7 +62,7 @@ class App_Model_PageContent extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, html, max(20000)
+     * @validate required, html, max(30000)
      * @label text
      */
     protected $_body;
@@ -73,7 +73,7 @@ class App_Model_PageContent extends Model
      * @type text
      * @length 256
      * 
-     * @validate html, max(20000)
+     * @validate html, max(30000)
      * @label text en
      */
     protected $_bodyEn;
@@ -93,9 +93,9 @@ class App_Model_PageContent extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 256
      * 
-     * @validate alphanumeric, max(250)
+     * @validate alphanumeric, max(5000)
      * @label meta keywords
      */
     protected $_metaKeywords;

@@ -21,50 +21,60 @@ class App_Etc_Module extends Module
     protected $_observerClass = 'App_Etc_Observer';
     protected $_routes = array(
         array(
-            'pattern' => '/news',
+            'pattern' => '/kontakty',
             'module' => 'app',
-            'controller' => 'news',
-            'action' => 'index',
+            'controller' => 'index',
+            'action' => 'contact',
         ),
         array(
             'pattern' => '/o-nas',
             'module' => 'app',
             'controller' => 'index',
-            'action' => 'aboutUs',
+            'action' => 'aboutus',
         ),
         array(
             'pattern' => '/cenik',
             'module' => 'app',
             'controller' => 'index',
-            'action' => 'priceList',
+            'action' => 'pricelist',
         ),
         array(
-            'pattern' => '/news/:page',
+            'pattern' => '/reference',
             'module' => 'app',
-            'controller' => 'news',
-            'action' => 'index',
-            'args' => ':page'
+            'controller' => 'index',
+            'action' => 'reference',
         ),
         array(
-            'pattern' => '/kategorie/:urlkey',
+            'pattern' => '/hledat',
+            'module' => 'app',
+            'controller' => 'index',
+            'action' => 'search',
+        ),
+        array(
+            'pattern' => '/kategorie/:urlkey/',
             'module' => 'app',
             'controller' => 'index',
             'action' => 'category',
             'args' => ':urlkey'
         ),
         array(
-            'pattern' => '/kostym/:urlkey',
+            'pattern' => '/kostym/:urlkey/',
             'module' => 'app',
             'controller' => 'index',
             'action' => 'product',
             'args' => ':urlkey'
         ),
         array(
-            'pattern' => '/galerie/:id',
+            'pattern' => '/feed',
             'module' => 'app',
-            'controller' => 'gallery',
-            'action' => 'index',
-            'args' => ':id'
+            'controller' => 'index',
+            'action' => 'feed',
+        ),
+        array(
+            'pattern' => '/feed/',
+            'module' => 'app',
+            'controller' => 'index',
+            'action' => 'feed',
         ),
         array(
             'pattern' => '/login',

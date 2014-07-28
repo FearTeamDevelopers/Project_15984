@@ -12,6 +12,7 @@ jQuery(document).ready(function() {
             at: "right+5 top-5"
         }
     });
+    
     jQuery('a.view').lightBox();
     jQuery('#tabs, .tabs').tabs();
 
@@ -221,7 +222,6 @@ jQuery(document).ready(function() {
         return false;
     });
 
-
     //notification onclick
     jQuery('.notialert').click(function() {
         var t = jQuery(this);
@@ -253,7 +253,6 @@ jQuery(document).ready(function() {
 
         return false;
     });
-
 
     jQuery(document).click(function(event) {
         var ud = jQuery('.userdrop');
@@ -501,7 +500,7 @@ jQuery(document).ready(function() {
         jQuery('.headerinner2').remove();
     }
 
-    
+
 
     /* ---------------------- CUSTOM SCRIPTS --------------------------------*/
     //Collection
@@ -537,11 +536,12 @@ jQuery(document).ready(function() {
         jQuery('#loader').show();
     });
 
-    jQuery('#delImg').click(function() {
-        var id = jQuery(this).attr('value');
-        var token = jQuery('#tk').val();
+    jQuery('a#delImg').click(function() {
+        event.preventDefault();
+        var url = jQuery(this).attr('href');
+        var tk = jQuery('#tk').val();
 
-        jQuery.post('/admin/product/deleteproductmainphoto/' + id, {tk: token}, function(msg) {
+        jQuery.post(url, {tk: tk}, function(msg) {
             if (msg == 'success') {
                 jQuery('#currentLogo').hide(500);
                 jQuery('#uploadLogo').removeClass('nodisplay');
@@ -549,6 +549,8 @@ jQuery(document).ready(function() {
                 jQuery('#currentLogo').append("<label class='error'>" + msg + "</label>")
             }
         });
+
+        return false;
     });
 
     jQuery('.product-select').change(function() {
@@ -564,8 +566,6 @@ jQuery(document).ready(function() {
             jQuery('.check-size').removeClass('nodisplay');
         }
     });
-
-
 
     /* ------------ MEDIA ---------------*/
     //a little image effectts
@@ -743,7 +743,7 @@ jQuery(document).ready(function() {
         }
         return false;
     });
-    
+
     jQuery('.stdtable a.undeleteRow').click(function() {
         var c = confirm('Pokračovat v obnovení?');
         var parentTr = jQuery(this).parents('tr');

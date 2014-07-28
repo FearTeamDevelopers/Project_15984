@@ -45,8 +45,8 @@
                     <label>Typ produktu*</label>
                     <span class="field">
                         <select name="producttype" class="longinput product-select">
-                            <option value="bez variant">Product bez variant</option>
-                            <option value="s variantami">Product s variantami</option>
+                            <option value="bez variant">Kostým bez variant</option>
+                            <option value="s variantami">Kostým s variantami</option>
                         </select>
                         {if isset($errors["productType"])}
                         <label class="error">{echo join("<br/>", $errors["productType"])}</label>
@@ -54,7 +54,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Popis*<small>Max. 5000 znaků</small></label>
+                    <label>Popis*</label>
                     <span class="field">
                         <textarea required class="longinput" name="description" id="ckeditor">{echo isset($product)? $product->description: ""}</textarea>
                         {if isset($errors["description"])}
@@ -67,12 +67,21 @@
                     <span class="field">
                         <input type="file" name="mainfile"/>
                         {if isset($errors["mainfile"])}
-                        <label class="error">
-                            {echo join("<br/>", $errors["mainfile"])}
-                        </label>
+                        <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                         {/if}
                     </span> 
-
+                </p>
+                <p>
+                    <label>Typ fotografie*</label>
+                    <span class="field">
+                        <select name="photoType" class="longinput">
+                            <option value="0">Portrét</option>
+                            <option value="1">Skupinová</option>
+                        </select>
+                        {if isset($errors["hasGroupPhoto"])}
+                        <label class="error">{echo join("<br/>", $errors["hasGroupPhoto"])}</label>
+                        {/if}
+                    </span>
                 </p>
                 <p>
                     <label>Velikost*</label>

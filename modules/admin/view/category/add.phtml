@@ -25,7 +25,11 @@
                     <option></option>
                     {if !empty($categories)}
                         {foreach $cat in $categories}
-                            <option value="{echo $cat->id}">{echo $cat->title}</option>
+                            {if $cat->parentId == 0}
+                                <option value="{echo $cat->id}">+ {echo $cat->title}</option>
+                            {/if}{else}
+                                <option value="{echo $cat->id}">++ {echo $cat->title}</option>
+                            {/else}
                         {/foreach}
                     {/if}
                 </select>

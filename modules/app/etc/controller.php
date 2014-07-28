@@ -31,6 +31,19 @@ class Controller extends BaseController
             $database = Registry::get('database');
             $database->disconnect();
         });
+
+        $categories = \App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => 0));
+        
+        $this->getLayoutView()
+                ->set('category', $categories)
+                ->set('metatile', 'Agentura Karneval')
+                ->set('metakeywords', $this->loadConfigFromDb('meta_keywords'))
+                ->set('metadescription', $this->loadConfigFromDb('meta_description'))
+                ->set('metarobots', $this->loadConfigFromDb('meta_robots'))
+                ->set('metaogurl', $this->loadConfigFromDb('meta_og_url'))
+                ->set('metaogtype', $this->loadConfigFromDb('meta_og_type'))
+                ->set('metaogsitename', $this->loadConfigFromDb('meta_og_site_name'))
+                ->set('metaogtitle', $this->loadConfigFromDb('meta_og_title'));
     }
 
     /**
@@ -49,18 +62,6 @@ class Controller extends BaseController
      */
     public function render()
     {
-        if ($this->getUser()) {
-            if ($this->getActionView()) {
-                $this->getActionView()
-                        ->set('authUser', $this->getUser());
-            }
-
-            if ($this->getLayoutView()) {
-                $this->getLayoutView()
-                        ->set('authUser', $this->getUser());
-            }
-        }
-
         parent::render();
     }
 

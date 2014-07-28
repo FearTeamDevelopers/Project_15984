@@ -58,11 +58,11 @@ class App_Model_Category extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 200
      * @unique
      * @index
      * 
-     * @validate required, alphanumeric, max(100)
+     * @validate required, alphanumeric, max(200)
      * @label url key
      */
     protected $_urlKey;
@@ -113,7 +113,7 @@ class App_Model_Category extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, alphanumeric, max(2048)
+     * @validate required, html, max(30000)
      * @label text
      */
     protected $_mainText;
@@ -124,7 +124,7 @@ class App_Model_Category extends Model
      * @type text
      * @length 150
      * 
-     * @validate required, alphanumeric, max(150)
+     * @validate alphanumeric, max(250)
      * @label meta title
      */
     protected $_metaTitle;
@@ -133,9 +133,9 @@ class App_Model_Category extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 256
      * 
-     * @validate required, alphanumeric, max(250)
+     * @validate alphanumeric, max(5000)
      * @label meta keywords
      */
     protected $_metaKeywords;
@@ -146,7 +146,7 @@ class App_Model_Category extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, alphanumeric, max(2048)
+     * @validate alphanumeric, max(30000)
      * @label meta description
      */
     protected $_metaDescription;
@@ -169,6 +169,11 @@ class App_Model_Category extends Model
      * @readwrite
      */
     protected $_subcategory;
+    
+    /**
+     * @readwrite
+     */
+    protected $_fbLikeUrl;
 
     /**
      * 

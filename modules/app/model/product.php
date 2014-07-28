@@ -90,9 +90,9 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 200
      * 
-     * @validate required, alphanumeric, max(250)
+     * @validate required, alphanumeric, max(200)
      * @label title
      */
     protected $_title;
@@ -103,7 +103,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, alphanumeric, max(5000)
+     * @validate required, html, max(30000)
      * @label description
      */
     protected $_description;
@@ -255,6 +255,16 @@ class App_Model_Product extends Model
     /**
      * @column
      * @readwrite
+     * @type boolean
+     * @index
+     * 
+     * @validate max(3)
+     */
+    protected $_hasGroupPhoto;
+    
+    /**
+     * @column
+     * @readwrite
      * @type text
      * @length 250
      * 
@@ -289,9 +299,9 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 250
+     * @length 256
      * 
-     * @validate alphanumeric, max(250)
+     * @validate alphanumeric, max(5000)
      * @label meta keywords
      */
     protected $_metaKeywords;
@@ -302,7 +312,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate alphanumeric, max(5000)
+     * @validate html, max(30000)
      * @label meta description
      */
     protected $_metaDescription;
@@ -324,7 +334,7 @@ class App_Model_Product extends Model
      * @type text
      * @length 256
      * 
-     * @validate alphanumeric, max(5000)
+     * @validate html, max(30000)
      * @label rss feed description
      */
     protected $_rssFeedDescription;
@@ -383,6 +393,11 @@ class App_Model_Product extends Model
      * @readwrite
      */
     protected $_recommendedProducts;
+    
+    /**
+     * @readwrite
+     */
+    protected $_fbLikeUrl;
 
     /**
      * 
@@ -448,6 +463,17 @@ class App_Model_Product extends Model
 
     /**
      * 
+     * @param type $urlKey
+     * @return type
+     */
+    public static function fetchProductByUrlKey($urlKey)
+    {
+        $product = self::first(array('urlKey = ?' => $urlKey, 'deleted = ?' => false));
+        return $product->getProductById();
+    }
+    
+    /**
+     * 
      * @param type $id
      * @return type
      */
@@ -494,4 +520,43 @@ class App_Model_Product extends Model
         return App_Model_Product::initialize($productQuery);
     }
 
+    /**
+     * 
+     * @param type $category
+     */
+    public static function fetchProductsByCategory($categoryUrlKey)
+    {
+        $productsQuery = App_Model_Product::getQuery(array('pr.*'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                        array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
+                        array('id' => 'catId', 'parentId', 'title' => 'catTitle', 'urlKey' => 'catUrlKey', 
+                            'isGrouped', 'isSelable', 'mainText', 'metaTitle', 'metaKeywords', 'metaDescription'))
+                ->where('ct.active = ?', true)
+                ->where('ct.urlKey = ?', $categoryUrlKey)
+                ->order('pr.created', 'desc')
+                ->where('pr.deleted = ?', false);
+        $products = App_Model_Product::initialize($productsQuery);
+        $productZero = $products[0];
+        
+        if($productZero->parentId == 0 && count($products) < 30){
+            $productsSubQuery = App_Model_Product::getQuery(array('pr.*'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                        array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
+                        array('parentId', 'title' => 'catTitle', 'urlKey' => 'catUrlKey', 
+                            'isGrouped', 'isSelable', 'mainText', 'metaTitle', 'metaKeywords', 'metaDescription'))
+                ->where('ct.parentId = ?', $productZero->catId)
+                ->where('pr.deleted = ?', false)
+                ->order('pr.created', 'desc')
+                ->limit(30);
+            
+            $productSubs = App_Model_Product::initialize($productsSubQuery);
+            array_merge($products, $productSubs);
+        }
+        
+        return $products;
+    }
+    
+    
 }

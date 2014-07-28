@@ -3,17 +3,17 @@
 use THCFrame\Model\Model;
 
 /**
- * Description of App_Model_Productphoto
+ * Description of App_Model_Reference
  *
  * @author Tomy
  */
-class App_Model_ProductPhoto extends Model
+class App_Model_Reference extends Model
 {
 
     /**
      * @readwrite
      */
-    protected $_alias = 'pp';
+    protected $_alias = 'rf';
 
     /**
      * @column
@@ -26,12 +26,45 @@ class App_Model_ProductPhoto extends Model
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type boolean
      * @index
      * 
-     * @validate required, numeric, max(8)
+     * @validate max(3)
      */
-    protected $_productId;
+    protected $_active;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 85
+     * 
+     * @validate alphanumeric, max(85)
+     * @label author
+     */
+    protected $_author;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 150
+     * 
+     * @validate alphanumeric, max(150)
+     * @label title
+     */
+    protected $_title;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 256
+     * 
+     * @validate required, html, max(5000)
+     * @label text
+     */
+    protected $_body;
 
     /**
      * @column
@@ -41,7 +74,7 @@ class App_Model_ProductPhoto extends Model
      * 
      * @validate max(3)
      */
-    protected $_active;
+    protected $_isCorporate;
     
     /**
      * @column
@@ -49,7 +82,7 @@ class App_Model_ProductPhoto extends Model
      * @type text
      * @length 250
      * 
-     * @validate required, path, max(250)
+     * @validate path, max(250)
      * @label thum path
      */
     protected $_imgThumb;
@@ -60,11 +93,11 @@ class App_Model_ProductPhoto extends Model
      * @type text
      * @length 250
      * 
-     * @validate required, path, max(250)
+     * @validate path, max(250)
      * @label photo path
      */
     protected $_imgMain;
-
+    
     /**
      * @column
      * @readwrite
@@ -92,27 +125,6 @@ class App_Model_ProductPhoto extends Model
             $this->setActive(true);
         }
         $this->setModified(date('Y-m-d H:i:s'));
-    }
-
-    /**
-     * 
-     * @return type
-     */
-    public function getFormatedSize($unit = 'kb')
-    {
-        $bytes = floatval($this->_size);
-
-        $units = array(
-            'b' => 1,
-            'kb' => 1024,
-            'mb' => pow(1024, 2),
-            'gb' => pow(1024, 3)
-        );
-
-        $result = $bytes / $units[strtolower($unit)];
-        $result = strval(round($result, 2)) . ' ' . strtoupper($unit);
-
-        return $result;
     }
 
     /**
@@ -152,5 +164,5 @@ class App_Model_ProductPhoto extends Model
             return $this->_imgThumb;
         }
     }
-
+    
 }

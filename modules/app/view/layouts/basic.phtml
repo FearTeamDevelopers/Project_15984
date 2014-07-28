@@ -5,10 +5,19 @@
         <meta http-equiv="Content-Language" content="cs" />
         <meta http-equiv="CACHE-CONTROL" content="public">
         <meta name="viewport" content="width=device-width, maximum-scale=2.0, minimum-scale=1.0, initial-scale=1.0" />
-        <meta name="keywords" content="{echo $keywords}" />
-        <meta name="description" content="{echo $description}" />
-        <meta name="author" content="Tomas Hodan" />
-        <meta name="robots" content="INDEX,NOFOLLOW" />
+
+        <meta name="language" content="czech" />
+        <meta name="keywords" content="{echo $metakeywords}" />
+        <meta name="description" content="{echo $metadescription}" />
+        <meta name="revisit-after" content="1 Days" />
+        <meta name="distribution" content="global"/>
+        <meta property="og:url" content="{echo $metaogurl}" />
+        <meta property="og:title" content="{echo $metaogtitle}" />
+        <meta property="og:description" content="{echo $metadescription}" />
+        <meta property="og:type" content="{echo $metaogtype}" />
+        <meta property="og:site_name" content="{echo $metaogsitename}" />
+        <meta name="robots" content="{echo $metarobots}">
+
 
         <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
@@ -20,17 +29,17 @@
         <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
 
-        <title>{echo $title}</title>
+        <title>{echo $metatile}</title>
     </head>
     <body lang="cs">
         <!--   *Alternativa pozadí*
         <div id="bg">
-            <img src="../../../../public/images/karneval_bg.jpg" alt="">
+            <img src="/public/images/karneval_bg.jpg" alt="">
         </div>  -->
         <header>
             <article id="logo">
                 <h1 class="visuallyhidden">Logo</h1>
-                <img src="../../../../public/images/logo_final.png" alt="">
+                <img src="/public/images/logo_final.png" alt="">
             </article>
             <nav class="menuleft">
                 {include menu.phtml}
