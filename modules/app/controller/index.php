@@ -1,19 +1,18 @@
 <?php
 
 use App\Etc\Controller;
+use THCFrame\Request\RequestMethods;
 
 /**
  * 
  */
-class App_Controller_Index extends Controller
-{
+class App_Controller_Index extends Controller {
 
     /**
      *
      * @param \App_Model_PageContent $news
      */
-    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body')
-    {
+    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body') {
         preg_match_all('/\(\!(photo|read)_[0-9a-z]+\!\)/', $content->$parsedField, $matches);
         $m = array_shift($matches);
 
@@ -54,24 +53,26 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function index()
-    {
+    public function index() {
         
     }
 
     /**
      * 
      */
-    public function aboutUs()
-    {
+    public function aboutUs() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
         $parsed = $this->_parseContentBody($content);
-
+        $active = 0;
+        if (isset($content)) {
+            $active = 1;
+        }
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('active', $active)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
@@ -79,16 +80,19 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function contact()
-    {
+    public function contact() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
         $parsed = $this->_parseContentBody($content);
-
+        $active = 0;
+        if (isset($content)) {
+            $active = 4;
+        }
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('active', $active)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
@@ -96,16 +100,19 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function priceList()
-    {
+    public function priceList() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
         $parsed = $this->_parseContentBody($content);
-
+        $active = 0;
+        if (isset($content)) {
+            $active = 3;
+        }
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('active', $active)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
@@ -113,34 +120,39 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function reference()
-    {
+    public function reference() {
         $view = $this->getActionView();
+        $layoutView = $this->getLayoutView();
         $reference = App_Model_Reference::all(array('active = ?' => true));
         $view->set('reference', $reference);
+        $active = 0;
+        if(isset($reference)){
+            $active=2;
+        }
+         $layoutView->set('active', $active);
     }
-    
+
     /**
      * 
      * @param type $urlKey
      */
-    public function category($urlKey)
-    {
+    public function category($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        
+
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
-        
-        if($category !== null && $category->getParentId() == 0){
-            $subcats = App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => $category->getId()));
-            $view->set('category', $category)
-                ->set('subcategory', $subcats);
-        }
-        
         $products = App_Model_Product::fetchProductsByCategory($urlKey);
-        
+
+        if ($category->parentId != 0) {
+
+            $layoutView
+                    ->set('parentcat', $category->parentId);
+        }
+
         $view->set('products', $products);
-        $layoutView->set('metatitle', $category->getMetaTitle())
+        $layoutView
+                ->set('activecat', $urlKey)
+                ->set('metatitle', $category->getMetaTitle())
                 ->set('metakeywords', $category->getMetaKeywords())
                 ->set('metadescription', $category->getMetaDescription());
     }
@@ -149,38 +161,47 @@ class App_Controller_Index extends Controller
      * 
      * @param type $urlKey
      */
-    public function product($urlKey)
-    {
+    public function product($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
+        $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
+        
+        $fblike =urlencode('http://'.RequestMethods::server('HTTP_HOST').'/kostym/'.$product->getUrlKey().'/');
+
+        $isSelable = false;
+        
+        foreach ($productCategory as $cat){
+            if($cat->isSelable){
+                $isSelable = true;
+            }
+        }
 
         if ($product === null) {
             $view->warningMessage('Kostým nebyl nalezen');
             self::redirect('/');
         }
 
-        $view->set('product', $product);
+        $view->set('product', $product)
+                ->set('selable', $isSelable)
+                ->set('fblike', $fblike);
         $layoutView->set('metatitle', $product->getMetaTitle())
                 ->set('metakeywords', $product->getMetaKeywords())
                 ->set('metadescription', $product->getMetaDescription());
-    }
-    
-    /**
-     * 
-     */
-    public function search()
-    {
-        $view = $this->getActionView();
-        
     }
 
     /**
      * 
      */
-    public function feed()
-    {
+    public function search() {
+        $view = $this->getActionView();
+    }
+
+    /**
+     * 
+     */
+    public function feed() {
         
     }
 

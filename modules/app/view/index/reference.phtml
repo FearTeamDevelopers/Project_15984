@@ -1,0 +1,22 @@
+{if !empty($reference)}
+{foreach $ref in $reference}
+<article class="transparentAbout reference">
+    <h1 class="visuallyhidden">{echo $ref->title}</h1>
+    <div class="refPhoto">
+        <a href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
+    </div>
+    <div class="refText">
+        <span>{echo $ref->body}</span>
+    </div>
+    
+    
+</article>
+{/foreach}
+{/if}
+{else}
+<div class="errorDiv transparentAbout">
+    <span>
+        Nebyly nalezeny žádné reference.
+    </span>
+</div>
+{/else}

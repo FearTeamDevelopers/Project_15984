@@ -32,7 +32,7 @@ class Controller extends BaseController
             $database->disconnect();
         });
 
-        $categories = \App_Model_Category::all(array('active = ?' => true, 'parentId = ?' => 0));
+        $categories = \App_Model_Category::fetchAllCategories();
         
         $this->getLayoutView()
                 ->set('category', $categories)

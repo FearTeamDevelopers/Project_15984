@@ -397,6 +397,11 @@ class App_Model_Product extends Model
     /**
      * @readwrite
      */
+    protected $_recommendedProductObjects;
+    
+    /**
+     * @readwrite
+     */
     protected $_fbLikeUrl;
 
     /**
@@ -469,6 +474,16 @@ class App_Model_Product extends Model
     public static function fetchProductByUrlKey($urlKey)
     {
         $product = self::first(array('urlKey = ?' => $urlKey, 'deleted = ?' => false));
+        
+        if ($product->sizeId != 0) {
+            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                            array('cb.title' => 'sizeTitle'))
+                    ->where('pr.urlKey = ?', $urlKey)
+                    ->where('pr.deleted = ?', false);
+            $productArr = App_Model_Product::initialize($productQuery);
+            $product = array_shift($productArr);
+        }
         return $product->getProductById();
     }
     
@@ -480,6 +495,16 @@ class App_Model_Product extends Model
     public static function fetchProductById($id)
     {
         $product = self::first(array('id = ?' => (int) $id, 'deleted = ?' => false));
+        
+        if ($product->sizeId != 0) {
+            $productQuery = App_Model_Product::getQuery(array('pr.*'))
+                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                            array('cb.title' => 'sizeTitle'))
+                    ->where('pr.id = ?', (int) $id)
+                    ->where('pr.deleted = ?', false);
+            $productArr = App_Model_Product::initialize($productQuery);
+            $product = array_shift($productArr);
+        }
         return $product->getProductById();
     }
 
@@ -498,6 +523,21 @@ class App_Model_Product extends Model
         $this->_additionalPhotos = App_Model_ProductPhoto::all(array('productId = ?' => $this->getId()));
         $this->_inCategories = App_Model_ProductCategory::all(array('productId = ?' => $this->getId()));
         $this->_recommendedProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $this->getId()));
+        
+        if (!empty($this->_recommendedProducts)) {
+            $recomProductIds = array();
+            foreach ($this->_recommendedProducts as $recprod) {
+                $recomProductIds[] = $recprod->getRecommendedId();
+            }
+            
+            $this->_recommendedProductObjects = self::all(array(
+                        'deleted = ?' => false,
+                        'active = ?' => true,
+                        'id IN ?' => $recomProductIds
+            ),array('title', 'urlKey', 'imgThumb'));
+        }else{
+            $this->_recommendedProductObjects = array();
+        }
 
         return $this;
     }
@@ -530,8 +570,9 @@ class App_Model_Product extends Model
                 ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                         array('productId', 'categoryId'))
                 ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
-                        array('id' => 'catId', 'parentId', 'title' => 'catTitle', 'urlKey' => 'catUrlKey', 
-                            'isGrouped', 'isSelable', 'mainText', 'metaTitle', 'metaKeywords', 'metaDescription'))
+                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey', 
+                            'isGrouped', 'isSelable', 'mainText', 
+                            'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords', 'ct.metaDescription' => 'catMetaDescription'))
                 ->where('ct.active = ?', true)
                 ->where('ct.urlKey = ?', $categoryUrlKey)
                 ->order('pr.created', 'desc')
@@ -544,8 +585,9 @@ class App_Model_Product extends Model
                 ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                         array('productId', 'categoryId'))
                 ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
-                        array('parentId', 'title' => 'catTitle', 'urlKey' => 'catUrlKey', 
-                            'isGrouped', 'isSelable', 'mainText', 'metaTitle', 'metaKeywords', 'metaDescription'))
+                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey', 
+                            'isGrouped', 'isSelable', 'mainText', 
+                            'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords', 'ct.metaDescription' => 'catMetaDescription'))
                 ->where('ct.parentId = ?', $productZero->catId)
                 ->where('pr.deleted = ?', false)
                 ->order('pr.created', 'desc')

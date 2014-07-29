@@ -16,6 +16,7 @@ html {
     background-image: url('../images/karneval_bg.jpg'), url('../images/bg.jpg');
     background-repeat: no-repeat ,repeat-x;
     background-position-x: center;
+    background-attachment:fixed;
 }
 
 /* Obrázek roztažený přes celý monitor
@@ -38,12 +39,24 @@ html {
   min-height: 50%;
 }*/
 
+body{
+    font: 16px 'Calibri', sans-serif;
+}
+.content{
+    margin-bottom:20px;
+    margin-top:10px;
+    margin-left:380px;
+    margin-right:10px;
+    max-width:1120px;
+    min-height:800px;
+    border:1px solid rgba(255,255,255,0);
+    overflow:hidden;
+}
 /***********************
 HEADER
 ************************/
 
 header{
-    padding-top:40px;
     width:230px;
     float:left;
     margin-left:5px;
@@ -69,7 +82,7 @@ MENU
     border-radius:3px;
     width:160px;
     background-color: gray;
-    background: rgb(255, 255, 255, 255);
+    background: rgb(255, 255, 255);
     background: rgba(255,255, 255, 0.15);
     display: block;
     text-align: center;
@@ -85,25 +98,71 @@ MENU
     border-radius:3px;
     width:160px;
     background-color: gray;
-    background: rgb(255, 255, 255, 255);
+    background: rgb(255, 255, 255);
     background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;
 }
+#activeLi1{
+    color: black;
+    padding:10px;
+    padding-top:18px;
+    padding-bottom: 18px;
+    font-size: 24px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:160px;
+    background-color: gray;
+    background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;    
+}
+
+
 .menuleft ul li a span{
     text-align: center;
 }
 /*********************
 DROPDOWN MENU
 **********************/
-
-.menuleft ul li ul{display:none;}
+.dropdownmenu1-display{display:block;}
+.dropdownmenu1{display:none;}
 .menuleft ul li:hover ul{display:block;}
-.dropdownmenu{
+.menuleft ul li:hover ul li ul{display:none;}
+.dropdownmenu2{display:none;}
+.dropdownmenu3{display:none;}
+.menuleft ul li ul li:hover ul{display:block;}
+
+.dropdownmenu1{
+    margin-left:10px;
+}
+
+.dropdownmenu2{
     position:absolute;
     left:200px;
-    top:40px;
+    top:510px;
 }
+.dropdownmenu3{
+    position:absolute;
+    left:200px;
+    top:10px;
+}
+.dropdownmenu3-display{
+    display:block;
+    position:absolute;
+    left:200px;
+    top:10px;
+}
+.dropdownmenu2-display{
+    display:block;
+    position:absolute;
+    left:200px;
+    top:510px;
+
+}
+
 .menuleft ul li ul li a {
     color: black;
     padding:10px;
@@ -115,7 +174,7 @@ DROPDOWN MENU
     border-radius:3px;
     width:130px;
     background-color: gray;
-    background: rgb(255, 255, 255, 255);
+    background: rgb(255, 255, 255);
     background: rgba(255,255, 255, 0.15);
     display: block;
     text-align: center;
@@ -130,8 +189,38 @@ DROPDOWN MENU
     border:3px solid rgba(255,255, 255, 0.33);
     border-radius:3px;
     width:130px;
-    background-color: gray;
-    background: rgb(255, 255, 255, 255);
+    background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;
+}
+#activeLi{
+    margin-left:20px;
+    color: black;
+    padding:10px;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:130px;
+    background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);
+    display: block;
+    text-align: center;
+}
+#activeLi2{
+    color: black;
+    padding:10px;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 16px;
+    text-decoration: none;
+    border:3px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
+    width:130px;
+    background: rgb(255, 255, 255);
     background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;

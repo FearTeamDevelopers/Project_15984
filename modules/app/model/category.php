@@ -237,4 +237,21 @@ class App_Model_Category extends Model
         return $mainCat;
     }
     
+    /**
+     * 
+     * @param type $productUrlKey
+     * @return type
+     */
+    public static function fetchCategoryByProductUrlKey($productUrlKey)
+    {
+        $catQuery = App_Model_Category::getQuery(array('ct.*'))
+                ->join('tb_productcategory', 'ct.id = pc.categoryId', 'pc',
+                        array('productId', 'categoryId'))
+                ->join('tb_product', 'pc.productId = pr.id', 'pr', 
+                        array('pr.id' => 'prId', 'pr.urlKey' => 'prUrlKey'))
+                ->where('pr.urlKey = ?', $productUrlKey)
+                ->where('pr.deleted = ?', false);
+        $category = App_Model_Category::initialize($catQuery);
+        return $category;
+    }
 }
