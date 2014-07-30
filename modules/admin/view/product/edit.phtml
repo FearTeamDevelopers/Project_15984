@@ -36,6 +36,16 @@
                     </span>
                 </p>
                 <p>
+                    <label>Url Key*</label>
+                    <span class="field" >
+                        <input required class="longinput" type="text" name="urlkey" 
+                               value="{echo $product->urlKey}" />
+                        {if isset($errors["urlKey"])}
+                        <label class="error">{echo join("<br/>", $errors["urlKey"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
                     <label>Kód produktu*</label>
                     <span class="field">
                         <input required class="longinput" type="text" name="productcode" 
