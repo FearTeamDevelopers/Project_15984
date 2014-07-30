@@ -6,15 +6,13 @@ use THCFrame\Request\RequestMethods;
 /**
  * 
  */
-class App_Controller_Index extends Controller
-{
+class App_Controller_Index extends Controller {
 
     /**
      *
      * @param \App_Model_PageContent $news
      */
-    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body')
-    {
+    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body') {
         preg_match_all('/\(\!(photo|read)_[0-9a-z]+\!\)/', $content->$parsedField, $matches);
         $m = array_shift($matches);
 
@@ -31,8 +29,7 @@ class App_Controller_Index extends Controller
                                 ), array('photoName', 'imgMain', 'imgThumb')
                 );
 
-                $tag = "<a href=\"{$photo->imgMain}\" class=\"highslide\" title=\"{$photo->photoName}\""
-                        . " onclick=\"return hs.expand(this, confignews)\">"
+                $tag = "<a data-lightbox=\"img\" data-title=\"{$photo->photoName}\" href=\"{$photo->imgMain}\" title=\"{$photo->photoName}\">"
                         . "<img src=\"{$photo->imgThumb}\" alt=\"Marko.in\"/></a>";
 
                 $body = str_replace("(!photo_{$id}!)", $tag, $body);
@@ -55,8 +52,7 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function index()
-    {
+    public function index() {
         $layoutView = $this->getLayoutView();
         $layoutView->set('active', 0);
     }
@@ -64,14 +60,13 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function aboutUs()
-    {
+    public function aboutUs() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
         $parsed = $this->_parseContentBody($content);
-        
+
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
                 ->set('active', 1)
@@ -82,25 +77,21 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function reference()
-    {
+    public function reference() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $reference = App_Model_Reference::all(
-                array('active = ?' => true), 
-                array('*'), 
-                array('created' => 'desc'), 30);
-        
+                        array('active = ?' => true), array('*'), array('created' => 'desc'), 30);
+
         $view->set('reference', $reference);
         $layoutView->set('active', 2);
     }
-    
+
     /**
      * 
      */
-    public function priceList()
-    {
+    public function priceList() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
@@ -113,12 +104,11 @@ class App_Controller_Index extends Controller
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
-    
+
     /**
      * 
      */
-    public function contact()
-    {
+    public function contact() {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
@@ -136,19 +126,21 @@ class App_Controller_Index extends Controller
      * 
      * @param type $urlKey
      */
-    public function category($urlKey)
-    {
+    public function category($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
         $products = App_Model_Product::fetchProductsByCategory($urlKey);
 
+      
+
         if ($category->parentId != 0) {
             $layoutView->set('parentcat', $category->parentId);
         }
 
-        $view->set('products', $products);
+        $view ->set('category', $category)                                              
+                ->set('products', $products);
         $layoutView
                 ->set('activecat', $urlKey)
                 ->set('metatitle', $category->getMetaTitle())
@@ -160,15 +152,12 @@ class App_Controller_Index extends Controller
      * 
      * @param type $urlKey
      */
-    public function product($urlKey)
-    {
+    public function product($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
         $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
-
-        $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
 
         $isSelable = false;
         foreach ($productCategory as $cat) {
@@ -176,6 +165,10 @@ class App_Controller_Index extends Controller
                 $isSelable = true;
             }
         }
+
+        $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
+
+
 
         if ($product === null) {
             $view->warningMessage('Kostým nebyl nalezen');
@@ -193,10 +186,9 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
-    public function search()
-    {
+    public function search() {
         $view = $this->getActionView();
-        
+
         if (RequestMethods::issetpost('submitsearch')) {
             $query = RequestMethods::post('searchquery');
 
@@ -211,27 +203,26 @@ class App_Controller_Index extends Controller
                     ->order('pr.created', 'DESC')
                     ->limit(50);
             $products = App_Model_Product::initialize($productQuery);
-            
+
             $catWhereCond = "ct.active = 1 "
                     . "AND (ct.metaTitle LIKE '%%?%%' "
                     . "OR ct.metaKeywords LIKE '%%?%%' OR ct.title LIKE '%%?%%')";
-            
+
             $categoryQuery = App_Model_Category::getQuery(array('ct.id', 'ct.urlKey', 'ct.title'))
                     ->wheresql($catWhereCond, $query, $query, $query)
                     ->order('ct.rank', 'asc')
                     ->limit(10);
             $categories = App_Model_Category::initialize($categoryQuery);
-            
+
             $view->set('products', $products)
-                ->set('categories', $categories);
+                    ->set('categories', $categories);
         }
     }
 
     /**
      * 
      */
-    public function feed()
-    {
+    public function feed() {
         
     }
 
