@@ -5,12 +5,12 @@
     {script $recommendedProducts = $product->recommendedProductObjects}
     {if $product->hasGroupPhoto}
     <div class="productPhotoGr">
-        <a href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgThumb}" alt="{echo $product->title}"></a>
+        <a data-lightbox="imageGr" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgThumb}" alt="{echo $product->title}"></a>
     </div><br/>
     {if !empty($additionalPhotos)}
     <div class="additionalPhotos">
         {foreach $photo in $additionalPhotos}
-        <span><a href="{echo $photo->imgMain}"><img src="{echo $photo->imgThumb}"></a></span>
+        <a data-lightbox="imageGr" data-title="{echo $product->title}"  href="{echo $photo->imgMain}"><span><img src="{echo $photo->imgThumb}"></span></a>
         {/foreach}
     </div>
     {/if}
@@ -56,7 +56,7 @@
     {/if}
     {else}
     <div class="productPhoto">
-        <a href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgThumb}" alt="{echo $product->title}"></a>
+        <a data-lightbox="image" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgThumb}" alt="{echo $product->title}"></a>
     </div>
     <div class="productTable">
         <table class="pTableSingle">
@@ -80,7 +80,7 @@
     {if !empty($additionalPhotos)}
     <div class="additionalPhotos">
         {foreach $photo in $additionalPhotos}
-        <span><a href="{echo $photo->imgMain}"><img src="{echo $photo->imgThumb}"></a></span>
+        <span><a data-lightbox="image" data-title="{echo $product->title}" href="{echo $photo->imgMain}"><img src="{echo $photo->imgThumb}"></a></span>
         {/foreach}
     </div>
     {/if}
