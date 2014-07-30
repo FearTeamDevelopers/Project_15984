@@ -61,7 +61,7 @@ class Admin_Controller_Product extends Controller
             
             $product = new App_Model_Product(array(
                 'sizeId' => 0,
-                'urlKey' => $urlKey,
+                'urlKey' => $urlKeyCh,
                 'productType' => RequestMethods::post('producttype'),
                 'variantFor' => 0,
                 'productCode' => RequestMethods::post('productcode'),
@@ -95,7 +95,7 @@ class Admin_Controller_Product extends Controller
             
             $product = new App_Model_Product(array(
                 'sizeId' => RequestMethods::post('size'),
-                'urlKey' => $urlKey,
+                'urlKey' => $urlKeyCh,
                 'productType' => RequestMethods::post('producttype'),
                 'variantFor' => 0,
                 'productCode' => RequestMethods::post('productcode'),
@@ -169,7 +169,7 @@ class Admin_Controller_Product extends Controller
 
             $product = new App_Model_Product(array(
                 'sizeId' => $size,
-                'urlKey' => $urlKey,
+                'urlKey' => $urlKeyCh,
                 'productType' => 'varianta',
                 'variantFor' => $productConf->getId(),
                 'productCode' => RequestMethods::post('productcode'),
@@ -512,7 +512,7 @@ class Admin_Controller_Product extends Controller
                 }
 
                 $product->sizeId = RequestMethods::post('size');
-                $product->urlKey = $urlKey;
+                $product->urlKey = $urlKeyCh;
                 $product->productCode = RequestMethods::post('productcode');
                 $product->title = RequestMethods::post('title');
                 $product->description = RequestMethods::post('description');

@@ -41,6 +41,8 @@ CKEDITOR.editorConfig = function(config) {
     config.enterMode = CKEDITOR.ENTER_BR;
 
     config.extraPlugins = 'wordcount';
+    config.extraPlugins = 'justify';
+    
     config.wordcount = {
         showWordCount: false,
         showCharCount: true,

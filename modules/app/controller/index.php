@@ -2,6 +2,7 @@
 
 use App\Etc\Controller;
 use THCFrame\Request\RequestMethods;
+use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -30,7 +31,7 @@ class App_Controller_Index extends Controller {
                 );
 
                 $tag = "<a data-lightbox=\"img\" data-title=\"{$photo->photoName}\" href=\"{$photo->imgMain}\" title=\"{$photo->photoName}\">"
-                        . "<img src=\"{$photo->imgThumb}\" alt=\"Marko.in\"/></a>";
+                        . "<img src=\"{$photo->imgThumb}\" height=\"250px\" alt=\"Karneval\"/></a>";
 
                 $body = str_replace("(!photo_{$id}!)", $tag, $body);
 
@@ -43,8 +44,6 @@ class App_Controller_Index extends Controller {
                 $content->$parsedField = $body;
             }
         }
-
-        //$news->fbLikeUrl = urlencode('http://'.RequestMethods::server('HTTP_HOST').'/news/detail/'.$content->getUrlKey());
 
         return $content;
     }
@@ -129,6 +128,7 @@ class App_Controller_Index extends Controller {
     public function category($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $session = Registry::get('session');
 
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
         $products = App_Model_Product::fetchProductsByCategory($urlKey);
@@ -137,9 +137,11 @@ class App_Controller_Index extends Controller {
 
         if ($category->parentId != 0) {
             $layoutView->set('parentcat', $category->parentId);
+            $session->set('parentcat', $category->parentId);
         }
 
-        $view ->set('category', $category)                                              
+        $session->set('activecat', $urlKey);
+        $view->set('category', $category)
                 ->set('products', $products);
         $layoutView
                 ->set('activecat', $urlKey)
@@ -155,6 +157,7 @@ class App_Controller_Index extends Controller {
     public function product($urlKey) {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $session = Registry::get('session');
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
         $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
@@ -174,11 +177,20 @@ class App_Controller_Index extends Controller {
             $view->warningMessage('Kostým nebyl nalezen');
             self::redirect('/');
         }
+        
+        $activeCat = $session->get('activecat');
+        $parentCat = $session->get('parentcat');
+        
+        if($parentCat != null){
+            $layoutView->set('parentcat', $parentCat);
+        }
 
         $view->set('product', $product)
                 ->set('selable', $isSelable)
                 ->set('fblike', $fblike);
-        $layoutView->set('metatitle', $product->getMetaTitle())
+        
+        $layoutView->set('activecat', $activeCat)
+                ->set('metatitle', $product->getMetaTitle())
                 ->set('metakeywords', $product->getMetaKeywords())
                 ->set('metadescription', $product->getMetaDescription());
     }
