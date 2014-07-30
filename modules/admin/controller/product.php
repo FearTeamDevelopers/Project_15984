@@ -25,8 +25,16 @@ class Admin_Controller_Product extends Controller
         $urlKey = strtolower(
                 str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
-        if (!$this->checkUrlKey($urlKey)) {
-            $this->_errors['title'] = array('Produkt s tímto názvem již existuje');
+        for($i = 1; $i <= 50; $i++){
+            $urlKey .= '-'.$i;
+            if ($this->checkUrlKey($urlKey)) {
+                break;
+            }
+            
+            if($i == 50){
+                $this->_errors['title'] = array('Nepodařilo se vytvořit jedinečný identifikátor produktu');
+                break;
+            }
         }
 
         $fileManager = new FileManager(array(
@@ -145,8 +153,16 @@ class Admin_Controller_Product extends Controller
             $urlKey = strtolower(
                             str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title')))) . '-' . $size;
 
-            if (!$this->checkUrlKey($urlKey)) {
-                $this->_errors['title'] = array('Produkt s tímto názvem již existuje');
+            for ($i = 1; $i <= 50; $i++) {
+                $urlKey .= '-' . $i;
+                if ($this->checkUrlKey($urlKey)) {
+                    break;
+                }
+
+                if ($i == 50) {
+                    $this->_errors['title'] = array('Nepodařilo se vytvořit jedinečný identifikátor produktu');
+                    break;
+                }
             }
 
             $product = new App_Model_Product(array(
@@ -449,11 +465,20 @@ class Admin_Controller_Product extends Controller
                 }
             }else{
                 $urlKey = strtolower(
-                        str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+                        str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('urlkey'))));
 
+                if ($product->getUrlKey() !== $urlKey) {
+                    for ($i = 1; $i <= 50; $i++) {
+                        $urlKey .= '-' . $i;
+                        if ($this->checkUrlKey($urlKey)) {
+                            break;
+                        }
 
-                if ($product->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
-                    $errors['title'] = array('Produkt s tímto názvem již existuje');
+                        if ($i == 50) {
+                            $errors['urlKey'] = array('Nepodařilo se vytvořit jedinečný identifikátor produktu');
+                            break;
+                        }
+                    }
                 }
 
                 $uploadTo = trim(substr(str_replace('.','',$product->getUrlKey()), 0, 3));
