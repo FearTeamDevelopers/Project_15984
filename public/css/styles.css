@@ -25,7 +25,10 @@ and open the template in the editor.
 }
 
 /************ ABOUT US  **************/
-
+h1{
+    font-size:18px;
+    font-family: sans-serif;
+}
 .about{
 
     padding-left:60px;
@@ -38,7 +41,7 @@ and open the template in the editor.
     max-width: 1200px;
 
 }
-.about span{
+.about div{
     min-width:700px;
     font-size:18px;
     font-family: sans-serif;
@@ -142,7 +145,7 @@ and open the template in the editor.
     margin-top:10px;
     font-size:18px;
     font-family: sans-serif;
-    
+
 }
 .productSelect{
     width:150px;
@@ -152,7 +155,7 @@ and open the template in the editor.
     font-family: sans-serif;
     background:transparent;
     border:3px solid rgba(255,255,255,0.8);
-    
+
 }
 .productDescription{
     margin-top:10px;
@@ -160,7 +163,7 @@ and open the template in the editor.
     width:800px;
     font-size:18px;
     font-family: sans-serif;
-     padding-top:10px;
+    padding-top:10px;
     padding-bottom:10px;
 }
 
@@ -170,8 +173,8 @@ and open the template in the editor.
     width:800px;
     font-size:18px;
     font-family: sans-serif;
-   
-    
+
+
     padding-top:10px;
     padding-bottom:10px;
 }
@@ -179,10 +182,10 @@ and open the template in the editor.
     padding:3px;
 }
 .bottomLine{
-   border-bottom:1px solid rgb(248,216,219);  
+    border-bottom:1px solid rgb(248,216,219);  
 }
 .topLine{
-  border-top:1px solid rgb(248,216,219);  
+    border-top:1px solid rgb(248,216,219);  
 }
 .pTable{
     width:750px;
@@ -213,7 +216,7 @@ and open the template in the editor.
     margin-top:15px;
     width:800px;
     height:200px;
-   
+
 }
 .recommended div{
     height:200px;
@@ -225,8 +228,8 @@ and open the template in the editor.
 .recommended a{
     text-decoration: none;
     color:black;
-     font-size:14px;
-     font-weight: bold;
+    font-size:14px;
+    font-weight: bold;
     font-family: sans-serif;
 }
 .recommendedNadpis{
@@ -248,8 +251,8 @@ and open the template in the editor.
 .recImg img{
     height:160px;
     width:120px;
-    
-    
+
+
 }
 
 /*********  REFERENCE ***********/
@@ -270,7 +273,7 @@ and open the template in the editor.
     width:160px;
     float:left;
     text-align:center;
-    
+
 }
 .refPhoto img{
     height:150px;
@@ -282,10 +285,68 @@ and open the template in the editor.
     margin-top:20px;
     margin-bottom:20px;
     float:left;
-       
-    
 }
 
+/******** SEARCH *********/
+
+.searchCategory{
+    overflow:hidden;
+    padding:10px;
+    max-width:1100px;
+    margin-bottom:30px;
+    margin-top:30px;
+}
+
+.searchCategory span{
+    font-size:19px;
+    font-family: sans-serif;
+}
+.searchProduct{
+    max-width:1100px;
+    margin-top:40px;
+
+}
+.searchProduct div{
+    margin-bottom:20px;
+    max-width:1100px;
+    width:100%;
+    text-align:center;
+}
+.searchProduct span{
+    height:50px;
+    font-size:19px;
+    max-width:1100px;
+    font-family: sans-serif;
+    overflow:hidden;
+    padding:10px;
+
+}
+.kategorieButton {
+    -moz-box-shadow: 1px 3px 13px 1px #c21b53;
+    -webkit-box-shadow: 1px 3px 13px 1px #c21b53;
+    box-shadow: 1px 3px 13px 1px #c21b53;
+    background-color:#c74545;
+    -moz-border-radius:17px;
+    -webkit-border-radius:17px;
+    border-radius:17px;
+    border:2px solid #941515;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:arial;
+    font-size:17px;
+    padding:8px 31px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #2f6627;
+    margin:5px;
+}
+.kategorieButton:hover {
+    background-color:#bd2a60;
+}
+.kategorieButton:active {
+    position:relative;
+    top:1px;
+}
 
 
 

@@ -315,6 +315,7 @@ class App_Controller_Index extends Controller
             $categories = App_Model_Category::initialize($categoryQuery);
 
             $view->set('products', $products)
+                   ->set('query', $query) 
                     ->set('categories', $categories);
         }
     }
