@@ -22,13 +22,14 @@ class Admin_Controller_Product extends Controller
      */
     private function createMainProduct($configurable = false)
     {
-        $urlKey = strtolower(
+        $urlKey = $urlKeyCh = strtolower(
                 str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
 
         for($i = 1; $i <= 50; $i++){
-            $urlKey .= '-'.$i;
-            if ($this->checkUrlKey($urlKey)) {
+            if ($this->checkUrlKey($urlKeyCh)) {
                 break;
+            }else{
+                $urlKeyCh = $urlKey.'-'.$i;
             }
             
             if($i == 50){
@@ -150,13 +151,14 @@ class Admin_Controller_Product extends Controller
         }
 
         foreach ($sizeVariantsArr as $size) {
-            $urlKey = strtolower(
+            $urlKey = $urlKeyCh = strtolower(
                             str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title')))) . '-' . $size;
 
             for ($i = 1; $i <= 50; $i++) {
-                $urlKey .= '-' . $i;
-                if ($this->checkUrlKey($urlKey)) {
+                if ($this->checkUrlKey($urlKeyCh)) {
                     break;
+                } else {
+                    $urlKeyCh = $urlKey . '-' . $i;
                 }
 
                 if ($i == 50) {
@@ -464,14 +466,15 @@ class Admin_Controller_Product extends Controller
                             ->set('errors', $product->getErrors());
                 }
             }else{
-                $urlKey = strtolower(
+                $urlKey = $urlKeyCh = strtolower(
                         str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('urlkey'))));
 
                 if ($product->getUrlKey() !== $urlKey) {
                     for ($i = 1; $i <= 50; $i++) {
-                        $urlKey .= '-' . $i;
-                        if ($this->checkUrlKey($urlKey)) {
+                        if ($this->checkUrlKey($urlKeyCh)) {
                             break;
+                        } else {
+                            $urlKeyCh = $urlKey . '-' . $i;
                         }
 
                         if ($i == 50) {
@@ -691,11 +694,11 @@ class Admin_Controller_Product extends Controller
 
             $recomprod = App_Model_Product::first(array(
                         'deleted = ?' => false,
-                        'productCode = ?' => RequestMethods::post('recomproductcode')
+                        'id = ?' => RequestMethods::post('recomproductid')
             ));
 
             if ($recomprod === null) {
-                $view->warningMessage('Doporučený produkt nebyl nalezen');
+                $view->warningMessage('Produkt nebyl nalezen');
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
 
@@ -729,7 +732,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _admin
+     * @before _secured, _member
      * @param type $photoId
      */
     public function changePhotoStatus($photoId)
@@ -993,9 +996,9 @@ class Admin_Controller_Product extends Controller
 
         if ($search != '') {
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
-                    . "AND (pr.productCode='" . $search . "' OR pr.productType='" . $search . "' "
-                    . "OR pr.currentPrice='" . $search . "' "
-                    . "OR ca.title='" . $search . "' OR pr.title LIKE '%" . $search . "%')";
+                    . "AND (pr.productCode='?' OR pr.productType='?' "
+                    . "OR pr.currentPrice='?' "
+                    . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode', 
@@ -1004,7 +1007,7 @@ class Admin_Controller_Product extends Controller
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
-                    ->wheresql($whereCond);
+                    ->wheresql($whereCond, $search, $search, $search, $search, $search);
 
             if (RequestMethods::issetpost('iSortCol_0')) {
                 $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
