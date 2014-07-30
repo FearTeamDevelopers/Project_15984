@@ -49,7 +49,7 @@ and open the template in the editor.
 }
 .productCategoryGrouped{
     width:384px;
-    height:260px;
+    height:270px;
     padding:10px;
     margin:10px;
     float:left;
@@ -59,7 +59,7 @@ and open the template in the editor.
 
 .productCategory{
     width:170px;
-    height:260px;
+    height:270px;
     padding:10px;
     margin:10px;
     float:left;
@@ -90,7 +90,7 @@ and open the template in the editor.
     margin-top:60px;
     padding:40px;
     overflow: hidden;
-    width:900px;
+    width:800px;
 }
 .product h1{
     font-size:22px;
@@ -110,7 +110,7 @@ and open the template in the editor.
 }
 .productPhoto img{
     border:10px solid rgb(248,216,219);
-    max-width:500px;
+    max-width:400px;
 }
 .productPhotoGr img{
     width:700px;
