@@ -3,7 +3,6 @@
     {if !empty($products)}
     {foreach $product in $products}
     {if $product->hasGroupPhoto}
-
     <div class="transparentCategory productCategoryGrouped">
         <a href="/kostym/{echo $product->urlKey}/" >
             <span>{echo $product->title}</span><br/>
@@ -20,8 +19,6 @@
             <span>{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
         </a>
     </div>
-
-
     {/else}
     {/foreach}
     {/if}
@@ -31,7 +28,6 @@
         V této kategorii nejsou, žádné produkty
     </span>    
     </div>
-    
     {/else}
 </article>
 

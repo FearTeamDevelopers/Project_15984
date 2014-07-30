@@ -6,6 +6,7 @@ use THCFrame\Request\RequestMethods;
 use THCFrame\Database\Mysqldump;
 use THCFrame\Events\Events as Event;
 use THCFrame\Configuration\Model\Config;
+use THCFrame\Filesystem\FileManager;
 
 /**
  * 
@@ -57,7 +58,7 @@ class Admin_Controller_System extends Controller
         Event::fire('app.log', array('success', 'Database backup ' . $dump->getBackupName()));
         unset($fm);
         unset($dump);
-        self::redirect('/system');
+        self::redirect('/admin/system/');
     }
 
     /**

@@ -474,17 +474,22 @@ class App_Model_Product extends Model
     public static function fetchProductByUrlKey($urlKey)
     {
         $product = self::first(array('urlKey = ?' => $urlKey, 'deleted = ?' => false));
-        
-        if ($product->sizeId != 0) {
-            $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
-                            array('cb.title' => 'sizeTitle'))
-                    ->where('pr.urlKey = ?', $urlKey)
-                    ->where('pr.deleted = ?', false);
-            $productArr = App_Model_Product::initialize($productQuery);
-            $product = array_shift($productArr);
+
+        if ($product !== null) {
+            if ($product->sizeId != 0) {
+                $productQuery = App_Model_Product::getQuery(array('pr.*'))
+                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                                array('cb.title' => 'sizeTitle'))
+                        ->where('pr.urlKey = ?', $urlKey)
+                        ->where('pr.deleted = ?', false);
+                $productArr = App_Model_Product::initialize($productQuery);
+                $product = array_shift($productArr);
+            }
+            
+            return $product->getProductById();
+        } else {
+            return null;
         }
-        return $product->getProductById();
     }
     
     /**

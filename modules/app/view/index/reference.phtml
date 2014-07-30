@@ -7,10 +7,8 @@
         <a data-lightbox="image{echo $i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
     </div>
     <div class="refText">
-        <span>{echo $ref->body}</span>
+        <div>{echo $ref->body}</div>
     </div>
-    
-    
 </article>
 {script $i++}
 {/foreach}

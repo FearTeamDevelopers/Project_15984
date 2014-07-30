@@ -33,6 +33,18 @@ class App_Etc_Module extends Module
             'action' => 'aboutus',
         ),
         array(
+            'pattern' => '/neznamykostym',
+            'module' => 'app',
+            'controller' => 'index',
+            'action' => 'unknownProduct',
+        ),
+        array(
+            'pattern' => '/neznamakategorie',
+            'module' => 'app',
+            'controller' => 'index',
+            'action' => 'unknownCategory',
+        ),
+        array(
             'pattern' => '/cenik',
             'module' => 'app',
             'controller' => 'index',

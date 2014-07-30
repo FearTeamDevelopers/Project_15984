@@ -7,13 +7,15 @@ use THCFrame\Registry\Registry;
 /**
  * 
  */
-class App_Controller_Index extends Controller {
+class App_Controller_Index extends Controller
+{
 
     /**
      *
      * @param \App_Model_PageContent $news
      */
-    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body') {
+    private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body')
+    {
         preg_match_all('/\(\!(photo|read)_[0-9a-z]+\!\)/', $content->$parsedField, $matches);
         $m = array_shift($matches);
 
@@ -30,7 +32,8 @@ class App_Controller_Index extends Controller {
                                 ), array('photoName', 'imgMain', 'imgThumb')
                 );
 
-                $tag = "<a data-lightbox=\"img\" data-title=\"{$photo->photoName}\" href=\"{$photo->imgMain}\" title=\"{$photo->photoName}\">"
+                $tag = "<a data-lightbox=\"img\" data-title=\"{$photo->photoName}\" "
+                        . "href=\"{$photo->imgMain}\" title=\"{$photo->photoName}\">"
                         . "<img src=\"{$photo->imgThumb}\" height=\"250px\" alt=\"Karneval\"/></a>";
 
                 $body = str_replace("(!photo_{$id}!)", $tag, $body);
@@ -39,7 +42,8 @@ class App_Controller_Index extends Controller {
             }
 
             if ($type == 'read') {
-                $tag = "<a href=\"#\" class=\"ajaxLink news-read-more\" id=\"show_news-detail_{$content->getUrlKey()}\">[Celý článek]</a>";
+                $tag = "<a href=\"#\" class=\"ajaxLink news-read-more\" "
+                        . "id=\"show_news-detail_{$content->getUrlKey()}\">[Celý článek]</a>";
                 $body = str_replace("(!read_more!)", $tag, $body);
                 $content->$parsedField = $body;
             }
@@ -51,7 +55,8 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function index() {
+    public function index()
+    {
         $layoutView = $this->getLayoutView();
         $layoutView->set('active', 0);
     }
@@ -59,11 +64,21 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function aboutUs() {
+    public function aboutUs()
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $cache = Registry::get('cache');
 
-        $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
+        $content = $cache->get('aboutus');
+
+        if (NULL !== $content) {
+            $content = $content;
+        } else {
+            $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
+            $cache->set('aboutus', $content);
+        }
+        
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
@@ -76,25 +91,47 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function reference() {
+    public function reference()
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $cache = Registry::get('cache');
 
-        $reference = App_Model_Reference::all(
-                        array('active = ?' => true), array('*'), array('created' => 'desc'), 30);
+        $content = $cache->get('reference');
 
-        $view->set('reference', $reference);
+        if (NULL !== $content) {
+            $content = $content;
+        } else {
+            $content = App_Model_Reference::all(
+                        array('active = ?' => true), 
+                        array('*'), 
+                        array('created' => 'desc'), 30);
+            
+            $cache->set('reference', $content);
+        }
+
+        $view->set('reference', $content);
         $layoutView->set('active', 2);
     }
 
     /**
      * 
      */
-    public function priceList() {
+    public function priceList()
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $cache = Registry::get('cache');
 
-        $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
+        $content = $cache->get('pricelist');
+
+        if (NULL !== $content) {
+            $content = $content;
+        } else {
+            $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
+            $cache->set('pricelist', $content);
+        }
+        
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
@@ -107,11 +144,21 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function contact() {
+    public function contact()
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
+        $cache = Registry::get('cache');
 
-        $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
+        $content = $cache->get('contact');
+
+        if (NULL !== $content) {
+            $content = $content;
+        } else {
+            $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
+            $cache->set('contact', $content);
+        }
+        
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
@@ -125,15 +172,27 @@ class App_Controller_Index extends Controller {
      * 
      * @param type $urlKey
      */
-    public function category($urlKey) {
+    public function category($urlKey)
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
         $session = Registry::get('session');
+        $cache = Registry::get('cache');
 
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
-        $products = App_Model_Product::fetchProductsByCategory($urlKey);
 
-      
+        if ($category === null) {
+            self::redirect('/neznamakategorie');
+        }
+
+        $products = $cache->get('category_products_'.$urlKey);
+        
+        if($products !== null){
+            $products = $products;
+        }else{
+            $products = App_Model_Product::fetchProductsByCategory($urlKey);
+            $cache->set('category_products_'.$urlKey, $products);
+        }
 
         if ($category->parentId != 0) {
             $layoutView->set('parentcat', $category->parentId);
@@ -154,12 +213,18 @@ class App_Controller_Index extends Controller {
      * 
      * @param type $urlKey
      */
-    public function product($urlKey) {
+    public function product($urlKey)
+    {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
         $session = Registry::get('session');
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
+
+        if ($product === null) {
+            self::redirect('/neznamykostym');
+        }
+
         $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
 
         $isSelable = false;
@@ -171,24 +236,17 @@ class App_Controller_Index extends Controller {
 
         $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
 
-
-
-        if ($product === null) {
-            $view->warningMessage('Kostým nebyl nalezen');
-            self::redirect('/');
-        }
-        
         $activeCat = $session->get('activecat');
         $parentCat = $session->get('parentcat');
-        
-        if($parentCat != null){
+
+        if ($parentCat != null) {
             $layoutView->set('parentcat', $parentCat);
         }
 
         $view->set('product', $product)
                 ->set('selable', $isSelable)
                 ->set('fblike', $fblike);
-        
+
         $layoutView->set('activecat', $activeCat)
                 ->set('metatitle', $product->getMetaTitle())
                 ->set('metakeywords', $product->getMetaKeywords())
@@ -198,7 +256,36 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function search() {
+    public function unknownProduct()
+    {
+        $layoutView = $this->getLayoutView();
+        $session = Registry::get('session');
+
+        $activeCat = $session->get('activecat');
+        $parentCat = $session->get('parentcat');
+
+        if ($activeCat != null) {
+            $layoutView->set('activecat', $activeCat);
+        }
+
+        if ($parentCat != null) {
+            $layoutView->set('parentcat', $parentCat);
+        }
+    }
+
+    /**
+     * 
+     */
+    public function unknownCategory()
+    {
+        
+    }
+
+    /**
+     * 
+     */
+    public function search()
+    {
         $view = $this->getActionView();
 
         if (RequestMethods::issetpost('submitsearch')) {
@@ -220,7 +307,8 @@ class App_Controller_Index extends Controller {
                     . "AND (ct.metaTitle LIKE '%%?%%' "
                     . "OR ct.metaKeywords LIKE '%%?%%' OR ct.title LIKE '%%?%%')";
 
-            $categoryQuery = App_Model_Category::getQuery(array('ct.id', 'ct.urlKey', 'ct.title'))
+            $categoryQuery = App_Model_Category::getQuery(
+                        array('ct.id', 'ct.urlKey', 'ct.title'))
                     ->wheresql($catWhereCond, $query, $query, $query)
                     ->order('ct.rank', 'asc')
                     ->limit(10);
@@ -234,7 +322,8 @@ class App_Controller_Index extends Controller {
     /**
      * 
      */
-    public function feed() {
+    public function feed()
+    {
         
     }
 
