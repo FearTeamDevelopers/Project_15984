@@ -5,12 +5,26 @@ use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Core\StringMethods;
 
+
 /**
  * 
  */
 class Admin_Controller_Content extends Controller
 {
 
+    /**
+     * 
+     * @param type $string
+     * @return type
+     */
+    private function createUrlKey($string)
+    {
+        $string = StringMethods::removeDiacriticalMarks($string);
+        $string = str_replace(array('.', ',', '_', '/', '(', ')', ' '), '-', $string);
+        $string = trim($string, ' ');
+        $string = trim($string, '-');
+        return strtolower($string);
+    }
     /**
      * 
      * @param type $key
@@ -62,8 +76,7 @@ class Admin_Controller_Content extends Controller
             $this->checkToken();
             $errors = array();
 
-            $urlKey = strtolower(
-                    str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
+            $urlKey = $this->createUrlKey(RequestMethods::post('page'));
 
             if (!$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Stránka s tímto názvem již existuje');
@@ -116,8 +129,7 @@ class Admin_Controller_Content extends Controller
             $this->checkToken();
             $errors = array();
 
-            $urlKey = strtolower(
-                    str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('page'))));
+            $urlKey = $this->createUrlKey(RequestMethods::post('page'));
 
             if ($content->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
                 $errors['title'] = array('Obsah s tímto názvem již existuje');

@@ -58,7 +58,10 @@ class App_Controller_Index extends Controller
     public function index()
     {
         $layoutView = $this->getLayoutView();
-        $layoutView->set('active', 0);
+        
+        $layoutView->set('active', 99)
+            ->set('activecat', null)
+                ->set('parentcat', null);
     }
 
     /**
@@ -83,6 +86,8 @@ class App_Controller_Index extends Controller
 
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('activecat', null)
+                ->set('parentcat', null)
                 ->set('active', 1)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
@@ -109,9 +114,11 @@ class App_Controller_Index extends Controller
             
             $cache->set('reference', $content);
         }
-
+        
         $view->set('reference', $content);
-        $layoutView->set('active', 2);
+        $layoutView->set('active', 2)
+            ->set('activecat', null)
+                ->set('parentcat', null);
     }
 
     /**
@@ -136,6 +143,8 @@ class App_Controller_Index extends Controller
 
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('activecat', null)
+                ->set('parentcat', null)
                 ->set('active', 3)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
@@ -160,9 +169,11 @@ class App_Controller_Index extends Controller
         }
         
         $parsed = $this->_parseContentBody($content);
-
+        
         $view->set('content', $parsed);
         $layoutView->set('metatitle', $content->getMetaTitle())
+                ->set('activecat', null)
+                ->set('parentcat', null)
                 ->set('active', 4)
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
@@ -181,6 +192,10 @@ class App_Controller_Index extends Controller
 
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
 
+        $layoutView->set('parentcat', null)
+                ->set('activecat', $urlKey)
+                ->set('active', 99);
+
         if ($category === null) {
             self::redirect('/neznamakategorie');
         }
@@ -197,6 +212,8 @@ class App_Controller_Index extends Controller
         if ($category->parentId != 0) {
             $layoutView->set('parentcat', $category->parentId);
             $session->set('parentcat', $category->parentId);
+        }else{
+            $layoutView->set('parentcat', 'unknown');
         }
 
         $session->set('activecat', $urlKey);
@@ -204,6 +221,7 @@ class App_Controller_Index extends Controller
                 ->set('products', $products);
         $layoutView
                 ->set('activecat', $urlKey)
+                ->set('active', 99)
                 ->set('metatitle', $category->getMetaTitle())
                 ->set('metakeywords', $category->getMetaKeywords())
                 ->set('metadescription', $category->getMetaDescription());
@@ -221,6 +239,11 @@ class App_Controller_Index extends Controller
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
 
+        $view->set('product', $product);
+        $layoutView->set('parentcat', null)
+                ->set('activecat', null)
+                ->set('active', 99);
+        
         if ($product === null) {
             self::redirect('/neznamykostym');
         }
@@ -236,18 +259,16 @@ class App_Controller_Index extends Controller
 
         $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
 
-        $activeCat = $session->get('activecat');
-        $parentCat = $session->get('parentcat');
-
-        if ($parentCat != null) {
-            $layoutView->set('parentcat', $parentCat);
-        }
+        $activeCat = $session->get('activecat', 'unknown');
+        $parentCat = $session->get('parentcat', 'unknown');
 
         $view->set('product', $product)
                 ->set('selable', $isSelable)
                 ->set('fblike', $fblike);
 
         $layoutView->set('activecat', $activeCat)
+                ->set('parentcat', $parentCat)
+                ->set('active', 99)
                 ->set('metatitle', $product->getMetaTitle())
                 ->set('metakeywords', $product->getMetaKeywords())
                 ->set('metadescription', $product->getMetaDescription());
@@ -261,16 +282,12 @@ class App_Controller_Index extends Controller
         $layoutView = $this->getLayoutView();
         $session = Registry::get('session');
 
-        $activeCat = $session->get('activecat');
-        $parentCat = $session->get('parentcat');
+        $activeCat = $session->get('activecat', 'unknown');
+        $parentCat = $session->get('parentcat', 'unknown');
 
-        if ($activeCat != null) {
-            $layoutView->set('activecat', $activeCat);
-        }
-
-        if ($parentCat != null) {
-            $layoutView->set('parentcat', $parentCat);
-        }
+        $layoutView->set('activecat', $activeCat)
+                ->set('parentcat', $parentCat)
+                ->set('active', 99);
     }
 
     /**
@@ -278,7 +295,11 @@ class App_Controller_Index extends Controller
      */
     public function unknownCategory()
     {
-        
+        $layoutView = $this->getLayoutView();
+
+        $layoutView->set('activecat', 'unknown')
+                ->set('parentcat', 'unknown')
+                ->set('active', 99);
     }
 
     /**

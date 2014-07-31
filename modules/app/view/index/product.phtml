@@ -1,4 +1,5 @@
 <article class="transparentAbout product">
+    {if $product !== null}
     <h1>{echo $product->title}</h1>
     {script $variants = $product->variants}
     {script $additionalPhotos = $product->additionalPhotos}
@@ -107,5 +108,5 @@
     {/else}
 
     <br/>
-
+    {/if}
 </article>

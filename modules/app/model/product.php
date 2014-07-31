@@ -585,24 +585,24 @@ class App_Model_Product extends Model
                 ->where('pr.deleted = ?', false);
         $products = App_Model_Product::initialize($productsQuery);
         
-        if(count($products) < 20){
-            $category  = App_Model_Category::first(array('urlKey = ?' => $categoryUrlKey), array('id', 'parentId'));
-            
-            $productsSubQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                        array('productId', 'categoryId'))
-                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
-                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey', 
-                            'isGrouped', 'isSelable', 'mainText', 
-                            'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords', 
-                            'ct.metaDescription' => 'catMetaDescription'))
-                ->where('ct.parentId = ?', $category->getId())
-                ->where('pr.deleted = ?', false)
-                ->order('pr.created', 'desc')
-                ->limit(40);
-
-            $products = App_Model_Product::initialize($productsSubQuery);
-        }
+//        if(count($products) < 20){
+//            $category  = App_Model_Category::first(array('urlKey = ?' => $categoryUrlKey), array('id', 'parentId'));
+//            
+//            $productsSubQuery = App_Model_Product::getQuery(array('pr.*'))
+//                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+//                        array('productId', 'categoryId'))
+//                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
+//                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey', 
+//                            'isGrouped', 'isSelable', 'mainText', 
+//                            'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords', 
+//                            'ct.metaDescription' => 'catMetaDescription'))
+//                ->where('ct.parentId = ?', $category->getId())
+//                ->where('pr.deleted = ?', false)
+//                ->order('pr.created', 'desc')
+//                ->limit(40);
+//
+//            $products = App_Model_Product::initialize($productsSubQuery);
+//        }
         
         return $products;
     }

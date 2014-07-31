@@ -17,13 +17,26 @@ class Admin_Controller_Product extends Controller
 
     /**
      * 
+     * @param type $string
+     * @return type
+     */
+    private function createUrlKey($string)
+    {
+        $string = StringMethods::removeDiacriticalMarks($string);
+        $string = str_replace(array('.', ',', '_', '/', '(', ')', ' '), '-', $string);
+        $string = trim($string, ' ');
+        $string = trim($string, '-');
+        return strtolower($string);
+    }
+    
+    /**
+     * 
      * @param type $configurable
      * @return \App_Model_Product
      */
     private function createMainProduct($configurable = false)
     {
-        $urlKey = $urlKeyCh = strtolower(
-                str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title'))));
+        $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('title'));
 
         for($i = 1; $i <= 50; $i++){
             if ($this->checkUrlKey($urlKeyCh)) {
@@ -151,8 +164,7 @@ class Admin_Controller_Product extends Controller
         }
 
         foreach ($sizeVariantsArr as $size) {
-            $urlKey = $urlKeyCh = strtolower(
-                            str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('title')))) . '-' . $size;
+            $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('title')) . '-' . $size;
 
             for ($i = 1; $i <= 50; $i++) {
                 if ($this->checkUrlKey($urlKeyCh)) {
@@ -466,8 +478,7 @@ class Admin_Controller_Product extends Controller
                             ->set('errors', $product->getErrors());
                 }
             }else{
-                $urlKey = $urlKeyCh = strtolower(
-                        str_replace(' ', '-', StringMethods::removeDiacriticalMarks(RequestMethods::post('urlkey'))));
+                $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('urlkey'));
 
                 if ($product->getUrlKey() !== $urlKey) {
                     for ($i = 1; $i <= 50; $i++) {
