@@ -28,7 +28,7 @@
 
                 {if !empty($subcategory)}
                     {if $count>7}<!--změna pozice dropdown menu při velkém počtu subkategorií-->
-                        {if isset($parentcat) & $parentcat == $cat->id | $activecat == "dospele"}
+                        {if isset($parentcat) & $parentcat == $cat->id | $activecat == "dospeli"}
                             <ul class="dropdownmenu3-display">
                         {/if}
                         {else}
