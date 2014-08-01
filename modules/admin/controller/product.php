@@ -23,8 +23,8 @@ class Admin_Controller_Product extends Controller
     private function createUrlKey($string)
     {
         $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '/', '(', ')', ' '), '-', $string);
-        $string = trim($string, ' ');
+        $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
+        $string = trim($string);
         $string = trim($string, '-');
         return strtolower($string);
     }
@@ -59,7 +59,7 @@ class Admin_Controller_Product extends Controller
             'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
         ));
 
-        $uploadTo = trim(substr(str_replace('.','',$urlKey), 0, 3));
+        $uploadTo = trim(substr(str_replace('.','',$urlKeyCh), 0, 3));
 
         try {
             $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);

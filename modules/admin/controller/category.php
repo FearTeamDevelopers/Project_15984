@@ -19,7 +19,7 @@ class Admin_Controller_Category extends Controller
     private function createUrlKey($string)
     {
         $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '/', '(', ')', ' '), '-', $string);
+        $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
         $string = trim($string, ' ');
         $string = trim($string, '-');
         return strtolower($string);
