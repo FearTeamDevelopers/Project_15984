@@ -1,5 +1,30 @@
-<article class="category">
+<article >
     <h1 class="visuallyhidden">Kategorie</h1>
+    <div class="categoryRadit transparentCategory">
+        <table>
+            <tr>
+                <td>Řadit dle</td>
+                <td>
+                    <select id="catvieworderby" name="catvieworderby">
+                        
+                        <option value="created" {if $catorderby == "created"}selected{/if}>Nejnovější</option>
+                        <option value="currentPrice" {if $catorderby == "currentPrice"}selected{/if}>Ceny</option>
+                        <option value="title" {if $catorderby == "title"}selected{/if}>Jména</option>
+                    </select>
+                </td></tr>
+            <tr><td></td>
+                <td>
+                    <select id="catvieworder" name="catvieworder">
+                        <option value="desc" {if $catorder == "desc"}selected{/if}>Vzestupně</option>
+                        <option value="asc" {if $catorder == "asc"}selected{/if}>Sestupně</option>
+                    </select>
+                </td>
+            </tr>
+               
+        </table>
+    </div>
+    <div class="category">
+         
     {if !empty($products)}
         {foreach $product in $products}
             {if $product->hasGroupPhoto}
@@ -26,6 +51,8 @@
         <div class="errorDiv transparentCategory">
             <span>V této kategorii nejsou, žádné kostýmy</span>    
         </div>
-    {/else}
+    {/else} 
+    </div>
+  
 </article>
 

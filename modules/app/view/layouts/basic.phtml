@@ -23,7 +23,8 @@
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/style_basic.css" media="screen" rel="stylesheet" type="text/css" />
-        {if $backgroud == 1}
+        
+        {if isset($background)}
             <link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />
         {/if}{else}
             <link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />
@@ -62,5 +63,6 @@
         </footer>
 
         <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
+        <script type="text/javascript" src="/public/js/custom/general_api.js"></script> 
     </body>
 </html>
