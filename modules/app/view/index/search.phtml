@@ -7,17 +7,17 @@
         {/foreach}
     </article>
 {/if}
+
 {if !empty($products)}
     <article class="searchProduct ">
         <h1 class="visuallyhidden">Search content</h1>
         <div>
-            <span class="transparentAbout">Výraz <i>{echo $query}</i> byl nalezen v těchto produktech:</span>
+            <span class="transparentAbout">Výraz <i>{echo $query}</i> byl nalezen v těchto kostýmech:</span>
         </div>
     </article>
 
-     <article class="category">
-    <h1 class="visuallyhidden">Category</h1>
-    {if !empty($products)}
+    <article class="category">
+        <h1 class="visuallyhidden">Category</h1>
         {foreach $product in $products}
             {if $product->hasGroupPhoto}
                 <div class="transparentCategory productCategoryGrouped">
@@ -38,11 +38,9 @@
                 </div>
             {/else}
         {/foreach}
-    {/if}
-    {else}
-        <div class="errorDiv transparentCategory">
-            <span>V této kategorii nejsou, žádné produkty</span>    
-        </div>
-    {/else}
-</article>
-{/if}
+    </article>
+{/if}{else}
+    <div class="errorDiv transparentCategory">
+        <span>Nebyly nalezeny žádné kostýmy</span>    
+    </div>
+{/else}

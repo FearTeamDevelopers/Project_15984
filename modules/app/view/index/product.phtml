@@ -1,115 +1,132 @@
 <article class="transparentAbout product">
     {if $product !== null}
     <h1>{echo $product->title}</h1>
+    
     {script $variants = $product->variants}
     {script $additionalPhotos = $product->additionalPhotos}
     {script $recommendedProducts = $product->recommendedProductObjects}
+    
     {if $product->hasGroupPhoto}
-    <div class="productPhotoGr">
-        <a data-lightbox="imageGr" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgMain}" alt="{echo $product->title}"></a>
-    </div><br/>
-    {if !empty($additionalPhotos)}
-    <div class="additionalPhotos">
-        {foreach $photo in $additionalPhotos}
-        <a data-lightbox="imageGr" data-title="{echo $product->title}"  href="{echo $photo->imgMain}"><span><img src="{echo $photo->imgThumb}"></span></a>
-        {/foreach}
-    </div>
+        <div class="productPhotoGr">
+            <a data-lightbox="imageGr" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgMain}" alt="{echo $product->title}"></a>
+        </div>
+        <br/>
+        {if !empty($additionalPhotos)}
+        <div class="additionalPhotos">
+            {foreach $photo in $additionalPhotos}
+            <a data-lightbox="imageGr" data-title="{echo $product->title}"  href="{echo $photo->imgMain}"><span><img src="{echo $photo->imgThumb}"></span></a>
+            {/foreach}
+        </div>
 
-    <div class="productTableGr bottomLine">
-    {/if}    
-    {else}
-    <div class="productTableGr ">
-    {/else}
-        <table class="pTable ">
-            <tr><td colspan="2">
-                    <iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
-        scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
-                </td>
-            </tr>
-            <tr>
-                <td>Číslo produktu:</td><td>{echo $product->productCode}</td><td>Dostupné velikosti:</td>
-                <td>
-                    {if !empty($variants)}
-                        <select class="productSelect">
-                            {foreach $variant in $variants}<option>{echo $variant->sizeTitle}{/foreach}
-                        </select>
-                    {/if}
-                    {else}
-                        {echo $product->sizeTitle}
-                    {/else}
-                </td>
-            </tr>
-            <tr><td>Název kostýmu:</td><td>{echo $product->title}</td><td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
-        </table>
-    </div>
+        <div class="productTableGr bottomLine">
+        {/if}{else}
+            <div class="productTableGr ">
+        {/else}
+        
+            <table class="pTable ">
+                <tr>
+                    <td colspan="2">
+                        <iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
+            scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Číslo produktu:</td><td>{echo $product->productCode}</td>
+                    <td>Dostupné velikosti:</td>
+                    <td>
+                        {if !empty($variants)}
+                            <select class="productSelect">
+                                {foreach $variant in $variants}
+                                    <option>{echo $variant->sizeTitle}{/foreach}
+                            </select>
+                        {/if}{else}
+                            {echo $product->sizeTitle}
+                        {/else}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Název kostýmu:</td><td>{echo $product->title}</td>
+                    <td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td>
+                </tr>
+            </table>
+        </div>
 
-    <div class="productDescriptionGr">
-        <span>{echo $product->description}</span>
-    </div>
-    {if !empty($recommendedProducts)}
-    <div class="recommended topLine">
-        <h2 class="recommendedNadpis">Doporučené produkty</h2>
-        {foreach $rec in $recommendedProducts}
-         <div>
-                    <a href="/kostym/{echo $rec->urlKey}/">
-                        <span class="recTitle">{echo $rec->title}</span><br/>
-                        <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
-                    </a>
-                </div>
-        {/foreach}
-    </div>{/if}
-    {/if}
-    {else}
-    <div class="productPhoto">
-        <a data-lightbox="image" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgMain}" alt="{echo $product->title}"></a>
-    </div>
-    <div class="productTable">
-        <table class="pTableSingle">
-            <tr><td colspan="2"><iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
-        scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe></td></tr>
-            <tr><td>Číslo produktu:</td><td>{echo $product->productCode}</td></tr>
-            <tr><td>Název kostýmu:</td><td>{echo $product->title}</td></tr>
-            <tr><td>Dostupné velikosti:</td>
-                <td>
-                    {if !empty($variants)}
-                    <select class="productSelect "> {foreach $variant in $variants}<option>{echo $variant->sizeTitle}{/foreach}
-                    </select>
-                    {/if}
-                    {else}
-                    {echo $product->sizeTitle}
-                    {/else}
-                </td></tr>
-            <tr><td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
-        </table>
-    </div>
-    <div class="productLogo">
-        LOGO
-    </div>
-    {if !empty($additionalPhotos)}
-    <div class="additionalPhotos bottomLine">
-        {foreach $photo in $additionalPhotos}
-        <span><a data-lightbox="image" data-title="{echo $product->title}" href="{echo $photo->imgMain}"><img src="{echo $photo->imgThumb}"></a></span>
-        {/foreach}
-    </div>
-    {/if}
-    <div class="productDescription">
-        <span>{echo $product->description}</span>
-    </div>
+        <div class="productDescriptionGr">
+            <span>{echo $product->description}</span>
+        </div>
+        
         {if !empty($recommendedProducts)}
             <div class="recommended topLine">
                 <h2 class="recommendedNadpis">Doporučené produkty</h2>
                 {foreach $rec in $recommendedProducts}
-                <div>
-                    <a href="/kostym/{echo $rec->urlKey}/">
-                        <span class="recTitle">{echo $rec->title}</span><br/>
-                        <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
-                    </a>
-                </div>
+                    <div>
+                        <a href="/kostym/{echo $rec->urlKey}/">
+                            <span class="recTitle">{echo $rec->title}</span><br/>
+                            <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
+                        </a>
+                    </div>
+                {/foreach}
+            </div>
+        {/if}
+    {/if}{else}
+        <div class="productPhoto">
+            <a data-lightbox="image" data-title="{echo $product->title}" href="{echo $product->imgMain}" alt="{echo $product->title}"><img src="{echo $product->imgMain}" alt="{echo $product->title}"></a>
+        </div>
+    
+        <div class="productTable">
+            <table class="pTableSingle">
+                <tr><td colspan="2"><iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
+            scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe></td></tr>
+                
+                <tr><td>Číslo produktu:</td><td>{echo $product->productCode}</td></tr>
+                <tr><td>Název kostýmu:</td><td>{echo $product->title}</td></tr>
+                <tr><td>Dostupné velikosti:</td>
+                    <td>
+                        {if !empty($variants)}
+                            <select class="productSelect "> 
+                                {foreach $variant in $variants}
+                                    <option>{echo $variant->sizeTitle}{/foreach}
+                            </select>
+                        {/if}{else}
+                            {echo $product->sizeTitle}
+                        {/else}
+                    </td>
+                </tr>
+                <tr><td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
+            </table>
+        </div>
+    
+        <div class="productLogo">
+            LOGO
+        </div>
+    
+        {if !empty($additionalPhotos)}
+            <div class="additionalPhotos bottomLine">
+                {foreach $photo in $additionalPhotos}
+                    <span>
+                        <a data-lightbox="image" data-title="{echo $product->title}" href="{echo $photo->imgMain}">
+                            <img src="{echo $photo->imgThumb}"></a>
+                    </span>
+                {/foreach}
+            </div>
+        {/if}
+        <div class="productDescription">
+            <span>{echo $product->description}</span>
+        </div>
+        {if !empty($recommendedProducts)}
+            <div class="recommended topLine">
+                <h2 class="recommendedNadpis">Doporučené produkty</h2>
+                {foreach $rec in $recommendedProducts}
+                    <div>
+                        <a href="/kostym/{echo $rec->urlKey}/">
+                            <span class="recTitle">{echo $rec->title}</span><br/>
+                            <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
+                        </a>
+                    </div>
                 {/foreach}
             </div>
         {/if}
     {/else}
-
     <br/>
     {/if}
 </article>

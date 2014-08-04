@@ -1,22 +1,18 @@
 {if !empty($reference)}
-{script $i=1}
-{foreach $ref in $reference}
-<article class="transparentAbout reference">
-    <h1 class="visuallyhidden">{echo $ref->title}</h1>
-    <div class="refPhoto">
-        <a data-lightbox="image{echo $i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
-    </div>
-    <div class="refText">
-        <div>{echo $ref->body}</div>
-    </div>
-</article>
-{script $i++}
-{/foreach}
+    {foreach $ref in $reference}
+        <article class="transparentAbout reference">
+            <h1 class="visuallyhidden">{echo $ref->title}</h1>
+            <div class="refPhoto">
+                <a data-lightbox="image{echo $ref_i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
+            </div>
+            <div class="refText">
+                <div>{echo $ref->body}</div>
+            </div>
+        </article>
+    {/foreach}
 {/if}
 {else}
-<div class="errorDiv transparentAbout">
-    <span>
-        Nebyly nalezeny žádné reference.
-    </span>
-</div>
+    <div class="errorDiv transparentAbout">
+        <span>Nebyly nalezeny žádné reference</span>
+    </div>
 {/else}

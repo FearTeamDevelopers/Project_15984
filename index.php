@@ -37,7 +37,7 @@ foreach ($iterator as $item) {
 }
 
 //module loading
-$modules = array('App', 'Admin');
+$modules = array('App', 'Admin', 'Cron');
 THCFrame\Core\Core::registerModules($modules);
 
 $profiler = THCFrame\Profiler\Profiler::getProfiler();

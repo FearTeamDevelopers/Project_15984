@@ -23,6 +23,11 @@
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/style_basic.css" media="screen" rel="stylesheet" type="text/css" />
+        {if $backgroud == 1}
+            <link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />
+        {/if}{else}
+            <link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />
+        {/else}
         <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
 
         <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
@@ -33,26 +38,6 @@
         <title>{echo $metatile}</title>
     </head>
     <body lang="cs">
-        {if $backgroud == 1}
-        <style>
-            html {
-                background-image: url('../images/karneval_bg.jpg'), url('../images/bg.jpg');
-                background-repeat: no-repeat ,repeat-x;
-                background-position-x: center;
-                background-attachment:fixed;
-            }
-        </style>
-        {/if}{else}
-        <style>
-            html {
-                background-image: url('../images/karneval_bg.jpg'), url('../images/bg.jpg');
-                background-repeat: no-repeat ,repeat-x;
-                background-position-x: center;
-                background-attachment:fixed;
-            }
-        </style>
-        {/else}
-        
         <header>
             <article id="logo">
                 <h1 class="visuallyhidden">Logo</h1>
