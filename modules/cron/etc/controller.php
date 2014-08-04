@@ -101,18 +101,6 @@ class Controller extends BaseController
      */
     public function render()
     {
-        if ($this->getUser()) {
-            if ($this->getActionView()) {
-                $this->getActionView()
-                        ->set('authUser', $this->getUser());
-            }
-
-            if ($this->getLayoutView()) {
-                $this->getLayoutView()
-                        ->set('authUser', $this->getUser());
-            }
-        }
-
         parent::render();
     }
 
