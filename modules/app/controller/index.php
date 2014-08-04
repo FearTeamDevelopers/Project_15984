@@ -190,7 +190,13 @@ class App_Controller_Index extends Controller
         $session = Registry::get('session');
         $cache = Registry::get('cache');
 
-        $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
+        $orderby = $session->get('catvieworderby', 'created');
+        $order = $session->get('catvieworder', 'desc');
+                
+        $category = App_Model_Category::first(
+                array('active = ?' => true, 'urlKey = ?' => $urlKey), 
+                array('*'),
+                array($orderby => $order));
 
         $layoutView->set('parentcat', null)
                 ->set('activecat', $urlKey)
@@ -323,6 +329,7 @@ class App_Controller_Index extends Controller
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
             }
+            
             $productWhereCond = substr($productWhereCond, 0, strlen($productWhereCond)-4).")";
             array_unshift($args, $productWhereCond);
             
@@ -344,6 +351,7 @@ class App_Controller_Index extends Controller
                 $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
             }
+            
             $catWhereCond = substr($catWhereCond, 0, strlen($catWhereCond)-4).")";
             array_unshift($argscat, $catWhereCond);
 
@@ -359,6 +367,26 @@ class App_Controller_Index extends Controller
                    ->set('query', $query) 
                     ->set('categories', $categories);
         }
+    }
+
+    /**
+     * 
+     */
+    public function setProductOrder()
+    {
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+        $view = $this->getActionView();
+        $session = Registry::get('session');
+        
+        $referer = $view->getHttpReferer();
+        $orderby = RequestMethods::post('catvieworderby');
+        $order = RequestMethods::post('catvieworder');
+
+        $session->set('catvieworderby', $orderby)
+                ->set('catvieworder', $order);
+        
+        self::redirect($referer);
     }
 
     /**

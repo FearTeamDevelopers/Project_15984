@@ -69,6 +69,9 @@
                         {if isset($errors["mainfile"])}
                         <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                         {/if}
+                        {if isset($errors["imgMain"])}
+                        <label class="error">{echo join("<br/>", $errors["imgMain"])}</label>
+                        {/if}
                     </span> 
                 </p>
                 <p>
@@ -100,8 +103,7 @@
                     <span class="field check-size nodisplay">
                         {if !empty($sizes)}
                             {foreach $size in $sizes}
-                                <input type="checkbox" name="size[{echo $size->id}]" value="{echo $size->id}">{echo $size->title}
-                                <input type="text" class="microinput" title="Pouze čísla" pattern="[\d]+" name="quantity-{echo $size->id}" value="" /><br class="clear-all"/>
+                                <input type="checkbox" name="size[{echo $size->id}]" value="{echo $size->id}">{echo $size->title}<br/>
                             {/foreach}
                         {/if}
                         {if isset($errors["sizeId"])}
@@ -109,23 +111,13 @@
                         {/if}
                     </span>
                 </p>
-                <p class="product-quantity">
-                    <label>Počet kusů*</label>
-                    <span class="field">
-                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]+" name="quantity" 
-                               value="{echo isset($product)? $product->quantity: ""}" />
-                        {if isset($errors["quantity"])}
-                        <label class="error">{echo join("<br/>", $errors["quantity"])}</label>
-                        {/if}
-                    </span>
-                </p>
                 <p>
-                    <label>Aktuální cena*</label>
+                    <label>Základní cena*</label>
                     <span class="field">
-                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="currentprice" 
-                               value="{echo isset($product)? $product->currentPrice: ""}" />
-                        {if isset($errors["currentPrice"])}
-                        <label class="error">{echo join("<br/>", $errors["currentPrice"])}</label>
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="basicprice" 
+                               value="{echo isset($product)? $product->basicPrice: ""}" />
+                        {if isset($errors["basicPrice"])}
+                        <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
                         {/if}
                     </span>
                 </p>
@@ -164,16 +156,6 @@
             </div>
 
             <div id="additional">
-                 <p>
-                    <label>Základní cena</label>
-                    <span class="field">
-                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
-                               value="{echo isset($product)? $product->basicPrice: ""}" />
-                        {if isset($errors["basicPrice"])}
-                        <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
-                        {/if}
-                    </span>
-                </p>
                 <p>
                     <label>Obvyklá cena</label>
                     <span class="field">
@@ -185,7 +167,7 @@
                     </span>
                 </p>
                 <p>
-                    <label>Sleva</label>
+                    <label>Sleva<small>Procentuálě</small></label>
                     <span class="field">
                         <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
                                value="{echo isset($product)? $product->discount: ""}" />
