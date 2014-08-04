@@ -912,6 +912,7 @@ a.btn_table { background-position: -82px -480px; }
 .category-detail span {font-size: 15px; font-weight: bold;}
 .category-detail div {margin-top: 5px;}
 
+
 @media screen and (max-width: 1024px) {
     .maincontent { margin-right: 260px; margin-left: 230px; }
     .mainright { width: 250px; }

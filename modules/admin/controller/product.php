@@ -70,7 +70,8 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('discount') &&
                 RequestMethods::post('discountfrom') <= date('Y-m-d') && RequestMethods::post('discountto') >= date('Y-m-d')) {
-            $currentPrice = RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100);
+            $floatPrice = RequestMethods::post('basicprice') - (RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100));
+            $currentPrice = round($floatPrice);
         } else {
             $currentPrice = RequestMethods::post('basicprice');
         }
@@ -91,7 +92,7 @@ class Admin_Controller_Product extends Controller
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
-                'discount' => RequestMethods::post('discount'),
+                'discount' => RequestMethods::post('discount', 0),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
                 'eanCode' => RequestMethods::post('eancode'),
@@ -125,7 +126,7 @@ class Admin_Controller_Product extends Controller
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
-                'discount' => RequestMethods::post('discount'),
+                'discount' => RequestMethods::post('discount', 0),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
                 'eanCode' => RequestMethods::post('eancode'),
@@ -532,7 +533,8 @@ class Admin_Controller_Product extends Controller
 
                 if (RequestMethods::post('discount') &&
                         RequestMethods::post('discountfrom') <= date('Y-m-d') && RequestMethods::post('discountto') >= date('Y-m-d')) {
-                    $currentPrice = RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100);
+                    $floatPrice = RequestMethods::post('basicprice') - (RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100));
+                    $currentPrice = round($floatPrice);
                 } else {
                     $currentPrice = RequestMethods::post('basicprice');
                 }
@@ -546,7 +548,7 @@ class Admin_Controller_Product extends Controller
                 $product->regularPrice = RequestMethods::post('regularprice', 0);
                 $product->currentPrice = $currentPrice;
                 $product->quantity = RequestMethods::post('quantity', 0);
-                $product->discount = RequestMethods::post('discount');
+                $product->discount = RequestMethods::post('discount', 0);
                 $product->discountFrom = RequestMethods::post('discountfrom');
                 $product->discountTo = RequestMethods::post('discountto');
                 $product->eanCode = RequestMethods::post('eancode');
@@ -1027,8 +1029,9 @@ class Admin_Controller_Product extends Controller
                     . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode',
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.discountFrom', 'pr.discountTo'))
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                                'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -1074,8 +1077,9 @@ class Admin_Controller_Product extends Controller
             unset($productsCount);
         } else {
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode',
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.discountFrom', 'pr.discountTo'))
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                                'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -1118,8 +1122,10 @@ class Admin_Controller_Product extends Controller
         if ($products !== null) {
             foreach ($products as $product) {
                 $label = '';
-                if ($product->getDiscountFrom() <= date('Y-m-d') && $product->getDiscountTo() >= date('Y-m-d')) {
-                    $label = "<a href='#' class='btn btn3 btn_dollartag' title='Ve slevě'></a>";
+                if ($product->getDiscount() != 0 
+                        && $product->getDiscountFrom() <= date('Y-m-d') 
+                        && $product->getDiscountTo() >= date('Y-m-d')) {
+                    $label = "<a href='#' class='discount-btn btn btn3 btn_dollartag' title='Ve slevě'></a>";
                 }
 
                 $arr = array();
@@ -1129,11 +1135,11 @@ class Admin_Controller_Product extends Controller
                 $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
                 $arr [] = "\"" . $product->catTitle . "\"";
                 $arr [] = "\"" . $product->getProductCode() . "\"";
-                $arr [] = "\"" . $product->getCurrentPrice() . "\"";
+                $arr [] = "\"" . $product->getCurrentPrice() ."\"";
 
-                $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
+                $tempStr = "\"{$label}<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
                 $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
-                $tempStr .= $label;
+                
                 if ($this->isAdmin()) {
                     $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
                 }

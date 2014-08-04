@@ -132,7 +132,7 @@
                 <p>
                     <label>Základní cena*</label>
                     <span class="field">
-                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="basicprice" 
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
                                value="{echo $product->basicPrice}" />
                         {if isset($errors["basicPrice"])}
                         <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
@@ -200,7 +200,7 @@
                 <p>
                     <label>Obvyklá cena</label>
                     <span class="field">
-                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="regularprice" 
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="regularprice" 
                                value="{echo $product->regularPrice}" />
                         {if isset($errors["regularPrice"])}
                         <label class="error">{echo join("<br/>", $errors["regularPrice"])}</label>
@@ -210,7 +210,7 @@
                 <p>
                     <label>Sleva<small>Procentuálě</small></label>
                     <span class="field">
-                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="discount" 
+                        <input class="longinput" type="number" min="0" max="100" title="Pouze čísla 0-100" name="discount" 
                                value="{echo $product->discount}" />
                         {if isset($errors["discount"])}
                         <label class="error">{echo join("<br/>", $errors["discount"])}</label>
@@ -220,7 +220,7 @@
                 <p>
                     <label>Sleva od</label>
                     <span class="field">
-                        <input class="longinput datepicker" type="text"  name="discountfrom" 
+                        <input class="longinput datepicker" type="text" name="discountfrom" 
                                value="{echo $product->discountFrom}" />
                         {if isset($errors["discountFrom"])}
                         <label class="error">{echo join("<br/>", $errors["discountFrom"])}</label>
@@ -230,7 +230,7 @@
                 <p>
                     <label>Sleva do</label>
                     <span class="field">
-                        <input class="longinput datepicker" type="text"  name="discountto" 
+                        <input class="longinput datepicker" type="text" name="discountto" 
                                value="{echo $product->discountTo}" />
                         {if isset($errors["discountTo"])}
                         <label class="error">{echo join("<br/>", $errors["discountTo"])}</label>
@@ -274,7 +274,7 @@
                 <p>
                     <label>Novinka od</label>
                     <span class="field">
-                        <input class="longinput datepicker" type="text"  name="newfrom" 
+                        <input class="longinput datepicker" type="text" name="newfrom" 
                                value="{echo $product->newFrom}" />
                         {if isset($errors["newFrom"])}
                         <label class="error">{echo join("<br/>", $errors["newFrom"])}</label>
@@ -284,7 +284,7 @@
                 <p>
                     <label>Novinka do</label>
                     <span class="field">
-                        <input class="longinput datepicker" type="text"  name="newto" 
+                        <input class="longinput datepicker" type="text" name="newto" 
                                value="{echo $product->newTo}" />
                         {if isset($errors["newTo"])}
                         <label class="error">{echo join("<br/>", $errors["newTo"])}</label>
@@ -511,7 +511,7 @@
                 <p>
                     <label>Základní cena*</label>
                     <span class="field">
-                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+"  name="basicprice" 
+                        <input required class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="basicprice" 
                                value="{echo $product->basicPrice}" />
                         {if isset($errors["basicPrice"])}
                         <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>

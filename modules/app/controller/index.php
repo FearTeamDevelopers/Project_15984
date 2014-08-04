@@ -194,10 +194,7 @@ class App_Controller_Index extends Controller
         $orderby = $session->get('catvieworderby', 'created');
         $order = $session->get('catvieworder', 'desc');
                 
-        $category = App_Model_Category::first(
-                array('active = ?' => true, 'urlKey = ?' => $urlKey), 
-                array('*'),
-                array($orderby => $order));
+        $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
 
         $layoutView->set('parentcat', null)
                 ->set('activecat', $urlKey)
@@ -212,7 +209,7 @@ class App_Controller_Index extends Controller
         if($products !== null){
             $products = $products;
         }else{
-            $products = App_Model_Product::fetchProductsByCategory($urlKey);
+            $products = App_Model_Product::fetchProductsByCategory($urlKey, $orderby, $order);
             $cache->set('category_products_'.$urlKey, $products);
         }
 
@@ -220,12 +217,16 @@ class App_Controller_Index extends Controller
             $layoutView->set('parentcat', $category->parentId);
             $session->set('parentcat', $category->parentId);
         }else{
-            $layoutView->set('parentcat', 'unknown');
+            $layoutView->set('parentcat', $category->getId());
         }
 
         $session->set('activecat', $urlKey);
+        
         $view->set('category', $category)
-                ->set('products', $products);
+                ->set('products', $products)
+                ->set('catorderby', $orderby)
+                ->set('catorder', $order);
+        
         $layoutView
                 ->set('activecat', $urlKey)
                 ->set('active', 99)
@@ -339,8 +340,9 @@ class App_Controller_Index extends Controller
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.urlKey', 'pr.productCode',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'));
+            
             call_user_method_array('wheresql', $productQuery, $args);
-            //->wheresql($productWhereCond, $query, $query, $query, $query)
+
             $productQuery->order('pr.created', 'DESC')
                     ->limit(50);
             $products = App_Model_Product::initialize($productQuery);
@@ -360,8 +362,9 @@ class App_Controller_Index extends Controller
 
             $categoryQuery = App_Model_Category::getQuery(
                             array('ct.id', 'ct.urlKey', 'ct.title'));
+            
             call_user_method_array('wheresql', $categoryQuery, $argscat);
-            //->wheresql($catWhereCond, $query, $query, $query)
+
             $categoryQuery->order('ct.rank', 'asc')
                     ->limit(10);
             $categories = App_Model_Category::initialize($categoryQuery);
@@ -391,7 +394,7 @@ class App_Controller_Index extends Controller
         $session->set('catvieworderby', $orderby)
                 ->set('catvieworder', $order);
         
-        self::redirect($referer);
+        echo $referer;
     }
 
     /**
