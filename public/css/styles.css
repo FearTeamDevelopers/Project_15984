@@ -7,6 +7,10 @@ and open the template in the editor.
     Created on : 23.5.2014, 21:40:16
     Author     : Sabre
 */
+table tr td{
+    border:1px solid black;
+    padding:5px;
+}
 
 .transparentAbout{
     background: rgba(200,175, 175, 0.86);
@@ -35,9 +39,12 @@ h1{
     padding-right:60px;
     padding-bottom:70px;
     padding-top: 70px;
-    margin-top: 60px;
     min-width:330px;
     max-width: 1200px;
+    margin-right:20px;
+    
+    position: absolute;
+    bottom: 10%;
 
 }
 .about div{
@@ -90,8 +97,7 @@ h1{
 .errorDiv{
     text-align:center;
     padding:30px;
-    margin-top:30px;
-    margin:0 auto;
+    margin-top:40%;
     font-size:18px;
     font-family: sans-serif;
 }
@@ -123,10 +129,14 @@ h1{
 }
 .productPhoto img{
     border:10px solid rgb(248,216,219);
-    width:400px;
+    min-width:300px;
+    max-width:400px;
+    max-height:600px;
 }
 .productPhotoGr img{
-    width:700px;
+    max-width:700px;
+    min-width:500px;
+    max-height:600px;
     border:10px solid rgb(248,216,219);
 }
 
@@ -137,6 +147,15 @@ h1{
     font-size:18px;
     font-family: sans-serif;
     margin-left:40px;
+}
+.productLogo{
+    background: pink;
+    width:350px;
+    height:100px;
+    float:left;
+    border:1px solid pink;
+    margin-left:50px;
+    margin-top:60px;
 }
 .productTableGr{
     float:left;
@@ -178,6 +197,7 @@ h1{
     padding-bottom:10px;
 }
 .pTable tr td{
+    border:0px solid black;
     padding:3px;
 }
 .bottomLine{
@@ -197,6 +217,7 @@ h1{
     width:350px;
 }
 .pTableSingle tr td{
+    border:0px solid black;
     padding:3px;
 }
 .additionalPhotos{
@@ -250,9 +271,9 @@ h1{
 .recImg img{
     height:160px;
     width:120px;
-
-
 }
+
+
 
 /*********  REFERENCE ***********/
 

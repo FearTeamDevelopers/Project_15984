@@ -63,6 +63,7 @@ header{
     width:230px;
     float:left;
     margin-left:5px;
+    position:fixed;
 }
 #logo{
     width:200px;
@@ -72,7 +73,7 @@ header{
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    
+
     width:25px;
     height:25px;
     color:transparent;
@@ -85,52 +86,69 @@ MENU
 .menuleft ul li {margin:5px;}
 
 .menuleft ul li a {
+    background-image:url('../images/button_hlavni_nevybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+
     color: black;
     padding:10px;
     padding-top:18px;
     padding-bottom: 18px;
     font-size: 24px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.22);
-    border-radius:3px;
     width:160px;
-    background-color: gray;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.15);
     display: block;
     text-align: center;
+
+    /*    background-color: gray;
+        background: rgb(255, 255, 255);
+        background: rgba(255,255, 255, 0.15);*/
+    border:0px solid rgba(255,255, 255, 0.22);
 }
 .menuleft ul li a:hover {
+    background-image:url('../images/button_hlavni_vybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+
     color: black;
     padding:10px;
     padding-top:18px;
     padding-bottom: 18px;
     font-size: 24px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
-    border-radius:3px;
     width:160px;
-    background-color: gray;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;
+
+    /*        background-color: gray;
+            background: rgb(255, 255, 255);
+            background: rgba(255,255, 255, 0.3);*/
+    border:0px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
 }
 #activeLi1{
+    background-image:url('../images/button_hlavni_vybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+
     color: black;
     padding:10px;
     padding-top:18px;
     padding-bottom: 18px;
     font-size: 24px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
-    border-radius:3px;
     width:160px;
-    background-color: gray;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
     display: block;
-    text-align: center;    
+    text-align: center;  
+
+    border:0px solid rgba(255,255, 255, 0.33);
+    border-radius:3px;
 }
 
 
@@ -160,13 +178,13 @@ DROPDOWN MENU
 .dropdownmenu3{
     position:absolute;
     left:200px;
-    top:10px;
+    top:50px;
 }
 .dropdownmenu3-display{
     display:block;
     position:absolute;
     left:200px;
-    top:10px;
+    top:50px;
 }
 .dropdownmenu2-display{
     display:block;
@@ -177,66 +195,92 @@ DROPDOWN MENU
 }
 
 .menuleft ul li ul li a {
+     background-image:url('../images/button_sec_nevybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+    
     color: black;
     padding:10px;
     padding-top:14px;
     padding-bottom: 14px;
     font-size: 16px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.22);
-    border-radius:3px;
+    border:0px solid rgba(255,255, 255, 0.22);
     width:130px;
-    background-color: gray;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.15);
     display: block;
     text-align: center;
+    
+/*     background-color: gray;
+    background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.15);*/
 }
 .menuleft ul li ul li a:hover {
+   background-image:url('../images/button_sec_vybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+        
     color: black;
     padding:10px;
     padding-top:14px;
     padding-bottom: 14px;
     font-size: 16px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
-    border-radius:3px;
+    border:0px solid rgba(255,255, 255, 0.33);
     width:130px;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;
+/*    
+     background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);*/
 }
 #activeLi{
     margin-left:20px;
+    background-image:url('../images/button_sec_vybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+        
     color: black;
     padding:10px;
     padding-top:14px;
     padding-bottom: 14px;
     font-size: 16px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
+    border:0px solid rgba(255,255, 255, 0.33);
     border-radius:3px;
     width:130px;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;
+/*    
+     background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);*/
 }
 #activeLi2{
+    background-image:url('../images/button_sec_vybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+        
     color: black;
     padding:10px;
     padding-top:14px;
     padding-bottom: 14px;
     font-size: 16px;
     text-decoration: none;
-    border:3px solid rgba(255,255, 255, 0.33);
+    border:0px solid rgba(255,255, 255, 0.33);
     border-radius:3px;
     width:130px;
-    background: rgb(255, 255, 255);
-    background: rgba(255,255, 255, 0.3);
     display: block;
     text-align: center;
+/*    
+     background: rgb(255, 255, 255);
+    background: rgba(255,255, 255, 0.3);*/
 }
 
 

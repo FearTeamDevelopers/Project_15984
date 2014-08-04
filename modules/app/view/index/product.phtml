@@ -82,6 +82,9 @@
             <tr><td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
         </table>
     </div>
+    <div class="productLogo">
+        LOGO
+    </div>
     {if !empty($additionalPhotos)}
     <div class="additionalPhotos bottomLine">
         {foreach $photo in $additionalPhotos}
