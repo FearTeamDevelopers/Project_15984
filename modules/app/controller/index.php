@@ -61,7 +61,7 @@ class App_Controller_Index extends Controller
         
         $layoutView->set('active', 99)
             ->set('activecat', null)
-                ->set('parentcat', null);
+            ->set('parentcat', null);
     }
 
     /**
@@ -89,6 +89,7 @@ class App_Controller_Index extends Controller
                 ->set('activecat', null)
                 ->set('parentcat', null)
                 ->set('active', 1)
+                
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
@@ -228,6 +229,7 @@ class App_Controller_Index extends Controller
         $layoutView
                 ->set('activecat', $urlKey)
                 ->set('active', 99)
+                ->set('background', 1)
                 ->set('metatitle', $category->getMetaTitle())
                 ->set('metakeywords', $category->getMetaKeywords())
                 ->set('metadescription', $category->getMetaDescription());
@@ -313,6 +315,7 @@ class App_Controller_Index extends Controller
      */
     public function search()
     {
+        $layoutView = $this->getLayoutView();
         $view = $this->getActionView();
 
         if (RequestMethods::issetpost('submitsearch')) {
@@ -364,8 +367,10 @@ class App_Controller_Index extends Controller
             $categories = App_Model_Category::initialize($categoryQuery);
 
             $view->set('products', $products)
-                   ->set('query', $query) 
+                   ->set('query', $query)
                     ->set('categories', $categories);
+            
+            $layoutView->set('background', 1);
         }
     }
 
