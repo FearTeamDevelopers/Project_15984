@@ -491,7 +491,7 @@ class App_Model_Product extends Model
                 $product = array_shift($productArr);
             }
             
-            return $product->getProductById();
+            return $product->getProductByIdForUser();
         } else {
             return null;
         }
@@ -520,6 +520,41 @@ class App_Model_Product extends Model
 
     /**
      * 
+     * @return \App_Model_Product
+     */
+    public function getProductByIdForUser()
+    {
+        $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                        array('cb.title' => 'sizeTitle'))
+                ->where('pr.variantFor = ?', $this->getId())
+                ->where('pr.deleted = ?', false);
+        $this->_variants = App_Model_Product::initialize($variantsQuery);
+
+        $this->_additionalPhotos = App_Model_ProductPhoto::all(array('active = ?' => true,'productId = ?' => $this->getId()));
+        $this->_inCategories = App_Model_ProductCategory::all(array('productId = ?' => $this->getId()));
+        $this->_recommendedProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $this->getId()));
+        
+        if (!empty($this->_recommendedProducts)) {
+            $recomProductIds = array();
+            foreach ($this->_recommendedProducts as $recprod) {
+                $recomProductIds[] = $recprod->getRecommendedId();
+            }
+            
+            $this->_recommendedProductObjects = self::all(array(
+                        'deleted = ?' => false,
+                        'active = ?' => true,
+                        'id IN ?' => $recomProductIds
+            ),array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
+        }else{
+            $this->_recommendedProductObjects = array();
+        }
+
+        return $this;
+    }
+    
+    /**
+     * 
      */
     public function getProductById()
     {
@@ -544,7 +579,7 @@ class App_Model_Product extends Model
                         'deleted = ?' => false,
                         'active = ?' => true,
                         'id IN ?' => $recomProductIds
-            ),array('title', 'urlKey', 'imgThumb'));
+            ),array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
         }else{
             $this->_recommendedProductObjects = array();
         }
@@ -587,6 +622,7 @@ class App_Model_Product extends Model
                 ->where('ct.active = ?', true)
                 ->where('ct.urlKey = ?', $categoryUrlKey)
                 ->order('pr.'.$orderby, $order)
+                ->where('pr.active = ?', true)
                 ->where('pr.deleted = ?', false);
         $products = App_Model_Product::initialize($productsQuery);
         
