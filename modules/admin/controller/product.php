@@ -28,7 +28,7 @@ class Admin_Controller_Product extends Controller
         $string = trim($string, '-');
         return strtolower($string);
     }
-    
+
     /**
      * 
      * @param type $configurable
@@ -38,14 +38,14 @@ class Admin_Controller_Product extends Controller
     {
         $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('title'));
 
-        for($i = 1; $i <= 50; $i++){
+        for ($i = 1; $i <= 50; $i++) {
             if ($this->checkUrlKey($urlKeyCh)) {
                 break;
-            }else{
-                $urlKeyCh = $urlKey.'-'.$i;
+            } else {
+                $urlKeyCh = $urlKey . '-' . $i;
             }
-            
-            if($i == 50){
+
+            if ($i == 50) {
                 $this->_errors['title'] = array('Nepodařilo se vytvořit jedinečný identifikátor produktu');
                 break;
             }
@@ -59,7 +59,7 @@ class Admin_Controller_Product extends Controller
             'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
         ));
 
-        $uploadTo = trim(substr(str_replace('.','',$urlKeyCh), 0, 3));
+        $uploadTo = trim(substr(str_replace('.', '', $urlKeyCh), 0, 3));
 
         try {
             $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
@@ -68,10 +68,17 @@ class Admin_Controller_Product extends Controller
             $this->_errors['mainfile'] = array($ex->getMessage());
         }
 
+        if (RequestMethods::post('discount') &&
+                RequestMethods::post('discountfrom') <= date('Y-m-d') && RequestMethods::post('discountto') >= date('Y-m-d')) {
+            $currentPrice = RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100);
+        } else {
+            $currentPrice = RequestMethods::post('basicprice');
+        }
+
         if ($configurable) {
             $title = RequestMethods::post('title');
-            $desc =  RequestMethods::post('description');
-            
+            $desc = RequestMethods::post('description');
+
             $product = new App_Model_Product(array(
                 'sizeId' => 0,
                 'urlKey' => $urlKeyCh,
@@ -81,9 +88,9 @@ class Admin_Controller_Product extends Controller
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
                 'basicPrice' => RequestMethods::post('basicprice'),
-                'regularPrice' => RequestMethods::post('regularprice'),
-                'currentPrice' => RequestMethods::post('currentprice'),
-                'quantity' => RequestMethods::post('quantity', 1),
+                'regularPrice' => RequestMethods::post('regularprice', 0),
+                'currentPrice' => $currentPrice,
+                'quantity' => RequestMethods::post('quantity', 0),
                 'discount' => RequestMethods::post('discount'),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
@@ -104,8 +111,8 @@ class Admin_Controller_Product extends Controller
             ));
         } else {
             $title = RequestMethods::post('title');
-            $desc =  RequestMethods::post('description');
-            
+            $desc = RequestMethods::post('description');
+
             $product = new App_Model_Product(array(
                 'sizeId' => RequestMethods::post('size'),
                 'urlKey' => $urlKeyCh,
@@ -115,9 +122,9 @@ class Admin_Controller_Product extends Controller
                 'title' => $title,
                 'description' => $desc,
                 'basicPrice' => RequestMethods::post('basicprice'),
-                'regularPrice' => RequestMethods::post('regularprice'),
-                'currentPrice' => RequestMethods::post('currentprice'),
-                'quantity' => RequestMethods::post('quantity', 1),
+                'regularPrice' => RequestMethods::post('regularprice', 0),
+                'currentPrice' => $currentPrice,
+                'quantity' => RequestMethods::post('quantity', 0),
                 'discount' => RequestMethods::post('discount'),
                 'discountFrom' => RequestMethods::post('discountfrom'),
                 'discountTo' => RequestMethods::post('discountto'),
@@ -187,9 +194,9 @@ class Admin_Controller_Product extends Controller
                 'productCode' => RequestMethods::post('productcode'),
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
-                'basicPrice' => 0,
-                'regularPrice' => 0,
-                'currentPrice' => RequestMethods::post('currentprice'),
+                'basicPrice' => RequestMethods::post('basicprice'),
+                'regularPrice' => RequestMethods::post('regularprice', 0),
+                'currentPrice' => 0,
                 'quantity' => RequestMethods::post('quantity-' . $size),
                 'discount' => 0,
                 'discountFrom' => '',
@@ -358,7 +365,7 @@ class Admin_Controller_Product extends Controller
 
         $view->set('sizes', $sizes)
                 ->set('categories', $categories);
-        
+
         if (RequestMethods::post('submitAddProduct')) {
             $this->checkToken();
 
@@ -388,7 +395,7 @@ class Admin_Controller_Product extends Controller
 
                 /* additional photos */
                 if (RequestMethods::post('uplMoreImages') == 1) {
-                    $uploadTo = trim(substr(str_replace('.','',$product->getUrlKey()), 0, 3));
+                    $uploadTo = trim(substr(str_replace('.', '', $product->getUrlKey()), 0, 3));
                     $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
                 }
 
@@ -412,6 +419,7 @@ class Admin_Controller_Product extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
+        $errors = array();
 
         $product = App_Model_Product::fetchProductById($id);
 
@@ -462,7 +470,7 @@ class Admin_Controller_Product extends Controller
                 $product->sizeId = RequestMethods::post('size');
                 $product->productCode = RequestMethods::post('productcode');
                 $product->currentPrice = RequestMethods::post('currentprice');
-                $product->quantity = RequestMethods::post('quantity', 1);
+                $product->quantity = RequestMethods::post('quantity', 0);
                 $product->eanCode = RequestMethods::post('eancode');
                 $product->weight = RequestMethods::post('weight', 1);
 
@@ -477,7 +485,7 @@ class Admin_Controller_Product extends Controller
                     $view->set('product', $product)
                             ->set('errors', $product->getErrors());
                 }
-            }else{
+            } else {
                 $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('urlkey'));
 
                 if ($product->getUrlKey() !== $urlKey) {
@@ -495,7 +503,7 @@ class Admin_Controller_Product extends Controller
                     }
                 }
 
-                $uploadTo = trim(substr(str_replace('.','',$product->getUrlKey()), 0, 3));
+                $uploadTo = trim(substr(str_replace('.', '', $product->getUrlKey()), 0, 3));
                 if ($product->imgMain == '') {
                     try {
                         $fileManager = new FileManager(array(
@@ -522,15 +530,22 @@ class Admin_Controller_Product extends Controller
                     $imgThumb = $product->imgThumb;
                 }
 
+                if (RequestMethods::post('discount') &&
+                        RequestMethods::post('discountfrom') <= date('Y-m-d') && RequestMethods::post('discountto') >= date('Y-m-d')) {
+                    $currentPrice = RequestMethods::post('basicprice') * (RequestMethods::post('discount') / 100);
+                } else {
+                    $currentPrice = RequestMethods::post('basicprice');
+                }
+
                 $product->sizeId = RequestMethods::post('size');
                 $product->urlKey = $urlKeyCh;
                 $product->productCode = RequestMethods::post('productcode');
                 $product->title = RequestMethods::post('title');
                 $product->description = RequestMethods::post('description');
                 $product->basicPrice = RequestMethods::post('basicprice');
-                $product->regularPrice = RequestMethods::post('regularprice');
-                $product->currentPrice = RequestMethods::post('currentprice');
-                $product->quantity = RequestMethods::post('quantity', 1);
+                $product->regularPrice = RequestMethods::post('regularprice', 0);
+                $product->currentPrice = $currentPrice;
+                $product->quantity = RequestMethods::post('quantity', 0);
                 $product->discount = RequestMethods::post('discount');
                 $product->discountFrom = RequestMethods::post('discountfrom');
                 $product->discountTo = RequestMethods::post('discountto');
@@ -575,7 +590,7 @@ class Admin_Controller_Product extends Controller
                         $view->successMessage('Produkt byl úspěšně uložen');
                         self::redirect('/admin/product/');
                     } else {
-                        Event::fire('app.log', array('fail','Product id: ' . $product->getId()));
+                        Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
                         $view->set('product', $product)
                                 ->set('errors', $this->_errors + $product->getErrors());
                     }
@@ -623,7 +638,7 @@ class Admin_Controller_Product extends Controller
             }
         }
     }
-    
+
     /**
      * @before _secured, _admin
      * @param type $id
@@ -697,7 +712,7 @@ class Admin_Controller_Product extends Controller
     {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
-        
+
         $view->set('productid', $productId);
 
         if (RequestMethods::post('submitSaveRecommended')) {
@@ -730,7 +745,7 @@ class Admin_Controller_Product extends Controller
 
             if ($recommended->validate()) {
                 $recommended->save();
-                
+
                 Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' add recommended ' . $recomprod->getId()));
                 $view->successMessage('Doporučený produkt byl úspěšně přidán');
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
@@ -905,12 +920,12 @@ class Admin_Controller_Product extends Controller
                     foreach ($products as $product) {
                         if ($val > 0 && $val < 1) {
                             $product->priceOldTwo = $product->priceOldOne;
-                            $product->priceOldOne = $product->currentPrice;
-                            $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * ($product->currentPrice * $val);
+                            $product->priceOldOne = $product->basicPrice;
+                            $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * ($product->basicPrice * $val);
                         } else {
                             $product->priceOldTwo = $product->priceOldOne;
-                            $product->priceOldOne = $product->currentPrice;
-                            $product->currentPrice = $product->currentPrice + ($oper == '+' ? 1 : -1) * $val;
+                            $product->priceOldOne = $product->basicPrice;
+                            $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * $val;
                         }
 
                         if ($product->validate()) {
@@ -1012,8 +1027,8 @@ class Admin_Controller_Product extends Controller
                     . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode', 
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode',
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.discountFrom', 'pr.discountTo'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -1051,7 +1066,7 @@ class Admin_Controller_Product extends Controller
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond);
-            
+
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
 
@@ -1059,8 +1074,8 @@ class Admin_Controller_Product extends Controller
             unset($productsCount);
         } else {
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode', 
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
+                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 'pr.productCode',
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.discountFrom', 'pr.discountTo'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -1102,6 +1117,11 @@ class Admin_Controller_Product extends Controller
         $prodArr = array();
         if ($products !== null) {
             foreach ($products as $product) {
+                $label = '';
+                if ($product->getDiscountFrom() <= date('Y-m-d') && $product->getDiscountTo() >= date('Y-m-d')) {
+                    $label = "<a href='#' class='btn btn3 btn_dollartag' title='Ve slevě'></a>";
+                }
+
                 $arr = array();
                 $arr [] = "[ \"" . $product->getId() . "\"";
                 $arr [] = "\"<img alt='' src='" . $product->imgThumb . "' height='80px'/>\"";
@@ -1111,8 +1131,9 @@ class Admin_Controller_Product extends Controller
                 $arr [] = "\"" . $product->getProductCode() . "\"";
                 $arr [] = "\"" . $product->getCurrentPrice() . "\"";
 
-                $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' class='btn btn3 btn_video' title='Live preview'></a>";
+                $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
                 $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
+                $tempStr .= $label;
                 if ($this->isAdmin()) {
                     $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
                 }
@@ -1129,5 +1150,5 @@ class Admin_Controller_Product extends Controller
             echo $str;
         }
     }
-
+    
 }

@@ -61,7 +61,7 @@ class App_Controller_Index extends Controller
         
         $layoutView->set('active', 99)
             ->set('activecat', null)
-                ->set('parentcat', null);
+            ->set('parentcat', null);
     }
 
     /**
@@ -89,6 +89,7 @@ class App_Controller_Index extends Controller
                 ->set('activecat', null)
                 ->set('parentcat', null)
                 ->set('active', 1)
+                
                 ->set('metakeywords', $content->getMetaKeywords())
                 ->set('metadescription', $content->getMetaDescription());
     }
@@ -190,7 +191,13 @@ class App_Controller_Index extends Controller
         $session = Registry::get('session');
         $cache = Registry::get('cache');
 
-        $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
+        $orderby = $session->get('catvieworderby', 'created');
+        $order = $session->get('catvieworder', 'desc');
+                
+        $category = App_Model_Category::first(
+                array('active = ?' => true, 'urlKey = ?' => $urlKey), 
+                array('*'),
+                array($orderby => $order));
 
         $layoutView->set('parentcat', null)
                 ->set('activecat', $urlKey)
@@ -222,6 +229,7 @@ class App_Controller_Index extends Controller
         $layoutView
                 ->set('activecat', $urlKey)
                 ->set('active', 99)
+                ->set('background', 1)
                 ->set('metatitle', $category->getMetaTitle())
                 ->set('metakeywords', $category->getMetaKeywords())
                 ->set('metadescription', $category->getMetaDescription());
@@ -307,6 +315,7 @@ class App_Controller_Index extends Controller
      */
     public function search()
     {
+        $layoutView = $this->getLayoutView();
         $view = $this->getActionView();
 
         if (RequestMethods::issetpost('submitsearch')) {
@@ -323,6 +332,7 @@ class App_Controller_Index extends Controller
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
             }
+            
             $productWhereCond = substr($productWhereCond, 0, strlen($productWhereCond)-4).")";
             array_unshift($args, $productWhereCond);
             
@@ -344,6 +354,7 @@ class App_Controller_Index extends Controller
                 $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
             }
+            
             $catWhereCond = substr($catWhereCond, 0, strlen($catWhereCond)-4).")";
             array_unshift($argscat, $catWhereCond);
 
@@ -356,9 +367,31 @@ class App_Controller_Index extends Controller
             $categories = App_Model_Category::initialize($categoryQuery);
 
             $view->set('products', $products)
-                   ->set('query', $query) 
+                   ->set('query', $query)
                     ->set('categories', $categories);
+            
+            $layoutView->set('background', 1);
         }
+    }
+
+    /**
+     * 
+     */
+    public function setProductOrder()
+    {
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+        $view = $this->getActionView();
+        $session = Registry::get('session');
+        
+        $referer = $view->getHttpReferer();
+        $orderby = RequestMethods::post('catvieworderby');
+        $order = RequestMethods::post('catvieworder');
+
+        $session->set('catvieworderby', $orderby)
+                ->set('catvieworder', $order);
+        
+        self::redirect($referer);
     }
 
     /**

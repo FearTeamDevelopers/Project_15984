@@ -403,6 +403,11 @@ class App_Model_Product extends Model
      * @readwrite
      */
     protected $_fbLikeUrl;
+    
+    /**
+     * @readwrite
+     */
+    protected $_realPrice;
 
     /**
      * 
