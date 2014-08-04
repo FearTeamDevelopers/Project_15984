@@ -337,19 +337,23 @@
                 <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
                     <colgroup>
                         <col class="con0" /> <col class="con1" />
+                        <col class="con0" /> <col class="con1" />
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="head0">Title</th>
-                            <th class="head1">Product code</th>
-                            <th class="head0">&nbsp;</th>
+                            <th class="head0">Náhled</th>
+                            <th class="head1">Název</th>
+                            <th class="head0">Kód produktu</th>
+                            <th class="head1">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {script $recomproducts = $product->recommendedProductObjects}
                         {if !empty($recomproducts)}
                         {foreach $reproduct in $recomproducts}
                         <tr>
-                            <td>{echo $reproduct->getTitle()}</td>
+                            <td><img src="{echo $reproduct->getImgThumb()}" alt="" height="100px"/></td>
+                            <td><a href="/admin/product/edit/{echo $reproduct->getId()}">{echo $reproduct->getTitle()}</a></td>
                             <td>{echo $reproduct->getProductCode()}</td>
                             <td><a href="/admin/product/deleterecommended/{echo $product->getId()}/{echo $reproduct->getId()}" class="btn btn3 btn_trash deleteRow"></a></td>
                         </tr>
@@ -421,15 +425,12 @@
                     <colgroup>
                         <col class="con0" /> <col class="con1" />
                         <col class="con0" /> <col class="con1" />
-                        <col class="con0" /> <col class="con1" />
                     </colgroup>
                     <thead>
                         <tr>
                             <th class="head0">Název</th>
                             <th class="head1">Velikost</th>
                             <th class="head0">Kód produktu</th>
-                            <th class="head1">Aktuální cena</th>
-                            <th class="head0">Množství</th>
                             <th class="head1">&nbsp;</th>
                         </tr>
                     </thead>
@@ -441,8 +442,6 @@
                             <td>{echo $variant->getTitle()}</td>
                             <td>{echo $variant->sizeTitle}</td>
                             <td>{echo $variant->getProductCode()}</td>
-                            <td>{echo $variant->getCurrentPrice()}</td>
-                            <td>{echo $variant->getQuantity()}</td>
                             <td>
                                 <a href="/admin/product/edit/{echo $variant->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
                                 {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}

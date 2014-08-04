@@ -202,8 +202,8 @@ class Admin_Controller_Product extends Controller
                 'discount' => 0,
                 'discountFrom' => '',
                 'discountTo' => '',
-                'eanCode' => '',
-                'weight' => 0,
+                'eanCode' => RequestMethods::post('eancode'),
+                'weight' => RequestMethods::post('weight', 1),
                 'isInAction' => '',
                 'newFrom' => '',
                 'newTo' => '',
@@ -440,27 +440,8 @@ class Admin_Controller_Product extends Controller
             }
         }
 
-        $productRecomm = $product->recommendedProducts;
-        $recomProductIds = array();
-        if (!empty($productRecomm)) {
-            foreach ($productRecomm as $recprod) {
-                $recomProductIds[] = $recprod->getRecommendedId();
-            }
-        }
-
-        if (!empty($recomProductIds)) {
-            $recomproducts = App_Model_Product::all(array(
-                        'deleted = ?' => false,
-                        'active = ?' => true,
-                        'id IN ?' => $recomProductIds
-            ));
-        } else {
-            $recomproducts = array();
-        }
-
         $view->set('product', $product)
                 ->set('categories', $categories)
-                ->set('recomproducts', $recomproducts)
                 ->set('productcategoryids', $productCategoryIds)
                 ->set('sizes', $sizes);
 
@@ -470,8 +451,8 @@ class Admin_Controller_Product extends Controller
             if ($product->getProductType() == 'varianta') {
                 $product->sizeId = RequestMethods::post('size');
                 $product->productCode = RequestMethods::post('productcode');
-                $product->currentPrice = RequestMethods::post('currentprice');
-                $product->quantity = RequestMethods::post('quantity', 0);
+                $product->basicPrice = RequestMethods::post('basicprice');
+                $product->quantity = 0;
                 $product->eanCode = RequestMethods::post('eancode');
                 $product->weight = RequestMethods::post('weight', 1);
 
@@ -924,10 +905,12 @@ class Admin_Controller_Product extends Controller
                             $product->priceOldTwo = $product->priceOldOne;
                             $product->priceOldOne = $product->basicPrice;
                             $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * ($product->basicPrice * $val);
+                            $product->currentPrice = $product->basicPrice;
                         } else {
                             $product->priceOldTwo = $product->priceOldOne;
                             $product->priceOldOne = $product->basicPrice;
                             $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * $val;
+                            $product->currentPrice = $product->basicPrice;
                         }
 
                         if ($product->validate()) {
