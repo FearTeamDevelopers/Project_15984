@@ -34,20 +34,6 @@
                         {else}
                             <ul class="dropdownmenu3">
                         {/else}
-                        {foreach $subcat in $subcategory}
-                                <li>
-                            {if $subcat->urlKey == $activecat}
-                                    <a id="activeLi2" href="/kategorie/{echo $subcat->urlKey}/">
-                              
-                            {/if}
-                            {else}
-                            <a href="/kategorie/{echo $subcat->urlKey}/">
-                            {/else}
-                    
-                                    <span>{echo $subcat->title}</span></a>
-                                </li>
-                        {/foreach}
-                            </ul>
                     {/if}
                     {else}
                         {if isset($parentcat) && $parentcat == $cat->id }
@@ -56,7 +42,8 @@
                         {else}
                             <ul class="dropdownmenu2">
                         {/else}
-                        {foreach $subcat in $subcategory}
+                    {/else}
+                    {foreach $subcat in $subcategory}
                                 <li>
                             {if $subcat->urlKey == $activecat}
                                 <a id="activeLi2" href="/kategorie/{echo $subcat->urlKey}/">
@@ -68,7 +55,6 @@
                             </li>
                         {/foreach}
                             </ul>
-                    {/else}
                 {/if}
             </li>
             {/foreach}
