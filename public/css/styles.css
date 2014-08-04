@@ -37,12 +37,11 @@ h1{
     padding-top: 70px;
     margin-top: 60px;
     min-width:330px;
-    overflow:auto;
     max-width: 1200px;
 
 }
 .about div{
-    min-width:700px;
+    min-width:300px;
     font-size:18px;
     font-family: sans-serif;
     overflow:auto;
