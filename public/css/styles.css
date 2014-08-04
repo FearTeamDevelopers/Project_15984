@@ -74,6 +74,7 @@ h1{
     margin:10px;
     float:left;
     text-align:center;
+    position: relative;
 
 }
 
@@ -83,6 +84,21 @@ h1{
     padding:10px;
     margin:10px;
     float:left;
+    text-align:center;
+    position:relative;
+}
+.price{
+    position:absolute;
+    bottom:2%;
+    left:30%;
+    width:170px;
+    text-align:center;
+}
+.priceSingle{
+    position:absolute;
+    bottom:2%;
+    left:5%;
+    width:170px;
     text-align:center;
 }
 .single{
