@@ -204,13 +204,13 @@ class App_Controller_Index extends Controller
             self::redirect('/neznamakategorie');
         }
 
-        $products = $cache->get('category_products_'.$urlKey);
+        $products = $cache->get('category_products_'.$urlKey.'_'.$orderby.'_'.$order);
         
         if($products !== null){
             $products = $products;
         }else{
             $products = App_Model_Product::fetchProductsByCategory($urlKey, $orderby, $order);
-            $cache->set('category_products_'.$urlKey, $products);
+            $cache->set('category_products_'.$urlKey.'_'.$orderby.'_'.$order, $products);
         }
 
         if ($category->parentId != 0) {
@@ -338,7 +338,7 @@ class App_Controller_Index extends Controller
             array_unshift($args, $productWhereCond);
             
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.urlKey', 'pr.productCode',
+                            array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'));
             
             call_user_method_array('wheresql', $productQuery, $args);

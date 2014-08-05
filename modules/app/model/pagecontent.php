@@ -62,7 +62,7 @@ class App_Model_PageContent extends Model
      * @type text
      * @length 256
      * 
-     * @validate required, html, max(50000)
+     * @validate required, html, max(80000)
      * @label text
      */
     protected $_body;
@@ -73,7 +73,7 @@ class App_Model_PageContent extends Model
      * @type text
      * @length 256
      * 
-     * @validate html, max(50000)
+     * @validate html, max(80000)
      * @label text en
      */
     protected $_bodyEn;
