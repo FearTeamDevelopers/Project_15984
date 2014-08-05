@@ -33,7 +33,7 @@
                     <a href="/kostym/{echo $product->urlKey}/" >
                         <span>{echo $product->title}</span><br/>
                         <span><img class="single" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
-                        <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
+                        <span class="priceSingle ">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
                     </a>
                 </div>
             {/else}
