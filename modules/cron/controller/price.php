@@ -15,8 +15,9 @@ class Cron_Controller_Price extends Controller
      */
     public function calculateProductPrice()
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
+        
         $start = microtime(true);
         $errorCount = 0;
         
