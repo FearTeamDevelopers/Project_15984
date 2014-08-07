@@ -40,6 +40,7 @@ h1{
     max-width: 1000px;
     margin-right:20px;
     margin-top:450px;
+    
 
 
 }
@@ -56,6 +57,7 @@ h1{
     max-width:1100px;
     overflow:auto;
     margin-top:60px;
+    margin-left:70px;
 }
 .category a{
     text-decoration: none;
@@ -306,7 +308,6 @@ h1{
     overflow: hidden;
 }
 .recommendedNadpis:after{
-
     display: inline-block;
     content: "";
     height: 2px;
@@ -319,7 +320,6 @@ h1{
     -webkit-box-shadow: 0px 2px 1px 0px rgba(204, 172, 173,0.75);
     -moz-box-shadow:    0px 2px 1px 0px rgba(204, 172, 173,0.75);
     box-shadow:         0px 2px 1px 0px rgba(204, 172, 173,0.75);
-
 }
 .recImg{
     float:left;
@@ -330,6 +330,21 @@ h1{
     width:100px;
 }
 
+.scroll-top{
+    display:none;
+    text-decoration: none;
+    text-align: center;
+     position:fixed;
+    right:2%;
+    bottom:4%;
+}
+.scroll-top span{
+    font-size: 40px;
+    width:100px;                    
+    height:10px;
+    padding:25px;
+    border:1px solid pink;
+}
 
 
 /*********  REFERENCE ***********/
@@ -350,7 +365,6 @@ h1{
     width:160px;
     float:left;
     text-align:center;
-
 }
 .refPhoto img{
     height:150px;

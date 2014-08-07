@@ -34,15 +34,20 @@ class App_Controller_Category extends Controller
             self::redirect('/neznamakategorie');
         }
 
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order.'_1');
+        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1');
 
         if ($products !== null) {
             $products = $products;
-            $background = 1;
+            $background = null;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, 1, $orderby, $order);
-            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order.'_1', $products);
-            $background = null;
+            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);
+
+            if ($products == null) {
+                $background = null;
+            } else {
+                $background = 1;
+            }
         }
 
         if ($category->parentId != 0) {
@@ -84,23 +89,23 @@ class App_Controller_Category extends Controller
         $order = $session->get('catvieworder', 'desc');
 
         $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
-        
+
         if ($category === null) {
             self::redirect('/neznamakategorie');
         }
 
-        $page = (int)$session->get('activepage') + 1;
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order.'_'.$page);
+        $page = (int) $session->get('activepage') + 1;
+        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page);
 
         if ($products !== null) {
             $products = $products;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, $page, $orderby, $order);
-            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order.'_'.$page, $products);
+            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
         }
-        
+
         $session->set('activepage', $page);
-        
+
         $view->set('products', $products);
     }
 
