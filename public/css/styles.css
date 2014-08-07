@@ -16,9 +16,6 @@ table tr td{
     background: rgba(200,175, 175, 0.86);
     border: 2px solid rgb(248,216,219);
     border-radius: 3px;
-    -webkit-box-shadow: inset 1px 0px 21px 11px rgba(200, 175, 175, 0.86);
-    -moz-box-shadow:    inset 1px 0px 21px 11px rgba(200, 175, 175, 0.86);
-    box-shadow:         inset 1px 0px 21px 11px rgba(200, 175, 175, 0.86);
 }
 
 .transparentCategory{
@@ -140,7 +137,9 @@ h1{
 
 .product{
     margin-top:60px;
-    padding:40px;
+    margin-left:40px;
+    padding-left:25px;
+    padding-top:20px;
     min-width:300px;
     max-width:850px;
     overflow:auto;
@@ -200,25 +199,25 @@ h1{
 
 }
 .productDescription{
-    margin-top:10px;
+    margin-top:20px;
     float:left;
     width:800px;
     font-size:18px;
     font-family: sans-serif;
-    padding-top:10px;
-    padding-bottom:10px;
+    margin-bottom:30px
 }
 
 .productDescriptionGr{
     margin-top:10px;
     float:left;
     width:800px;
-    font-size:18px;
+    font-size:20px;
     font-family: sans-serif;
+    margin-bottom: 22px;
+    padding:8px;
 
 
-    padding-top:10px;
-    padding-bottom:10px;
+    
 }
 .pTable tr td{
     font-size:20px;
@@ -227,12 +226,7 @@ h1{
     padding-top:8px;
     padding-bottom:8px;
 }
-.bottomLine{
-    border-bottom:1px solid rgb(248,216,219);  
-}
-.topLine{
-    border-top:1px solid rgb(248,216,219);  
-}
+
 .pTable{
     width:750px;
     font-size:18px;
@@ -269,6 +263,7 @@ h1{
     width:800px;
     float:left;
     margin-top:5px;
+    display:none;
 }
 .additionalPhotos img{
     height:80px;
@@ -277,14 +272,13 @@ h1{
 }
 .recommended{
     float:left;
-    margin-top:15px;
     width:800px;
     height:200px;
 
 }
 .recommended div{
-    height:200px;
-    width:121px;
+    height:105px;
+    width:100px;
     float:left;
     margin-right:5px;
     text-align:center;
@@ -300,21 +294,34 @@ h1{
     font-size:19px;
     font-family: sans-serif;
     font-weight: bold;
-    text-decoration: underline;
-    margin-bottom:5px;
+    margin-bottom:15px;
     margin-top:5px;
+    position: relative;
+    overflow: hidden;
 }
-.recTitle{
-    float:left;
-    width:121px;
+.recommendedNadpis:after{
+
+    display: inline-block;
+    content: "";
+    height: 2px;
+    background: RGB(150,120,120);
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    margin-top: -2px;
+    margin-left: 10px;
+    -webkit-box-shadow: 0px 2px 1px 0px rgb(204, 172, 173);
+-moz-box-shadow:    0px 2px 1px 0px rgb(204, 172, 173);
+box-shadow:         0px 2px 1px 0px rgb(204, 172, 173);
+
 }
 .recImg{
     float:left;
     margin-right:5px;
 }
 .recImg img{
-    height:160px;
-    width:120px;
+    height:105px;
+    width:100px;
 }
 
 

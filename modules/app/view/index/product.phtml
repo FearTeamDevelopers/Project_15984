@@ -56,12 +56,11 @@
         </div>
         
         {if !empty($recommendedProducts)}
-            <div class="recommended topLine">
-                <h2 class="recommendedNadpis">Doporučené produkty</h2>
+            <div class="recommended">
+                <h2 class="recommendedNadpis">K tomuto produktu doporučujeme</h2>
                 {foreach $rec in $recommendedProducts}
                     <div>
                         <a href="/kostym/{echo $rec->urlKey}/">
-                            <span class="recTitle">{echo $rec->title}</span><br/>
                             <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
                         </a>
                     </div>
@@ -101,7 +100,7 @@
         </div>
     
         {if !empty($additionalPhotos)}
-            <div class="additionalPhotos bottomLine">
+            <div class="additionalPhotos ">
                 {foreach $photo in $additionalPhotos}
                     <span>
                         <a data-lightbox="image" data-title="{echo $product->title}" href="{echo $photo->imgMain}">
@@ -115,11 +114,10 @@
         </div>
         {if !empty($recommendedProducts)}
             <div class="recommended topLine">
-                <h2 class="recommendedNadpis">Doporučené produkty</h2>
+                <h2 class="recommendedNadpis">K tomuto produktu doporučujeme</h2>
                 {foreach $rec in $recommendedProducts}
                     <div>
                         <a href="/kostym/{echo $rec->urlKey}/">
-                            <span class="recTitle">{echo $rec->title}</span><br/>
                             <span class="recImg"><img  src="{echo $rec->imgThumb}" alt="{echo $rec->title}"></span>
                         </a>
                     </div>

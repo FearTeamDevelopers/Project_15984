@@ -9,7 +9,7 @@ and open the template in the editor.
 */
 
 html {
-    background-image: url('../images/karneval_bg.jpg'), url('../images/bg.jpg');
+    background-image: url('../images/karneval_bg1.jpg'), url('../images/bg.jpg');
     background-repeat: no-repeat ,repeat-x;
     background-position-x: center;
     background-attachment:fixed;
