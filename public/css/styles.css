@@ -116,6 +116,7 @@ h1{
     margin-top:40%;
     font-size:18px;
     font-family: sans-serif;
+    width:1000px;
 }
 
 .categoryRadit{
@@ -181,11 +182,16 @@ h1{
     margin-left:40px;
 }
 .productLogo{
-    background: pink;
+    background-image:url('../images/logo_product.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+
+    
     width:350px;
     height:100px;
     float:left;
-    border:1px solid pink;
     margin-left:50px;
     margin-top:60px;
 }
