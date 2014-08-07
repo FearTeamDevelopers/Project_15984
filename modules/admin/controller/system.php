@@ -119,7 +119,7 @@ class Admin_Controller_System extends Controller
     }
 
     /**
-     * @before _secured, _admin
+     * @before _secured, _member
      */
     public function showProfiler()
     {
