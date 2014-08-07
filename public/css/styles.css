@@ -146,7 +146,7 @@ h1{
     overflow:auto;
 }
 .product h1{
-    font-size:22px;
+    font-size:24px;
     font-family: sans-serif;
     font-weight: bold;
 }
@@ -181,20 +181,7 @@ h1{
     font-family: sans-serif;
     margin-left:40px;
 }
-.productLogo{
-    background-image:url('../images/logo_product.png');
-    background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y: center;
-    background-size: 100% 100%;
 
-    
-    width:350px;
-    height:100px;
-    float:left;
-    margin-left:50px;
-    margin-top:60px;
-}
 .productTableGr{
     float:left;
     width:800px;
@@ -254,9 +241,26 @@ h1{
     font-family:sans-serif;
     width:350px;
 }
+.productLogo{
+    background-image:url('../images/logo_product.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+
+    
+    width:350px;
+    height:100px;
+    float:left;
+    margin-left:50px;
+    margin-top:70px;
+}
 .pTableSingle tr td{
+    font-size:20px;
+    font-family: sans-serif;
     border:0px solid black;
-    padding:3px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 .additionalPhotos{
     height:100px;
