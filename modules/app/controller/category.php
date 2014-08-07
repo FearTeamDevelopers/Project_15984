@@ -38,7 +38,7 @@ class App_Controller_Category extends Controller
 
         if ($products !== null) {
             $products = $products;
-            $background = null;
+            $background = 1;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, 1, $orderby, $order);
             $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);

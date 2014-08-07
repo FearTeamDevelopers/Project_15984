@@ -7,10 +7,22 @@ and open the template in the editor.
     Created on : 23.5.2014, 21:40:16
     Author     : Sabre
 */
+
+/******* DEFAULT *************/
+table{
+    margin-top:5px;
+    margin-bottom:5px;
+}
 table tr td{
     border:1px solid black;
     padding:5px;
 }
+strong{
+    font-weight:bold;
+}
+
+
+/***************** Transparent *************/
 
 .transparentAbout{
     background: rgba(200,175, 175, 0.86);
@@ -31,18 +43,15 @@ h1{
     font-family: sans-serif;
 }
 .about{
-
-    padding-left:60px;
-    padding-right:60px;
-    padding-bottom:70px;
-    padding-top: 70px;
+    padding-left:30px;
+    padding-right:30px;
+    padding-bottom:40px;
+    padding-top: 40px;
     min-width:330px;
-    max-width: 1000px;
+    max-width: 800px;
     margin-right:20px;
-    margin-top:450px;
-    
-
-
+    margin-top:410px;
+    margin-left:70px;
 }
 .about div{
     min-width:300px;
@@ -113,16 +122,15 @@ h1{
     text-align:center;
     padding:30px;
     margin-top:40%;
-    font-size:18px;
-    font-family: sans-serif;
+    font-size: 18px;
     width:1000px;
 }
 
 .categoryRadit{
     color:black;
     font-size:20px;
-    font-weight:bold;
     width:200px;
+    height:85px;
     padding:5px;
     float:right;
     margin-top:10px;
@@ -148,7 +156,6 @@ h1{
 .product h1{
     margin-left:40px;
     font-size:32px;
-    font-family: sans-serif;
 }
 .productPhoto{
     margin-top:10px;
@@ -179,8 +186,6 @@ h1{
     float:left;
     width:300px;
     margin-top:50px;
-    font-size:18px;
-    font-family: sans-serif;
     margin-left:20px;
 }
 
@@ -189,16 +194,12 @@ h1{
     float:left;
     width:700px;
     margin-top:10px;
-    font-size:18px;
-    font-family: sans-serif;
 
 }
 .productSelect{
     width:150px;
     padding:2px;
     border-radius:4px;
-    font-size:18px;
-    font-family: sans-serif;
     background:transparent;
     border:3px solid rgba(255,255,255,0.8);
 
@@ -208,8 +209,6 @@ h1{
     margin-top:20px;
     float:left;
     width:700px;
-    font-size:18px;
-    font-family: sans-serif;
     margin-bottom:30px
 }
 
@@ -219,7 +218,6 @@ h1{
     float:left;
     width:700px;
     font-size:20px;
-    font-family: sans-serif;
     margin-bottom: 22px;
     padding:8px;
 
@@ -228,7 +226,6 @@ h1{
 }
 .pTable tr td{
     font-size:20px;
-    font-family: sans-serif;
     border:0px solid black;
     padding-top:8px;
     padding-bottom:8px;
@@ -236,12 +233,8 @@ h1{
 
 .pTable{
     width:750px;
-    font-size:18px;
-    font-family: sans-serif;
 }
 .pTableSingle{
-    font-size:18px;
-    font-family:sans-serif;
     width:350px;
 }
 .productLogo{
@@ -260,7 +253,6 @@ h1{
 }
 .pTableSingle tr td{
     font-size:20px;
-    font-family: sans-serif;
     border:0px solid black;
     padding-top:12px;
     padding-bottom:12px;
@@ -296,11 +288,9 @@ h1{
     color:black;
     font-size:14px;
     font-weight: bold;
-    font-family: sans-serif;
 }
 .recommendedNadpis{
     font-size:19px;
-    font-family: sans-serif;
     font-weight: bold;
     margin-bottom:15px;
     margin-top:5px;
@@ -354,7 +344,6 @@ h1{
     margin-top:30px;
     overflow:auto;
     font-size:18px;
-    font-family: sans-serif;
     min-width:300px;
     text-align:center;
     max-width:1000px;
@@ -390,7 +379,6 @@ h1{
 
 .searchCategory span{
     font-size:19px;
-    font-family: sans-serif;
 }
 .searchProduct{
     max-width:1100px;
@@ -407,7 +395,6 @@ h1{
     height:50px;
     font-size:19px;
     max-width:1100px;
-    font-family: sans-serif;
     overflow:hidden;
     padding:10px;
 
