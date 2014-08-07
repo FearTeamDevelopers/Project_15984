@@ -3,7 +3,11 @@ jQuery.noConflict();
 jQuery(document).ready(function() {
 
     jQuery(window).load(function() {
-        jQuery('#loader, .loader').hide();
+        jQuery("#loader, .loader").hide();
+        
+        jQuery.post('/admin/system/showprofiler/', function(msg){
+            jQuery('body').append(msg);
+        });
     });
 
     jQuery("[title]").tooltip({

@@ -609,7 +609,7 @@ class App_Model_Product extends Model
      * 
      * @param type $category
      */
-    public static function fetchProductsByCategory($categoryUrlKey, $orderby = 'created', $order = 'desc')
+    public static function fetchProductsByCategory($categoryUrlKey, $limit = 30, $page = 1, $orderby = 'created', $order = 'desc')
     {
         $productsQuery = App_Model_Product::getQuery(array('pr.*'))
                 ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
@@ -623,7 +623,8 @@ class App_Model_Product extends Model
                 ->where('ct.urlKey = ?', $categoryUrlKey)
                 ->order('pr.'.$orderby, $order)
                 ->where('pr.active = ?', true)
-                ->where('pr.deleted = ?', false);
+                ->where('pr.deleted = ?', false)
+                ->limit($limit, $page);
         $products = App_Model_Product::initialize($productsQuery);
         
         return $products;

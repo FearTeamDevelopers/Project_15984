@@ -1,0 +1,20 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 7.8.2014, 17:48:31
+    Author     : Tomy
+*/
+
+#profiler-table{
+    position: absolute !important;
+    top: 90%;
+    width: 100% !important;
+    background-color: #eee !important;
+}
+
+#profiler-table tr:hover{
+    background-color: #fff !important;
+}

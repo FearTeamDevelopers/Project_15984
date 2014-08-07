@@ -41,7 +41,7 @@ class App_Etc_Module extends Module
         array(
             'pattern' => '/neznamakategorie',
             'module' => 'app',
-            'controller' => 'index',
+            'controller' => 'category',
             'action' => 'unknownCategory',
         ),
         array(
@@ -65,7 +65,7 @@ class App_Etc_Module extends Module
         array(
             'pattern' => '/kategorie/:urlkey/',
             'module' => 'app',
-            'controller' => 'index',
+            'controller' => 'category',
             'action' => 'category',
             'args' => ':urlkey'
         ),

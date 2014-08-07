@@ -7,6 +7,7 @@ use THCFrame\Database\Mysqldump;
 use THCFrame\Events\Events as Event;
 use THCFrame\Configuration\Model\Config;
 use THCFrame\Filesystem\FileManager;
+use THCFrame\Profiler\Profiler;
 
 /**
  * 
@@ -104,6 +105,29 @@ class Admin_Controller_System extends Controller
                 $view->set('errors', $errors);
             }
         }
+    }
+
+    /**
+     * @before _secured, _admin
+     */
+    public function deletedProducts()
+    {
+        $view = $this->getActionView();
+
+        $products = App_Model_Product::all(array('deleted = ?' => true));
+        $view->set('deletedproducts', $products);
+    }
+
+    /**
+     * @before _secured, _admin
+     */
+    public function showProfiler()
+    {
+        $this->_willRenderActionView = false;
+        $this->_willRenderLayoutView = false;
+
+        $profiler = Profiler::getProfiler();
+        echo $profiler->printProfilerRecord();
     }
 
     /**
@@ -264,14 +288,4 @@ class Admin_Controller_System extends Controller
         self::redirect('/admin/');
     }
 
-    /**
-     * @before _secured, _admin
-     */
-    public function deletedProducts()
-    {
-        $view = $this->getActionView();
-        
-        $products = App_Model_Product::all(array('deleted = ?' => true));
-        $view->set('deletedproducts', $products);
-    }
 }

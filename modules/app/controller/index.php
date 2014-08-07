@@ -184,67 +184,6 @@ class App_Controller_Index extends Controller
      * 
      * @param type $urlKey
      */
-    public function category($urlKey)
-    {
-        $view = $this->getActionView();
-        $layoutView = $this->getLayoutView();
-        $session = Registry::get('session');
-        $cache = Registry::get('cache');
-
-        $orderby = $session->get('catvieworderby', 'created');
-        $order = $session->get('catvieworder', 'desc');
-                
-        $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
-
-        $layoutView->set('parentcat', null)
-                ->set('activecat', $urlKey)
-                ->set('active', 99);
-
-        if ($category === null) {
-            self::redirect('/neznamakategorie');
-        }
-
-        $products = $cache->get('category_products_'.$urlKey.'_'.$orderby.'_'.$order);
-        
-        if($products !== null){
-            $products = $products;
-        }else{
-            $products = App_Model_Product::fetchProductsByCategory($urlKey, $orderby, $order);
-            $cache->set('category_products_'.$urlKey.'_'.$orderby.'_'.$order, $products);
-        }
-        if($products == null){
-            $background = null;
-        }else{
-            $background = 1;
-        }
-
-        if ($category->parentId != 0) {
-            $layoutView->set('parentcat', $category->parentId);
-            $session->set('parentcat', $category->parentId);
-        }else{
-            $layoutView->set('parentcat', $category->getId());
-        }
-
-        $session->set('activecat', $urlKey);
-        
-        $view->set('category', $category)
-                ->set('products', $products)
-                ->set('catorderby', $orderby)
-                ->set('catorder', $order);
-        
-        $layoutView
-                ->set('activecat', $urlKey)
-                ->set('active', 99)
-                ->set('background', $background)
-                ->set('metatitle', $category->getMetaTitle())
-                ->set('metakeywords', $category->getMetaKeywords())
-                ->set('metadescription', $category->getMetaDescription());
-    }
-
-    /**
-     * 
-     * @param type $urlKey
-     */
     public function product($urlKey)
     {
         $view = $this->getActionView();
@@ -302,18 +241,6 @@ class App_Controller_Index extends Controller
 
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
-                ->set('active', 99);
-    }
-
-    /**
-     * 
-     */
-    public function unknownCategory()
-    {
-        $layoutView = $this->getLayoutView();
-
-        $layoutView->set('activecat', 'unknown')
-                ->set('parentcat', 'unknown')
                 ->set('active', 99);
     }
 
@@ -381,26 +308,6 @@ class App_Controller_Index extends Controller
             
             $layoutView->set('background', 1);
         }
-    }
-
-    /**
-     * 
-     */
-    public function setProductOrder()
-    {
-        $this->willRenderActionView = false;
-        $this->willRenderLayoutView = false;
-        $view = $this->getActionView();
-        $session = Registry::get('session');
-        
-        $referer = $view->getHttpReferer();
-        $orderby = RequestMethods::post('catvieworderby');
-        $order = RequestMethods::post('catvieworder');
-
-        $session->set('catvieworderby', $orderby)
-                ->set('catvieworder', $order);
-        
-        echo $referer;
     }
 
     /**
