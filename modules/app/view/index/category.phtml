@@ -1,5 +1,6 @@
 <article >
     <h1 class="visuallyhidden">Kategorie</h1>
+  {if !empty($products)}
     <div class="categoryRadit transparentCategory">
         <table>
             <tr>
@@ -25,7 +26,7 @@
     </div>
     <div class="category">
          
-    {if !empty($products)}
+    
         {foreach $product in $products}
             {if $product->hasGroupPhoto}
                 <div class="transparentCategory productCategoryGrouped">
@@ -47,11 +48,12 @@
             {/else}
         {/foreach}
     {/if}
-    {else}
+    {if empty($products) && $category->parentId != 0}
+        
         <div class="errorDiv transparentCategory">
             <span>V této kategorii nejsou, žádné kostýmy</span>    
         </div>
-    {/else} 
+    {/if} 
     </div>
   
 </article>

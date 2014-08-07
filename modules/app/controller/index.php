@@ -212,6 +212,11 @@ class App_Controller_Index extends Controller
             $products = App_Model_Product::fetchProductsByCategory($urlKey, $orderby, $order);
             $cache->set('category_products_'.$urlKey.'_'.$orderby.'_'.$order, $products);
         }
+        if($products == null){
+            $background = null;
+        }else{
+            $background = 1;
+        }
 
         if ($category->parentId != 0) {
             $layoutView->set('parentcat', $category->parentId);
@@ -230,7 +235,7 @@ class App_Controller_Index extends Controller
         $layoutView
                 ->set('activecat', $urlKey)
                 ->set('active', 99)
-                ->set('background', 1)
+                ->set('background', $background)
                 ->set('metatitle', $category->getMetaTitle())
                 ->set('metakeywords', $category->getMetaKeywords())
                 ->set('metadescription', $category->getMetaDescription());
@@ -277,6 +282,7 @@ class App_Controller_Index extends Controller
 
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
+                ->set('background', 1)
                 ->set('active', 99)
                 ->set('metatitle', $product->getMetaTitle())
                 ->set('metakeywords', $product->getMetaKeywords())

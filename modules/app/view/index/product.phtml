@@ -1,5 +1,6 @@
 <article class="transparentAbout product">
     {if $product !== null}
+    {script $background = 1}
     <h1>{echo $product->title}</h1>
     
     {script $variants = $product->variants}

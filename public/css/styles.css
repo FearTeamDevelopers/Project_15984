@@ -104,7 +104,7 @@ h1{
 }
 
 .grouped{
-    max-width:390px;
+    max-width:370px;
     max-height:230px;
 }
 .errorDiv{
@@ -137,26 +137,28 @@ h1{
 
 .product{
     margin-top:60px;
-    margin-left:40px;
-    padding-left:25px;
+    margin-left:70px;
     padding-top:20px;
     min-width:300px;
-    max-width:850px;
+    max-width:800px;
     overflow:auto;
 }
 .product h1{
+    margin-left:40px;
     font-size:32px;
     font-family: sans-serif;
 }
 .productPhoto{
     margin-top:10px;
+    margin-left:25px;
     width:400px;
     float:left;
 }
 .productPhotoGr{
     margin-top:10px;
-    width:720px;
+    width:800px;
     float:left;
+    text-align:center;
 }
 .productPhoto img{
     border:10px solid rgb(248,216,219);
@@ -173,16 +175,17 @@ h1{
 
 .productTable{
     float:left;
-    width:350px;
+    width:300px;
     margin-top:50px;
     font-size:18px;
     font-family: sans-serif;
-    margin-left:40px;
+    margin-left:20px;
 }
 
 .productTableGr{
+    margin-left:25px;
     float:left;
-    width:800px;
+    width:700px;
     margin-top:10px;
     font-size:18px;
     font-family: sans-serif;
@@ -199,25 +202,27 @@ h1{
 
 }
 .productDescription{
+    margin-left:25px;
     margin-top:20px;
     float:left;
-    width:800px;
+    width:700px;
     font-size:18px;
     font-family: sans-serif;
     margin-bottom:30px
 }
 
 .productDescriptionGr{
+    margin-left:25px;
     margin-top:10px;
     float:left;
-    width:800px;
+    width:700px;
     font-size:20px;
     font-family: sans-serif;
     margin-bottom: 22px;
     padding:8px;
 
 
-    
+
 }
 .pTable tr td{
     font-size:20px;
@@ -245,10 +250,10 @@ h1{
     background-size: 100% 100%;
 
 
-    width:350px;
+    width:300px;
     height:100px;
     float:left;
-    margin-left:50px;
+    margin-left:20px;
     margin-top:70px;
 }
 .pTableSingle tr td{
@@ -271,8 +276,9 @@ h1{
     margin-right:5px;
 }
 .recommended{
+    margin-left:25px;
     float:left;
-    width:800px;
+    width:760px;
     height:200px;
 
 }
@@ -304,15 +310,15 @@ h1{
     display: inline-block;
     content: "";
     height: 2px;
-    background: RGB(150,120,120);
+    background: RGBa(150,120,120,0.75);
     position: absolute;
     width: 100%;
     top: 50%;
     margin-top: -2px;
     margin-left: 10px;
-    -webkit-box-shadow: 0px 2px 1px 0px rgb(204, 172, 173);
--moz-box-shadow:    0px 2px 1px 0px rgb(204, 172, 173);
-box-shadow:         0px 2px 1px 0px rgb(204, 172, 173);
+    -webkit-box-shadow: 0px 2px 1px 0px rgba(204, 172, 173,0.75);
+    -moz-box-shadow:    0px 2px 1px 0px rgba(204, 172, 173,0.75);
+    box-shadow:         0px 2px 1px 0px rgba(204, 172, 173,0.75);
 
 }
 .recImg{

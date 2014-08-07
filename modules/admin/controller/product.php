@@ -520,6 +520,7 @@ class Admin_Controller_Product extends Controller
                     $currentPrice = RequestMethods::post('basicprice');
                 }
 
+                $product->active = RequestMethods::post('active');
                 $product->sizeId = RequestMethods::post('size');
                 $product->urlKey = $urlKeyCh;
                 $product->productCode = RequestMethods::post('productcode');
