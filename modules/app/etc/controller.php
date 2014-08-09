@@ -23,6 +23,7 @@ class Controller extends BaseController
     {
         parent::__construct($options);
 
+        $cache = Registry::get('cache');
         $database = Registry::get('database');
         $database->connect();
 
@@ -32,18 +33,43 @@ class Controller extends BaseController
             $database->disconnect();
         });
 
-        $categories = \App_Model_Category::fetchAllCategories();
-        
+        $menuCat = $cache->get('menucat');
+
+        if (NULL !== $menuCat) {
+            $categories = $menuCat;
+        } else {
+            $categories = \App_Model_Category::fetchAllCategories();
+            $cache->set('menucat', $categories);
+        }
+
+        $metaData = $cache->get('global_meta_data');
+
+        if (NULL !== $metaData) {
+            $metaData = $metaData;
+        } else {
+            $metaData = array(
+                'metakeywords' => $this->loadConfigFromDb('meta_keywords'),
+                'metadescription' => $this->loadConfigFromDb('meta_description'),
+                'metarobots' => $this->loadConfigFromDb('meta_robots'),
+                'metaogurl' => $this->loadConfigFromDb('meta_og_url'),
+                'metaogtype' => $this->loadConfigFromDb('meta_og_type'),
+                'metaogsitename' => $this->loadConfigFromDb('meta_og_site_name'),
+                'metaogtitle' => $this->loadConfigFromDb('meta_og_title')
+            );
+
+            $cache->set('global_meta_data', $metaData);
+        }
+
         $this->getLayoutView()
                 ->set('category', $categories)
                 ->set('metatile', 'Agentura Karneval')
-                ->set('metakeywords', $this->loadConfigFromDb('meta_keywords'))
-                ->set('metadescription', $this->loadConfigFromDb('meta_description'))
-                ->set('metarobots', $this->loadConfigFromDb('meta_robots'))
-                ->set('metaogurl', $this->loadConfigFromDb('meta_og_url'))
-                ->set('metaogtype', $this->loadConfigFromDb('meta_og_type'))
-                ->set('metaogsitename', $this->loadConfigFromDb('meta_og_site_name'))
-                ->set('metaogtitle', $this->loadConfigFromDb('meta_og_title'));
+                ->set('metakeywords', $metaData['metakeywords'])
+                ->set('metadescription', $metaData['metadescription'])
+                ->set('metarobots', $metaData['metarobots'])
+                ->set('metaogurl', $metaData['metaogurl'])
+                ->set('metaogtype', $metaData['metaogtype'])
+                ->set('metaogsitename', $metaData['metaogsitename'])
+                ->set('metaogtitle', $metaData['metaogtitle']);
     }
 
     /**

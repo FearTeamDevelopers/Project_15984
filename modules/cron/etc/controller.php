@@ -26,7 +26,7 @@ class Controller extends BaseController
         $user = $this->getUser();
 
         if (!$user) {
-            self::redirect('/admin/login');
+            self::redirect('/login');
         }
 
         if ($lastActive > time() - 1800) {
@@ -36,7 +36,7 @@ class Controller extends BaseController
 
             $view->infoMessage('You has been logged out for long inactivity');
             $security->logout();
-            self::redirect('/admin/login');
+            self::redirect('/login');
         }
     }
 
@@ -63,7 +63,7 @@ class Controller extends BaseController
         if ($security->getUser() && !$security->isGranted('role_superadmin')) {
             $view->infoMessage('Access denied! Super admin access level required.');
             $security->logout();
-            self::redirect('/admin/login');
+            self::redirect('/login');
         }
     }
 

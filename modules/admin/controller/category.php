@@ -4,6 +4,7 @@ use Admin\Etc\Controller;
 use THCFrame\Core\StringMethods;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
+use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -76,6 +77,7 @@ class Admin_Controller_Category extends Controller
 
         if (RequestMethods::post('submitAddCategory')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
             $errors = array();
 
             $urlKey = $this->createUrlKey(RequestMethods::post('title'));
@@ -103,6 +105,7 @@ class Admin_Controller_Category extends Controller
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $cid));
                 $view->successMessage('Kategorie byla úspěšně uložena');
+                $cache->invalidate();
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -134,6 +137,7 @@ class Admin_Controller_Category extends Controller
 
         if (RequestMethods::post('submitEditCategory')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
             $errors = array();
 
             $urlKey = $this->createUrlKey(RequestMethods::post('title'));
@@ -159,6 +163,7 @@ class Admin_Controller_Category extends Controller
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $category->getId()));
                 $view->successMessage('Všechny změny byly úspěšne uloženy');
+                $cache->invalidate();
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail', 'Category id: ' . $category->getId()));
@@ -209,6 +214,7 @@ class Admin_Controller_Category extends Controller
         $this->willRenderLayoutView = false;
 
         if ($this->checkTokenAjax()) {
+            $cache = Registry::get('cache');
             $category = App_Model_Category::first(array(
                         'id = ?' => (int) $id
             ));
@@ -218,6 +224,7 @@ class Admin_Controller_Category extends Controller
             } else {
                 if ($category->delete()) {
                     Event::fire('admin.log', array('success', 'Category id: ' . $id));
+                    $cache->invalidate();
                     echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'Category id: ' . $id));

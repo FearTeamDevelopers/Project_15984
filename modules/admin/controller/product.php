@@ -6,6 +6,7 @@ use THCFrame\Events\Events as Event;
 use THCFrame\Core\StringMethods;
 use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
+use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -369,6 +370,7 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('submitAddProduct')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
 
             $categoryArr = RequestMethods::post('rcat');
             if (empty($categoryArr)) {
@@ -402,6 +404,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($this->_errors)) {
                     $view->successMessage('Produkt byl úspěšně uložen');
+                    $cache->invalidate();
                     self::redirect('/admin/product/');
                 } else {
                     $view->set('product', $product)
@@ -447,6 +450,7 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('submitEditProduct')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
 
             if ($product->getProductType() == 'varianta') {
                 $product->sizeId = RequestMethods::post('size');
@@ -572,6 +576,7 @@ class Admin_Controller_Product extends Controller
                     if (empty($this->_errors)) {
                         Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
                         $view->successMessage('Produkt byl úspěšně uložen');
+                        $cache->invalidate();
                         self::redirect('/admin/product/');
                     } else {
                         Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
@@ -607,6 +612,8 @@ class Admin_Controller_Product extends Controller
 
         if (RequestMethods::post('submitDeleteProduct')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
+            
             $product->deleted = true;
 
             if ($product->validate()) {
@@ -614,6 +621,7 @@ class Admin_Controller_Product extends Controller
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $id));
                 $view->successMessage('Produkt byl úspěšně smazán');
+                $cache->invalidate();
                 self::redirect('/admin/product/');
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $id));
@@ -633,6 +641,8 @@ class Admin_Controller_Product extends Controller
         $this->willRenderLayoutView = false;
 
         if ($this->checkTokenAjax()) {
+            $cache = Registry::get('cache');
+            
             $product = App_Model_Product::first(
                             array('id = ?' => (int) $id, 'deleted = ?' => true));
 
@@ -645,6 +655,7 @@ class Admin_Controller_Product extends Controller
 
             if ($product->validate()) {
                 $product->save();
+                $cache->invalidate();
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $id));
                 echo 'success';
@@ -856,6 +867,7 @@ class Admin_Controller_Product extends Controller
         $this->checkToken();
         $ids = RequestMethods::post('productsids');
         $action = RequestMethods::post('action');
+        $cache = Registry::get('cache');
 
         if (empty($ids)) {
             echo 'Nějaký řádek musí být označen';
@@ -883,6 +895,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($errors)) {
                     Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
+                    $cache->invalidate();
                     echo 'Produkty byly úspěšně smazány';
                 } else {
                     Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -925,6 +938,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($errors)) {
                     Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
+                    $cache->invalidate();
                     echo 'Produkty byly úspěšně přeceněny';
                 } else {
                     Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -953,6 +967,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($errors)) {
                     Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
+                    $cache->invalidate();
                     echo 'Produkty byly úspěšně aktivovány';
                 } else {
                     Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -981,6 +996,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($errors)) {
                     Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
+                    $cache->invalidate();
                     echo 'Produkty byly úspěšně deaktivovány';
                 } else {
                     Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));

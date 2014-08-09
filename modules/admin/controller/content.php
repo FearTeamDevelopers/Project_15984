@@ -4,7 +4,7 @@ use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Core\StringMethods;
-
+use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -127,6 +127,7 @@ class Admin_Controller_Content extends Controller
 
         if (RequestMethods::post('submitEditContent')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
             $errors = array();
 
             $urlKey = $this->createUrlKey(RequestMethods::post('page'));
@@ -149,6 +150,7 @@ class Admin_Controller_Content extends Controller
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
                 $view->successMessage('Všechny změny byly úspěšně uloženy');
+                $cache->erase($content->getUrlKey());
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail', 'ID: ' . $id));

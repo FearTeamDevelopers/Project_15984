@@ -73,13 +73,13 @@ class App_Controller_Index extends Controller
         $layoutView = $this->getLayoutView();
         $cache = Registry::get('cache');
 
-        $content = $cache->get('aboutus');
+        $content = $cache->get('o-nas');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
-            $cache->set('aboutus', $content);
+            $cache->set('o-nas', $content);
         }
         
         $parsed = $this->_parseContentBody($content);
@@ -119,7 +119,7 @@ class App_Controller_Index extends Controller
         $view->set('reference', $content);
         $layoutView->set('active', 2)
             ->set('activecat', null)
-                ->set('parentcat', null);
+            ->set('parentcat', null);
     }
 
     /**
@@ -131,13 +131,13 @@ class App_Controller_Index extends Controller
         $layoutView = $this->getLayoutView();
         $cache = Registry::get('cache');
 
-        $content = $cache->get('pricelist');
+        $content = $cache->get('cenik');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
-            $cache->set('pricelist', $content);
+            $cache->set('cenik', $content);
         }
         
         $parsed = $this->_parseContentBody($content);
@@ -160,13 +160,13 @@ class App_Controller_Index extends Controller
         $layoutView = $this->getLayoutView();
         $cache = Registry::get('cache');
 
-        $content = $cache->get('contact');
+        $content = $cache->get('kontakty');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
-            $cache->set('contact', $content);
+            $cache->set('kontakty', $content);
         }
         
         $parsed = $this->_parseContentBody($content);

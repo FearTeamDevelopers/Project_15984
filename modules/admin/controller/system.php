@@ -155,9 +155,9 @@ class Admin_Controller_System extends Controller
                     'productCode' => time() . '-' . $i,
                     'title' => time() . '-' . $i,
                     'description' => time() . '-' . $i,
-                    'basicPrice' => 0,
+                    'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
                     'regularPrice' => 0,
-                    'currentPrice' => (int) substr(time(), 1, 3),
+                    'currentPrice' => 0,
                     'quantity' => 1,
                     'discount' => 0,
                     'discountFrom' => '',
@@ -166,7 +166,7 @@ class Admin_Controller_System extends Controller
                     'isInAction' => '',
                     'newFrom' => '',
                     'newTo' => '',
-                    'hasGroupPhoto' => 0,
+                    'hasGroupPhoto' => (int) rand(0,1),
                     'imgMain' => '',
                     'imgThumb' => '',
                     'metaTitle' => '',
@@ -179,8 +179,8 @@ class Admin_Controller_System extends Controller
 
                 if ($product->validate()) {
                     $pid = $product->save();
-                    $catId = rand(1, 4);
-                    $size = rand(1, 17);
+                    $catId = rand(2, 8);
+                    $size = rand(1, 18);
 
                     $productCategory = new App_Model_ProductCategory(array(
                         'productId' => $pid,
@@ -204,9 +204,9 @@ class Admin_Controller_System extends Controller
                         'productCode' => time() . '-' . $i . '-' . $i,
                         'title' => time() . '-' . $i . '-' . $i,
                         'description' => time() . '-' . $i . '-' . $i,
-                        'basicPrice' => 0,
+                        'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
                         'regularPrice' => 0,
-                        'currentPrice' => (int) substr(time(), 1, 3),
+                        'currentPrice' => 0,
                         'quantity' => 1,
                         'discount' => 0,
                         'discountFrom' => '',
@@ -215,7 +215,7 @@ class Admin_Controller_System extends Controller
                         'isInAction' => '',
                         'newFrom' => '',
                         'newTo' => '',
-                        'hasGroupPhoto' => 1,
+                        'hasGroupPhoto' => 0,
                         'imgMain' => '',
                         'imgThumb' => '',
                         'metaTitle' => '',
@@ -231,7 +231,7 @@ class Admin_Controller_System extends Controller
                     }
                 }
             } else {
-                $size = rand(1, 17);
+                $size = rand(1, 18);
 
                 $product = new App_Model_Product(array(
                     'sizeId' => $size,
@@ -241,9 +241,9 @@ class Admin_Controller_System extends Controller
                     'productCode' => time() . '-' . $i,
                     'title' => time() . '-' . $i,
                     'description' => time() . '-' . $i,
-                    'basicPrice' => 0,
+                    'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
                     'regularPrice' => 0,
-                    'currentPrice' => (int) substr(time(), 1, 3),
+                    'currentPrice' => 0,
                     'quantity' => 1,
                     'discount' => 0,
                     'discountFrom' => '',
@@ -252,7 +252,7 @@ class Admin_Controller_System extends Controller
                     'isInAction' => '',
                     'newFrom' => '',
                     'newTo' => '',
-                    'hasGroupPhoto' => 1,
+                    'hasGroupPhoto' => (int) rand(0,1),
                     'imgMain' => '',
                     'imgThumb' => '',
                     'metaTitle' => '',
@@ -265,8 +265,8 @@ class Admin_Controller_System extends Controller
 
                 if ($product->validate()) {
                     $pid = $product->save();
-                    $catId = rand(1, 4);
-                    $size = rand(1, 17);
+                    $catId = rand(2, 8);
+                    $size = rand(1, 18);
 
                     $productCategory = new App_Model_ProductCategory(array(
                         'productId' => $pid,
@@ -284,6 +284,7 @@ class Admin_Controller_System extends Controller
                 }
             }
         }
+        
         $view->infoMessage('Product import completed');
         self::redirect('/admin/');
     }

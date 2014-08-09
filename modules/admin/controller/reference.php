@@ -5,6 +5,7 @@ use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Filesystem\FileManager;
 use THCFrame\Core\ArrayMethods;
+use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -31,6 +32,7 @@ class Admin_Controller_Reference extends Controller
 
         if (RequestMethods::post('submitAddReference')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
             $errors = array();
 
             try {
@@ -66,6 +68,7 @@ class Admin_Controller_Reference extends Controller
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
                 $view->successMessage('Reference byla úspěšně uložena');
+                $cache->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -93,6 +96,7 @@ class Admin_Controller_Reference extends Controller
 
         if (RequestMethods::post('submitEditReference')) {
             $this->checkToken();
+            $cache = Registry::get('cache');
             $errors = array();
 
             if ($reference->imgMain == '') {
@@ -134,6 +138,7 @@ class Admin_Controller_Reference extends Controller
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
                 $view->successMessage('Všechny změny byly úspěšně uloženy');
+                $cache->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
                 Event::fire('admin.log', array('fail', 'Reference id: ' . $id));
@@ -151,6 +156,7 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderLayoutView = false;
 
         if ($this->checkTokenAjax()) {
+            $cache = Registry::get('cache');
             $reference = App_Model_Reference::first(
                             array('id = ?' => $id), array('id')
             );
@@ -161,6 +167,7 @@ class Admin_Controller_Reference extends Controller
             } else {
                 if ($reference->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
+                    $cache->erase('reference');
                     echo 'success';
                     return;
                 } else {
@@ -227,6 +234,7 @@ class Admin_Controller_Reference extends Controller
             $this->checkToken();
             $ids = RequestMethods::post('refids');
             $action = RequestMethods::post('action');
+            $cache = Registry::get('cache');
 
             switch ($action) {
                 case 'delete':
@@ -243,6 +251,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'IDs: ' . join(',', $ids)));
+                        $cache->erase('reference');
                         $view->successMessage('Reference byly smazány');
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Error count:' . count($errors)));
@@ -272,6 +281,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'IDs: ' . join(',', $ids)));
+                        $cache->erase('reference');
                         $view->successMessage('Reference byly aktivovány');
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Error count:' . count($errors)));
@@ -301,6 +311,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'IDs: ' . join(',', $ids)));
+                        $cache->erase('reference');
                         $view->successMessage('Reference byly deaktivovány');
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Error count:' . count($errors)));

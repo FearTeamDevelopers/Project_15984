@@ -41,11 +41,11 @@ class App_Controller_Category extends Controller
             $background = 1;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, 1, $orderby, $order);
-            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);
-
+            
             if ($products == null) {
                 $background = null;
             } else {
+                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);
                 $background = 1;
             }
         }
@@ -101,12 +101,15 @@ class App_Controller_Category extends Controller
             $products = $products;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, $page, $orderby, $order);
-            $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
+            
+            if($products !== null){
+                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
+            }
         }
 
         $session->set('activepage', $page);
-
-        $view->set('products', $products);
+        $view->set('products', $products)
+            ->set('category', $category);
     }
 
     /**
