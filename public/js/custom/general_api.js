@@ -13,20 +13,22 @@ jQuery(document).ready(function() {
     jQuery(window).on("scroll", function() {
         var scrollHeight = jQuery(document).height();
         var scrollPosition = jQuery(window).height() + jQuery(window).scrollTop();
+    
         if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
             jQuery.post('/app/category/categoryloadproducts/', function(msg) {
                 jQuery('.category').append(msg);
+                
                 if (!jQuery('.scroll-top').is('visible') && scrollPosition > 5000) {
-
                     jQuery('.scroll-top').show();
                 }
             });
         }
+        
         if (!jQuery('.scroll-top').is('visible') && scrollPosition > 5000) {
-
             jQuery('.scroll-top').show();
         }
     });
+    
     jQuery('.scroll-top').click(function() {
         jQuery(this).hide();
     })
@@ -49,4 +51,3 @@ jQuery(document).ready(function() {
         });
     });
 });
-
