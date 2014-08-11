@@ -1029,7 +1029,7 @@ class Admin_Controller_Product extends Controller
                     . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
@@ -1077,7 +1077,7 @@ class Admin_Controller_Product extends Controller
             unset($productsCount);
         } else {
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
@@ -1125,7 +1125,13 @@ class Admin_Controller_Product extends Controller
                 if ($product->getDiscount() != 0 
                         && $product->getDiscountFrom() <= date('Y-m-d') 
                         && $product->getDiscountTo() >= date('Y-m-d')) {
-                    $label = "<a href='#' class='discount-btn btn btn3 btn_dollartag' title='Ve slevě'></a>";
+                    $label .= "<span class='labelProduct labelProductBlue'>Ve slevě</span>";
+                }
+                
+                if($product->active){
+                    $label .= "<span class='labelProduct labelProductGreen'>Aktivní</span>";
+                }else{
+                    $label .= "<span class='labelProduct labelProductGray'>Neaktivní</span>";
                 }
 
                 $arr = array();
@@ -1136,8 +1142,9 @@ class Admin_Controller_Product extends Controller
                 $arr [] = "\"" . $product->catTitle . "\"";
                 $arr [] = "\"" . $product->getProductCode() . "\"";
                 $arr [] = "\"" . $product->getCurrentPrice() ."\"";
+                $arr [] = "\"" .$label."\"";
 
-                $tempStr = "\"{$label}<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
+                $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
                 $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
                 
                 if ($this->isAdmin()) {
@@ -1151,7 +1158,7 @@ class Admin_Controller_Product extends Controller
 
             echo $str;
         } else {
-            $str .= "[ \"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]]}";
+            $str .= "[ \"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]]}";
 
             echo $str;
         }
