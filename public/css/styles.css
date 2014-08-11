@@ -7,7 +7,6 @@ and open the template in the editor.
     Created on : 23.5.2014, 21:40:16
     Author     : Sabre
 */
-
 /******* DEFAULT *************/
 table{
     margin-top:5px;
@@ -160,7 +159,7 @@ h1{
 .productPhoto{
     margin-top:10px;
     margin-left:25px;
-    width:400px;
+    width:370px;
     float:left;
 }
 .productPhotoGr{
@@ -172,7 +171,7 @@ h1{
 .productPhoto img{
     border:10px solid rgb(248,216,219);
     min-width:300px;
-    max-width:400px;
+    max-width:350px;
     max-height:600px;
 }
 .productPhotoGr img{

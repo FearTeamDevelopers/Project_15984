@@ -145,6 +145,7 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
 .tabmenu li a:hover { text-decoration: none; color: #333; }
 .tabmenu li.current a { background: #ddd; color: #333; }
 
+
 /***COLUMNS***/
 .one_half{ width:48.5%; }
 .one_third{ width:31.16%; }
@@ -912,6 +913,31 @@ a.btn_table { background-position: -82px -480px; }
 .category-detail span {font-size: 15px; font-weight: bold;}
 .category-detail div {margin-top: 5px;}
 
+/****PRODUCTLIST LABEL********/
+.labelProduct{
+    color:white;
+    font-size:11px;
+    height:16px;
+    -webkit-box-shadow: inset 3px 4px 16px 0px rgba(255, 255, 255, 0.6);
+    -moz-box-shadow:    inset 3px 4px 16px 0px rgba(255, 255, 255, 0.6);
+    box-shadow:         inset 3px 4px 16px 0px rgba(255, 255, 255, 0.6);
+    padding:3px;
+    padding-left:5px;
+    padding-right:5px;
+    border-radius:3px;
+}
+.labelProductGreen{
+    background-color:green;
+}
+.labelProductBlue{
+    background-color:blue;
+}
+.labelProductGray{
+    background-color:gray;
+}
+.labelProductRed{
+    background-color:red;
+}
 
 @media screen and (max-width: 1024px) {
     .maincontent { margin-right: 260px; margin-left: 230px; }
