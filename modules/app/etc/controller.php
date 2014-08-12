@@ -62,7 +62,7 @@ class Controller extends BaseController
 
         $this->getLayoutView()
                 ->set('category', $categories)
-                ->set('metatile', 'Agentura Karneval')
+                ->set('metatitle', 'Agentura Karneval')
                 ->set('metakeywords', $metaData['metakeywords'])
                 ->set('metadescription', $metaData['metadescription'])
                 ->set('metarobots', $metaData['metarobots'])

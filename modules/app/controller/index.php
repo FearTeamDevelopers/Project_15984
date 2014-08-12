@@ -3,6 +3,7 @@
 use App\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Registry\Registry;
+use THCFrame\Controller\Exception\Model;
 
 /**
  * 
@@ -11,7 +12,27 @@ class App_Controller_Index extends Controller
 {
 
     /**
-     *
+     * Check if are sets category specific metadata or leave their default values
+     */
+    private function _checkMetaData($layoutView, Model $object)
+    {
+        if($object->getMetaTitle() != ''){
+            $layoutView->set('metatitle', $object->getMetaTitle());
+        }
+        
+        if($object->getMetaDescription() != ''){
+            $layoutView->set('metadescription', $object->getMetaDescription());
+        }
+        
+        if($object->getMetaKeywords() != ''){
+            $layoutView->set('metakeywords', $object->getMetaKeywords());
+        }
+        
+        return;
+    }
+
+    /**
+     * Method replace specific strings whit their equivalent images
      * @param \App_Model_PageContent $news
      */
     private function _parseContentBody(\App_Model_PageContent $content, $parsedField = 'body')
@@ -85,13 +106,11 @@ class App_Controller_Index extends Controller
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
-        $layoutView->set('metatitle', $content->getMetaTitle())
-                ->set('activecat', null)
+        
+        $this->_checkMetaData($layoutView, $content);
+        $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 1)
-                
-                ->set('metakeywords', $content->getMetaKeywords())
-                ->set('metadescription', $content->getMetaDescription());
+                ->set('active', 1);
     }
 
     /**
@@ -143,12 +162,11 @@ class App_Controller_Index extends Controller
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
-        $layoutView->set('metatitle', $content->getMetaTitle())
-                ->set('activecat', null)
+        
+        $this->_checkMetaData($layoutView, $content);
+        $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 3)
-                ->set('metakeywords', $content->getMetaKeywords())
-                ->set('metadescription', $content->getMetaDescription());
+                ->set('active', 3);
     }
 
     /**
@@ -172,12 +190,11 @@ class App_Controller_Index extends Controller
         $parsed = $this->_parseContentBody($content);
         
         $view->set('content', $parsed);
-        $layoutView->set('metatitle', $content->getMetaTitle())
-                ->set('activecat', null)
+        
+        $this->_checkMetaData($layoutView, $content);
+        $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 4)
-                ->set('metakeywords', $content->getMetaKeywords())
-                ->set('metadescription', $content->getMetaDescription());
+                ->set('active', 4);
     }
 
     /**
@@ -219,13 +236,11 @@ class App_Controller_Index extends Controller
                 ->set('selable', $isSelable)
                 ->set('fblike', $fblike);
 
+        $this->_checkMetaData($layoutView, $product);
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
                 ->set('background', 1)
-                ->set('active', 99)
-                ->set('metatitle', $product->getMetaTitle())
-                ->set('metakeywords', $product->getMetaKeywords())
-                ->set('metadescription', $product->getMetaDescription());
+                ->set('active', 99);
     }
 
     /**

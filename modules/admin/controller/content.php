@@ -17,7 +17,7 @@ class Admin_Controller_Content extends Controller
      * @param type $string
      * @return type
      */
-    private function createUrlKey($string)
+    private function _createUrlKey($string)
     {
         $string = StringMethods::removeDiacriticalMarks($string);
         $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
@@ -30,7 +30,7 @@ class Admin_Controller_Content extends Controller
      * @param type $key
      * @return boolean
      */
-    private function checkUrlKey($key)
+    private function _checkUrlKey($key)
     {
         $status = App_Model_PageContent::first(array('urlKey = ?' => $key));
 
@@ -76,9 +76,9 @@ class Admin_Controller_Content extends Controller
             $this->checkToken();
             $errors = array();
 
-            $urlKey = $this->createUrlKey(RequestMethods::post('page'));
+            $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
-            if (!$this->checkUrlKey($urlKey)) {
+            if (!$this->_checkUrlKey($urlKey)) {
                 $errors['title'] = array('Stránka s tímto názvem již existuje');
             }
 
@@ -130,9 +130,9 @@ class Admin_Controller_Content extends Controller
             $cache = Registry::get('cache');
             $errors = array();
 
-            $urlKey = $this->createUrlKey(RequestMethods::post('page'));
+            $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
-            if ($content->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
+            if ($content->getUrlKey() !== $urlKey && !$this->_checkUrlKey($urlKey)) {
                 $errors['title'] = array('Obsah s tímto názvem již existuje');
             }
 

@@ -17,7 +17,7 @@ class Admin_Controller_Category extends Controller
      * @param type $string
      * @return type
      */
-    private function createUrlKey($string)
+    private function _createUrlKey($string)
     {
         $string = StringMethods::removeDiacriticalMarks($string);
         $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
@@ -31,7 +31,7 @@ class Admin_Controller_Category extends Controller
      * @param type $key
      * @return boolean
      */
-    private function checkUrlKey($key)
+    private function _checkUrlKey($key)
     {
         $status = App_Model_Category::first(array('urlKey = ?' => $key));
 
@@ -80,9 +80,9 @@ class Admin_Controller_Category extends Controller
             $cache = Registry::get('cache');
             $errors = array();
 
-            $urlKey = $this->createUrlKey(RequestMethods::post('title'));
+            $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
-            if (!$this->checkUrlKey($urlKey)) {
+            if (!$this->_checkUrlKey($urlKey)) {
                 $errors['title'] = array('Kategorie s tímto názvem již existuje');
             }
 
@@ -140,9 +140,9 @@ class Admin_Controller_Category extends Controller
             $cache = Registry::get('cache');
             $errors = array();
 
-            $urlKey = $this->createUrlKey(RequestMethods::post('title'));
+            $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
-            if ($category->getUrlKey() !== $urlKey && !$this->checkUrlKey($urlKey)) {
+            if ($category->getUrlKey() !== $urlKey && !$this->_checkUrlKey($urlKey)) {
                 $errors['title'] = array('Kategorie s tímto názvem již existuje');
             }
 

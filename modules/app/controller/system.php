@@ -10,7 +10,7 @@ class App_Controller_System extends Controller
 {
 
     /**
-     * 
+     * Method called by ajax shows profiler bar at the bottom of screen
      */
     public function showProfiler()
     {

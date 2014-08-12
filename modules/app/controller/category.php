@@ -11,7 +11,27 @@ class App_Controller_Category extends Controller
 {
 
     /**
-     * 
+     * Check if are sets category specific metadata or leave their default values
+     */
+    private function _checkMetaData($layoutView, Model $object)
+    {
+        if($object->getMetaTitle() != ''){
+            $layoutView->set('metatitle', $object->getMetaTitle());
+        }
+        
+        if($object->getMetaDescription() != ''){
+            $layoutView->set('metadescription', $object->getMetaDescription());
+        }
+        
+        if($object->getMetaKeywords() != ''){
+            $layoutView->set('metakeywords', $object->getMetaKeywords());
+        }
+        
+        return;
+    }
+    
+    /**
+     * Basic method show products in category
      * @param type $urlKey
      */
     public function category($urlKey)
@@ -65,17 +85,14 @@ class App_Controller_Category extends Controller
                 ->set('catorderby', $orderby)
                 ->set('catorder', $order);
 
-        $layoutView
-                ->set('activecat', $urlKey)
+        $this->_checkMetaData($layoutView, $category);
+        $layoutView->set('activecat', $urlKey)
                 ->set('active', 99)
-                ->set('background', $background)
-                ->set('metatitle', $category->getMetaTitle())
-                ->set('metakeywords', $category->getMetaKeywords())
-                ->set('metadescription', $category->getMetaDescription());
+                ->set('background', $background);
     }
 
     /**
-     * 
+     * Method used by ajax in category view for infinite scroll
      */
     public function categoryLoadProducts()
     {
@@ -113,7 +130,7 @@ class App_Controller_Category extends Controller
     }
 
     /**
-     * 
+     * Method called by ajax used for ordering products in category view
      */
     public function setProductOrder()
     {

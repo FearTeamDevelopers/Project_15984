@@ -21,7 +21,7 @@ class Admin_Controller_Product extends Controller
      * @param type $string
      * @return type
      */
-    private function createUrlKey($string)
+    private function _createUrlKey($string)
     {
         $string = StringMethods::removeDiacriticalMarks($string);
         $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
@@ -35,12 +35,12 @@ class Admin_Controller_Product extends Controller
      * @param type $configurable
      * @return \App_Model_Product
      */
-    private function createMainProduct($configurable = false)
+    private function _createMainProduct($configurable = false)
     {
-        $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('title'));
+        $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
         for ($i = 1; $i <= 50; $i++) {
-            if ($this->checkUrlKey($urlKeyCh)) {
+            if ($this->_checkUrlKey($urlKeyCh)) {
                 break;
             } else {
                 $urlKeyCh = $urlKey . '-' . $i;
@@ -163,7 +163,7 @@ class Admin_Controller_Product extends Controller
      * @param App_Model_Product $productConf
      * @return boolean
      */
-    private function createVariants(App_Model_Product $productConf)
+    private function _createVariants(App_Model_Product $productConf)
     {
         $sizeVariantsArr = RequestMethods::post('size');
 
@@ -173,10 +173,10 @@ class Admin_Controller_Product extends Controller
         }
 
         foreach ($sizeVariantsArr as $size) {
-            $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('title')) . '-' . $size;
+            $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title')) . '-' . $size;
 
             for ($i = 1; $i <= 50; $i++) {
-                if ($this->checkUrlKey($urlKeyCh)) {
+                if ($this->_checkUrlKey($urlKeyCh)) {
                     break;
                 } else {
                     $urlKeyCh = $urlKey . '-' . $i;
@@ -236,7 +236,7 @@ class Admin_Controller_Product extends Controller
      * @param type $update
      * @return boolean
      */
-    private function createCategoryRecords($productId, $categoryArr = array(), $update = false)
+    private function _createCategoryRecords($productId, $categoryArr = array(), $update = false)
     {
         if ($update) {
             $deleteStatus = App_Model_ProductCategory::deleteAll(array('productId = ?' => (int) $productId));
@@ -265,7 +265,7 @@ class Admin_Controller_Product extends Controller
      * @param type $update
      * @return boolean
      */
-    private function createRecommendedProductsRecords($productId, $recommendedArr = array(), $update = false)
+    private function _createRecommendedProductsRecords($productId, $recommendedArr = array(), $update = false)
     {
         if ($update) {
             $deleteStatus = App_Model_RecommendedProduct::deleteAll(array('productId = ?' => (int) $productId));
@@ -291,7 +291,7 @@ class Admin_Controller_Product extends Controller
      * 
      * @return boolean
      */
-    private function uploadAdditionalPhotos($productId, $uploadTo)
+    private function _uploadAdditionalPhotos($productId, $uploadTo)
     {
         $fileManager = new FileManager(array(
             'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
@@ -336,7 +336,7 @@ class Admin_Controller_Product extends Controller
      * @param type $key
      * @return boolean
      */
-    private function checkUrlKey($key)
+    private function _checkUrlKey($key)
     {
         $status = App_Model_Product::first(array('urlKey = ?' => $key));
 
@@ -378,28 +378,28 @@ class Admin_Controller_Product extends Controller
             }
 
             if (RequestMethods::post('producttype') == 's variantami') {
-                $product = $this->createMainProduct(true);
+                $product = $this->_createMainProduct(true);
                 if (empty($this->_errors)) {
-                    $this->createVariants($product);
+                    $this->_createVariants($product);
                 }
             } else {
-                $product = $this->createMainProduct();
+                $product = $this->_createMainProduct();
             }
 
             if (empty($this->_errors)) {
                 /* category */
-                $this->createCategoryRecords($product->getId(), $categoryArr);
+                $this->_createCategoryRecords($product->getId(), $categoryArr);
 
                 /* recommended products */
                 $recomProducts = RequestMethods::post('recomproductids');
                 if (!empty($recomProducts)) {
-                    $this->createRecommendedProductsRecords($product->getId(), $recomProducts);
+                    $this->_createRecommendedProductsRecords($product->getId(), $recomProducts);
                 }
 
                 /* additional photos */
                 if (RequestMethods::post('uplMoreImages') == 1) {
                     $uploadTo = trim(substr(str_replace('.', '', $product->getUrlKey()), 0, 3));
-                    $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
+                    $this->_uploadAdditionalPhotos($product->getId(), $uploadTo);
                 }
 
                 if (empty($this->_errors)) {
@@ -472,11 +472,11 @@ class Admin_Controller_Product extends Controller
                             ->set('errors', $product->getErrors());
                 }
             } else {
-                $urlKey = $urlKeyCh = $this->createUrlKey(RequestMethods::post('urlkey'));
+                $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('urlkey'));
 
                 if ($product->getUrlKey() !== $urlKey) {
                     for ($i = 1; $i <= 50; $i++) {
-                        if ($this->checkUrlKey($urlKeyCh)) {
+                        if ($this->_checkUrlKey($urlKeyCh)) {
                             break;
                         } else {
                             $urlKeyCh = $urlKey . '-' . $i;
@@ -561,16 +561,16 @@ class Admin_Controller_Product extends Controller
                     $product->save();
 
                     /* category */
-                    $this->createCategoryRecords($product->getId(), $categoryArr, true);
+                    $this->_createCategoryRecords($product->getId(), $categoryArr, true);
 
                     /* recommended products */
                     $recomProducts = RequestMethods::post('recomproductids');
                     if (!empty($recomProducts)) {
-                        $this->createRecommendedProductsRecords($product->getId(), $recomProducts, true);
+                        $this->_createRecommendedProductsRecords($product->getId(), $recomProducts, true);
                     }
 
                     if (RequestMethods::post('uplMoreImages') == 1) {
-                        $this->uploadAdditionalPhotos($product->getId(), $uploadTo);
+                        $this->_uploadAdditionalPhotos($product->getId(), $uploadTo);
                     }
 
                     if (empty($this->_errors)) {

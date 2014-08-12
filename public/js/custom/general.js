@@ -4,8 +4,8 @@ jQuery(document).ready(function() {
 
     jQuery(window).load(function() {
         jQuery("#loader, .loader").hide();
-        
-        jQuery.post('/admin/system/showprofiler/', function(msg){
+
+        jQuery.post('/admin/system/showprofiler/', function(msg) {
             jQuery('body').append(msg);
         });
     });
@@ -16,7 +16,7 @@ jQuery(document).ready(function() {
             at: "right+5 top-5"
         }
     });
-    
+
     jQuery('a.view').lightBox();
     jQuery('#tabs, .tabs').tabs();
 
@@ -47,6 +47,8 @@ jQuery(document).ready(function() {
         return false;
     });
 
+
+    // DATA TABLES
     jQuery.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
     {
         return {
@@ -150,7 +152,6 @@ jQuery(document).ready(function() {
             jQuery('.overprice-option').addClass('nodisplay');
         }
     });
-
 
     jQuery('a.ajax-massaction').click(function(event) {
         event.preventDefault();
@@ -507,8 +508,7 @@ jQuery(document).ready(function() {
 
 
 
-    /* ---------------------- CUSTOM SCRIPTS --------------------------------*/
-    //Collection
+    /* ---------------------- UPLOAD FORMS --------------------------------*/
     jQuery('.uploadPhotoForm .multi_upload').click(function() {
         if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length < 7) {
             jQuery('.uploadPhotoForm .file_inputs input[type=file]')
@@ -541,6 +541,7 @@ jQuery(document).ready(function() {
         jQuery('#loader').show();
     });
 
+    /* ---------------------- AJAX OPERATIONS --------------------------------*/
     jQuery('a#delImg').click(function() {
         event.preventDefault();
         var url = jQuery(this).attr('href');
@@ -556,28 +557,6 @@ jQuery(document).ready(function() {
         });
 
         return false;
-    });
-
-    jQuery('.product-select').change(function() {
-        var selected = jQuery(this).children('option:selected').val();
-
-        if (selected == 'bez variant') {
-            jQuery('.check-size').addClass('nodisplay');
-            jQuery('.select-size').removeClass('nodisplay');
-            jQuery('.product-quantity').show();
-        } else if (selected == 's variantami') {
-            jQuery('.product-quantity').hide();
-            jQuery('.select-size').addClass('nodisplay');
-            jQuery('.check-size').removeClass('nodisplay');
-        }
-    });
-
-    /* ------------ MEDIA ---------------*/
-    //a little image effectts
-    jQuery('.imagelist img').hover(function() {
-        jQuery(this).stop().animate({opacity: 0.75});
-    }, function() {
-        jQuery(this).stop().animate({opacity: 1});
     });
 
     //delete image in grid list
@@ -640,9 +619,70 @@ jQuery(document).ready(function() {
         }
         return false;
     });
+    
+        //delete individual row
+    jQuery('.stdtable a.deleteRow').click(function() {
+        var c = confirm('Opravdu smazat?');
+        var parentTr = jQuery(this).parents('tr');
+
+        if (c) {
+            var url = jQuery(this).attr('href');
+            var tk = jQuery('#tk').val();
+
+            jQuery.post(url, {tk: tk}, function(msg) {
+                if (msg == 'success') {
+                    parentTr.fadeOut();
+                } else {
+                    alert(msg);
+                }
+            });
+        }
+        return false;
+    });
+
+    jQuery('.stdtable a.undeleteRow').click(function() {
+        var c = confirm('Pokračovat v obnovení?');
+        var parentTr = jQuery(this).parents('tr');
+
+        if (c) {
+            var url = jQuery(this).attr('href');
+            var tk = jQuery('#tk').val();
+
+            jQuery.post(url, {tk: tk}, function(msg) {
+                if (msg == 'success') {
+                    parentTr.fadeOut();
+                } else {
+                    alert(msg);
+                }
+            });
+        }
+        return false;
+    });
+
+    /* ------------------ ADD PRODUCT CUSTOM SCRIPT --------------------------*/
+    jQuery('.product-select').change(function() {
+        var selected = jQuery(this).children('option:selected').val();
+
+        if (selected == 'bez variant') {
+            jQuery('.check-size').addClass('nodisplay');
+            jQuery('.select-size').removeClass('nodisplay');
+            jQuery('.product-quantity').show();
+        } else if (selected == 's variantami') {
+            jQuery('.product-quantity').hide();
+            jQuery('.select-size').addClass('nodisplay');
+            jQuery('.check-size').removeClass('nodisplay');
+        }
+    });
+
+    /* ------------ MEDIA ---------------*/
+    //a little image effectts
+    jQuery('.imagelist img').hover(function() {
+        jQuery(this).stop().animate({opacity: 0.75});
+    }, function() {
+        jQuery(this).stop().animate({opacity: 1});
+    });
 
     /* ------------- BUTTONS --------------- */
-
     //button hover
     jQuery('.btn').hover(function() {
         jQuery(this).stop().animate({backgroundColor: '#eee'});
@@ -688,7 +728,7 @@ jQuery(document).ready(function() {
         text: false
     });
 
-    /* ---------------- TABLES ---------------------- */
+    /* ---------------- CHECKBOXES ---------------------- */
     jQuery('.stdtable .checkall').click(function() {
         var parentTable = jQuery(this).parents('table');
         var ch = parentTable.find('tbody input[type=checkbox]');
@@ -727,45 +767,6 @@ jQuery(document).ready(function() {
         } else {
             jQuery(this).parents('tr').removeClass('selected');
         }
-    });
-
-    //delete individual row
-    jQuery('.stdtable a.deleteRow').click(function() {
-        var c = confirm('Opravdu smazat?');
-        var parentTr = jQuery(this).parents('tr');
-
-        if (c) {
-            var url = jQuery(this).attr('href');
-            var tk = jQuery('#tk').val();
-
-            jQuery.post(url, {tk: tk}, function(msg) {
-                if (msg == 'success') {
-                    parentTr.fadeOut();
-                } else {
-                    alert(msg);
-                }
-            });
-        }
-        return false;
-    });
-
-    jQuery('.stdtable a.undeleteRow').click(function() {
-        var c = confirm('Pokračovat v obnovení?');
-        var parentTr = jQuery(this).parents('tr');
-
-        if (c) {
-            var url = jQuery(this).attr('href');
-            var tk = jQuery('#tk').val();
-
-            jQuery.post(url, {tk: tk}, function(msg) {
-                if (msg == 'success') {
-                    parentTr.fadeOut();
-                } else {
-                    alert(msg);
-                }
-            });
-        }
-        return false;
     });
 
     //check if there is/are selected row in table
