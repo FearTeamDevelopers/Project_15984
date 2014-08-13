@@ -1,30 +1,34 @@
-<ul class>
+<ul>
     <li><a {if $active == 1} id="activeLi1" {/if} href="/o-nas"><span>O nás</span></a></li>
     <li><a {if $active == 2} id="activeLi1" {/if} href="/reference"><span>Reference</span></a></li>
     <li><a {if $active == 3} id="activeLi1" {/if} href="/cenik"><span>Ceník</span></a></li>
     <li><a {if $active == 4} id="activeLi1" {/if} href="/kontakty"><span>Kontakty</span></a></li>
     <li><a href="#"><span>Půjčovna</span></a>
         {if isset($activecat)}
-        <ul class="dropdownmenu1-display">
+        <ul class="hidden dropdownmenu1-display">
         {/if}
         {else}
-        <ul class="dropdownmenu1">
+        <ul class="hidden dropdownmenu1">
         {/else}
             {if !empty($category)}
                 {foreach $cat in $category}
+                   {script $subcategory = $cat->subcategory}
+                    {script $count = count($subcategory)}
                  <li>  
-                {if $cat->urlKey == $activecat | isset($parentcat) & $cat->id == $parentcat}
-                <a id="activeLi" href="/kategorie/{echo $cat->urlKey}/">    
-                {/if}
-                    {else}
-                        <a href="/kategorie/{echo $cat->urlKey}/">
-                    {/else}
-                
-                    <span>{echo $cat->title}</span></a>
+                     {if empty($subcategory)}
+                        {if $cat->urlKey == $activecat | isset($parentcat) & $cat->id == $parentcat}
+                            <a id="activeLi" href="/kategorie/{echo $cat->urlKey}/">    
+                        {/if}
+                        {else}
+                            <a href="/kategorie/{echo $cat->urlKey}/">
+                        {/else}
+                        <span>{echo $cat->title}</span></a>
+                        {/if}
+                        {else}
+                            <a href="#"><span>{echo $cat->title}</span></a>
+                        {/else}
 
-
-                {script $subcategory = $cat->subcategory}
-                {script $count = count($subcategory)}
+             
 
                 {if !empty($subcategory)}
                     {if $count>7}<!--změna pozice dropdown menu při velkém počtu subkategorií-->
@@ -62,3 +66,4 @@
         </ul>
     </li>
 </ul>
+

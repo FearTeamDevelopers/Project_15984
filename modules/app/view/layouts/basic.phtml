@@ -51,7 +51,9 @@
                     <input type="submit" id="submitsearch" name="submitsearch"  value="OK"/>
                 </form>
             </article>
-            <nav class="menuleft">
+            <label for="show-menu" class="show-menu">Show Menu</label>
+<input type="checkbox" name="show-menu" id="show-menu" role="button">
+            <nav id="menu">
                 {include menu.phtml}
             </nav>
         </header>
