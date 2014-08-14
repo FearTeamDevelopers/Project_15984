@@ -10,7 +10,7 @@
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
-            <label>Název</label>
+            <label>Název*</label>
             <span class="field">
                 <input class="longinput" type="text" name="title" value="{echo isset($gallery)? $gallery->title: ""}" />
                 {if isset($errors["title"])}
@@ -28,7 +28,7 @@
             </span>
         </p>
         <p>
-            <label>Popis<small>Max. 5000 znaků</small></label>
+            <label>Popis*<small>Max. 30 000 znaků</small></label>
             <span class="field">
                 <textarea class="longinput" name="description" id="ckeditor">{echo isset($gallery)? $gallery->description: ""}</textarea>
                 {if isset($errors["description"])}

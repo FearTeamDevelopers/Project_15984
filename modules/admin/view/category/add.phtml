@@ -10,7 +10,7 @@
     <form class="stdform stdform2" method="post" action="#" >
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
-            <label>Název</label>
+            <label>Název*</label>
             <span class="field">
                 <input class="longinput" type="text" name="title" required value="{echo isset($category)? $category->title: ""}" />
                 {if isset($errors["title"])}
@@ -39,7 +39,7 @@
             </span>
         </p>
         <p>
-            <label>Pořadí <small>(1-99)</small></label>
+            <label>Pořadí<small>(1-99)</small></label>
             <span class="field">
                 <input class="longinput" type="text" pattern="[\d]{0,2}" name="rank" value="{echo isset($category)? $category->rank: ""}" />
                 {if isset($errors["rank"])}
@@ -66,7 +66,7 @@
             </span>
         </p>
         <p>
-            <label>Popis</label>
+            <label>Popis*</label>
             <span class="field">
                 <textarea rows="5" required name="text" id="ckeditor">{echo isset($category)? $category->mainText: ""}</textarea>
                 {if isset($errors["mainText"])}
