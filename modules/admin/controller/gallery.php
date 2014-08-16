@@ -6,27 +6,12 @@ use THCFrame\Events\Events as Event;
 use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
 use THCFrame\Registry\Registry;
-use THCFrame\Core\StringMethods;
 
 /**
  * 
  */
 class Admin_Controller_Gallery extends Controller
 {
-
-    /**
-     * 
-     * @param type $string
-     * @return type
-     */
-    private function _createUrlKey($string)
-    {
-        $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
-        $string = trim($string, ' ');
-        $string = trim($string, '-');
-        return strtolower($string);
-    }
     
     /**
      * 

@@ -35,6 +35,9 @@
         <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
 
+        {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
+        {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
+        
         <title>{echo $metatitle}</title>
     </head>
     <body lang="cs">

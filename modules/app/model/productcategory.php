@@ -71,4 +71,12 @@ class App_Model_ProductCategory extends Model
         $this->setModified(date('Y-m-d H:i:s'));
     }
 
+    /**
+     * 
+     * @param type $categoryId
+     */
+    public static function countProductsByCategoryId($categoryId)
+    {
+        return self::count(array('categoryId = ?' => (int)$categoryId));
+    }
 }

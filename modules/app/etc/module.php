@@ -77,6 +77,13 @@ class App_Etc_Module extends Module
             'args' => ':urlkey'
         ),
         array(
+            'pattern' => '/kategorie/:urlkey/:page/',
+            'module' => 'app',
+            'controller' => 'category',
+            'action' => 'categoryPaged',
+            'args' => array(':urlkey', ':page')
+        ),
+        array(
             'pattern' => '/feed',
             'module' => 'app',
             'controller' => 'index',

@@ -3,7 +3,6 @@
 use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
-use THCFrame\Core\StringMethods;
 use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
 use THCFrame\Registry\Registry;
@@ -15,20 +14,6 @@ class Admin_Controller_Product extends Controller
 {
 
     private $_errors = array();
-
-    /**
-     * 
-     * @param type $string
-     * @return type
-     */
-    private function _createUrlKey($string)
-    {
-        $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
-        $string = trim($string);
-        $string = trim($string, '-');
-        return strtolower($string);
-    }
 
     /**
      * 

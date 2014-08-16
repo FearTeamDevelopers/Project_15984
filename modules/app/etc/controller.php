@@ -5,7 +5,6 @@ namespace App\Etc;
 use THCFrame\Events\Events as Events;
 use THCFrame\Registry\Registry as Registry;
 use THCFrame\Controller\Controller as BaseController;
-use THCFrame\Request\RequestMethods;
 
 /**
  * Module specific controller class extending framework controller class
@@ -24,8 +23,6 @@ class Controller extends BaseController
         parent::__construct($options);
 
         $cache = Registry::get('cache');
-        $database = Registry::get('database');
-        $database->connect();
 
         // schedule disconnect from database 
         Events::add('framework.controller.destruct.after', function($name) {

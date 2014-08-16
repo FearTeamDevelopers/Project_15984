@@ -1,7 +1,6 @@
 <?php
 
 use Admin\Etc\Controller;
-use THCFrame\Core\StringMethods;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
@@ -11,20 +10,6 @@ use THCFrame\Registry\Registry;
  */
 class Admin_Controller_Category extends Controller
 {
-
-    /**
-     * 
-     * @param type $string
-     * @return type
-     */
-    private function _createUrlKey($string)
-    {
-        $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '(', ')', ' '), '-', $string);
-        $string = trim($string, ' ');
-        $string = trim($string, '-');
-        return strtolower($string);
-    }
     
     /**
      * 

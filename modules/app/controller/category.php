@@ -53,6 +53,14 @@ class App_Controller_Category extends Controller
         if ($category === null) {
             self::redirect('/neznamakategorie');
         }
+        
+        $maxCatPage = $session->get('catmaxpage_'.$urlKey);
+        
+        if($maxCatPage === null){
+            $productCount = App_Model_ProductCategory::countProductsByCategoryId($category->getId());
+            $maxCatPage = ceil($productCount / 30);
+            $session->set('catmaxpage_'.$urlKey, $maxCatPage);
+        }
 
         $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1');
 
@@ -75,6 +83,12 @@ class App_Controller_Category extends Controller
             $session->set('parentcat', $category->parentId);
         } else {
             $layoutView->set('parentcat', $category->getId());
+        }
+        
+        if((int)$maxCatPage == 1){
+            $layoutView->set('catrelnext', 0);
+        }else{
+            $layoutView->set('catrelnext', 2);
         }
 
         $session->set('activecat', $urlKey)
@@ -127,6 +141,88 @@ class App_Controller_Category extends Controller
         $session->set('activepage', $page);
         $view->set('products', $products)
             ->set('category', $category);
+    }
+    
+    /**
+     * 
+     * @param type $urlKey
+     * @param type $page
+     */
+    public function categoryPaged($urlKey, $page)
+    {
+        $view = $this->getActionView();
+        $layoutView = $this->getLayoutView();
+        $session = Registry::get('session');
+        $cache = Registry::get('cache');
+
+        $orderby = $session->get('catvieworderby', 'created');
+        $order = $session->get('catvieworder', 'desc');
+
+        $category = App_Model_Category::first(array('active = ?' => true, 'urlKey = ?' => $urlKey));
+
+        $layoutView->set('parentcat', null)
+                ->set('activecat', $urlKey)
+                ->set('active', 99);
+
+        if ($category === null) {
+            self::redirect('/neznamakategorie');
+        }
+
+        $maxCatPage = $session->get('catmaxpage_'.$urlKey);
+        
+        if($maxCatPage === null){
+            $productCount = App_Model_ProductCategory::countProductsByCategoryId($category->getId());
+            $maxCatPage = ceil($productCount / 30);
+            $session->set('catmaxpage_'.$urlKey, $maxCatPage);
+        }
+        
+        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_'.(int)$page);
+
+        if ($products !== null) {
+            $products = $products;
+            $background = 1;
+        } else {
+            $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, (int)$page, $orderby, $order);
+            
+            if ($products == null) {
+                $background = null;
+            } else {
+                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_'.(int)$page, $products);
+                $background = 1;
+            }
+        }
+
+        if ($category->parentId != 0) {
+            $layoutView->set('parentcat', $category->parentId);
+            $session->set('parentcat', $category->parentId);
+        } else {
+            $layoutView->set('parentcat', $category->getId());
+        }
+        
+        if($page > 1){
+            $layoutView->set('catrelprev', $page - 1);
+        }else{
+            $layoutView->set('catrelprev', 0);
+        }
+        
+        if((int)$page >= (int)$maxCatPage){
+            $layoutView->set('catrelnext', 0);
+        }else{
+            $layoutView->set('catrelnext', $page + 1);
+        }
+
+        $session->set('activecat', $urlKey)
+                ->set('activepage', (int)$page);
+
+        $view->set('category', $category)
+                ->set('products', $products)
+                ->set('catorderby', $orderby)
+                ->set('catorder', $order);
+
+        $this->_checkMetaData($layoutView, $category);
+        $layoutView->set('activecat', $urlKey)
+                ->set('active', 99)
+                ->set('background', $background);
     }
 
     /**
