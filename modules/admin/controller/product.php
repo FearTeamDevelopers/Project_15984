@@ -1053,7 +1053,7 @@ class Admin_Controller_Product extends Controller
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
-                    ->wheresql($whereCond);
+                    ->wheresql($whereCond, $search, $search, $search, $search, $search);
 
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
@@ -1143,7 +1143,7 @@ class Admin_Controller_Product extends Controller
 
             echo $str;
         } else {
-            $str .= "[ \"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]]}";
+            $str .= "[ \"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]]}";
 
             echo $str;
         }

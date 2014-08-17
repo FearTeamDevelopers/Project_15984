@@ -128,9 +128,8 @@ jQuery(document).ready(function() {
 
                 if (index === -1) {
                     selected.push(id);
-                } else {
-                    selected.splice(index, 1);
-                }
+                } 
+                
                 jQuery(this).addClass('togglerow');
             });
         } else if (val == 1) {
