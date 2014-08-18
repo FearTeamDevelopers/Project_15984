@@ -349,12 +349,14 @@ class Admin_Controller_Product extends Controller
 
         $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
         $categories = App_Model_Category::fetchAllCategories();
-
+        
         $view->set('sizes', $sizes)
-                ->set('categories', $categories);
+                ->set('categories', $categories)
+                ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddProduct')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $cache = Registry::get('cache');
 
             $categoryArr = RequestMethods::post('rcat');

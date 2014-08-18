@@ -171,6 +171,41 @@ class Controller extends BaseController
     /**
      * 
      */
+    public function mutliSubmissionProtectionToken()
+    {
+        $session = Registry::get('session');
+        $token = $session->get('submissionprotection');
+
+        if ($token === null) {
+            $token = md5(microtime());
+            $session->set('submissionprotection', $token);
+        }
+
+        return $token;
+    }
+
+    /**
+     * 
+     * @param type $token
+     */
+    public function checkMutliSubmissionProtectionToken($token)
+    {
+        $session = Registry::get('session');
+        $view = $this->getActionView();
+        $sessionToken = $session->get('submissionprotection');
+
+        if ($token == $sessionToken) {
+            $session->erase('submissionprotection');
+            return;
+        } else {
+            $view->errorMessage('Bylo zabráněno vícenásobnému odeslání formuláře');
+            self::redirect('/admin/');
+        }
+    }
+
+    /**
+     * 
+     */
     public function checkToken()
     {
         $session = Registry::get('session');
@@ -180,7 +215,7 @@ class Controller extends BaseController
         if (base64_decode(RequestMethods::post('tk')) !== $session->get('csrftoken')) {
             $view->errorMessage('Bezpečnostní token není validní');
             //$security->logout();
-            self::redirect('/');
+            self::redirect('/admin/');
         }
     }
 

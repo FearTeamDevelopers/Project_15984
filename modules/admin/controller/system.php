@@ -31,7 +31,7 @@ class Admin_Controller_System extends Controller
         $view = $this->getActionView();
 
         if (RequestMethods::post('clearCache')) {
-            Event::fire('admin.log');
+            Event::fire('admin.log', array('success'));
             $cache = Registry::get('cache');
             $cache->clearCache();
             $view->successMessage('Cache byly úspěšně smazány');
