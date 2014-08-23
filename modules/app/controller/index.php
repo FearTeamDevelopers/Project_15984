@@ -28,6 +28,13 @@ class App_Controller_Index extends Controller
             $layoutView->set('metakeywords', $object->getMetaKeywords());
         }
         
+        if($object->getMetaImage() != ''){
+            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz'.$object->getImgMain());
+        }
+        
+        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kostym/'.$object->getUrlKey().'/');
+        $layoutView->set('metaogtype', 'article');
+        
         return;
     }
 
@@ -240,7 +247,10 @@ class App_Controller_Index extends Controller
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
                 ->set('background', 1)
-                ->set('active', 99);
+                ->set('active', 99)
+                ->set('article', 1)
+                ->set('artcreated', $product->getCreated())
+                ->set('artmodified', $product->getModified());
     }
 
     /**

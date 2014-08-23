@@ -51,9 +51,12 @@ class Admin_Controller_Gallery extends Controller
     public function add()
     {
         $view = $this->getActionView();
+        
+        $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddGallery')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $errors = array();
 
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
@@ -255,10 +258,12 @@ class Admin_Controller_Gallery extends Controller
             self::redirect('/admin/gallery/');
         }
 
-        $view->set('gallery', $gallery);
+        $view->set('gallery', $gallery)
+                ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddPhoto')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $errors = array();
 
             $fileManager = new FileManager(array(

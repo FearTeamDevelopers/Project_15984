@@ -27,6 +27,13 @@ class App_Controller_Category extends Controller
             $layoutView->set('metakeywords', $object->getMetaKeywords());
         }
         
+        if($object->getMetaImage() != ''){
+            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz/public/images/meta_image.jpg');
+        }
+        
+        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kategorie/'.$object->getUrlKey().'/');
+        $layoutView->set('metaogtype', 'article');
+        
         return;
     }
     

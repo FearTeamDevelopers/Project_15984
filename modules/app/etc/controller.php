@@ -48,10 +48,11 @@ class Controller extends BaseController
                 'metakeywords' => $this->loadConfigFromDb('meta_keywords'),
                 'metadescription' => $this->loadConfigFromDb('meta_description'),
                 'metarobots' => $this->loadConfigFromDb('meta_robots'),
+                'metatitle' => $this->loadConfigFromDb('meta_title'),
                 'metaogurl' => $this->loadConfigFromDb('meta_og_url'),
                 'metaogtype' => $this->loadConfigFromDb('meta_og_type'),
-                'metaogsitename' => $this->loadConfigFromDb('meta_og_site_name'),
-                'metaogtitle' => $this->loadConfigFromDb('meta_og_title')
+                'metaogimage' => $this->loadConfigFromDb('meta_og_image'),
+                'metaogsitename' => $this->loadConfigFromDb('meta_og_site_name')
             );
 
             $cache->set('global_meta_data', $metaData);
@@ -59,14 +60,14 @@ class Controller extends BaseController
 
         $this->getLayoutView()
                 ->set('category', $categories)
-                ->set('metatitle', 'Agentura Karneval')
+                ->set('metatitle', $metaData['metatitle'])
                 ->set('metakeywords', $metaData['metakeywords'])
-                ->set('metadescription', $metaData['metadescription'])
                 ->set('metarobots', $metaData['metarobots'])
+                ->set('metadescription', $metaData['metadescription'])
                 ->set('metaogurl', $metaData['metaogurl'])
                 ->set('metaogtype', $metaData['metaogtype'])
-                ->set('metaogsitename', $metaData['metaogsitename'])
-                ->set('metaogtitle', $metaData['metaogtitle']);
+                ->set('metaogimage', $metaData['metaogimage'])
+                ->set('metaogsitename', $metaData['metaogsitename']);
     }
 
     /**

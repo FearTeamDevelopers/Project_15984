@@ -29,9 +29,12 @@ class Admin_Controller_Reference extends Controller
     public function add()
     {
         $view = $this->getActionView();
+        
+        $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddReference')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $cache = Registry::get('cache');
             $errors = array();
 

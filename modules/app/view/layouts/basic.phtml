@@ -9,15 +9,27 @@
         <meta name="language" content="czech" />
         <meta name="keywords" content="{echo $metakeywords}" />
         <meta name="description" content="{echo $metadescription}" />
-        <meta name="revisit-after" content="1 Days" />
+        <meta name="revisit-after" content="4 Days" />
         <meta name="distribution" content="global"/>
+        <meta name="robots" content="{echo $metarobots}">
+        
+        {if isset($article)}
+        <meta property="og:title" content="{echo $metatitle}" />
+        <meta property="og:type" content="{echo $metaogtype}" />
         <meta property="og:url" content="{echo $metaogurl}" />
-        <meta property="og:title" content="{echo $metaogtitle}" />
+        <meta property="og:image" content="{echo $metaogimage}" />
+        <meta property="og:description" content="{echo $metadescription}" />
+        <meta property="og:site_name" content="{echo $metaogsitename}" />
+        <meta property="article:published_time" content="{echo $artcreated}" />
+        <meta property="article:modified_time" content="{echo $artmodified}" />
+        {/if}{else}
+        <meta property="og:url" content="{echo $metaogurl}" />
+        <meta property="og:title" content="{echo $metatitle}" />
         <meta property="og:description" content="{echo $metadescription}" />
         <meta property="og:type" content="{echo $metaogtype}" />
         <meta property="og:site_name" content="{echo $metaogsitename}" />
-        <meta name="robots" content="{echo $metarobots}">
-
+        {/else}
+        
         <link href="/public/images/favico.jpg" rel="icon" type="image/x-icon"/>
         <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />

@@ -58,10 +58,12 @@ class Admin_Controller_Category extends Controller
         $view = $this->getActionView();
         $categories = App_Model_Category::all(array('active = ?' => true));
 
-        $view->set('categories', $categories);
+        $view->set('categories', $categories)
+                ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddCategory')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $cache = Registry::get('cache');
             $errors = array();
 

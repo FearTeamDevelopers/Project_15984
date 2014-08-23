@@ -100,8 +100,11 @@ class Admin_Controller_User extends Controller
         $security = Registry::get('security');
         $view = $this->getActionView();
         
+        $view->set('submstoken', $this->mutliSubmissionProtectionToken());
+        
         if (RequestMethods::post('submitAddUser')) {
             $this->checkToken();
+            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
             $errors = array();
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
