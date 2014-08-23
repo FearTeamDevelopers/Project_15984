@@ -490,11 +490,11 @@ class Admin_Controller_Product extends Controller
                         try {
                             $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
                             $uploadedFile = ArrayMethods::toObject($data);
+                            $imgMain = trim($uploadedFile->file->path, '.');
+                            $imgThumb = trim($uploadedFile->thumb->path, '.');
                         } catch (Exception $ex) {
                             $errors['mainfile'] = array($ex->getMessage());
                         }
-                        $imgMain = trim($uploadedFile->file->path, '.');
-                        $imgThumb = trim($uploadedFile->thumb->path, '.');
                     } catch (Exception $ex) {
                         $errors['mainfile'] = $ex->getMessage();
                     }

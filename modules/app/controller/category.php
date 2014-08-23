@@ -13,7 +13,7 @@ class App_Controller_Category extends Controller
     /**
      * Check if are sets category specific metadata or leave their default values
      */
-    private function _checkMetaData($layoutView, Model $object)
+    private function _checkMetaData($layoutView, App_Model_Category $object)
     {
         if($object->getMetaTitle() != ''){
             $layoutView->set('metatitle', $object->getMetaTitle());

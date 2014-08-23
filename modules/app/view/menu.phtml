@@ -8,62 +8,55 @@
         <ul class="hidden dropdownmenu1-display">
         {/if}
         {else}
-        <ul class="hidden dropdownmenu1">
+            <ul class="hidden dropdownmenu1">
         {/else}
+        
             {if !empty($category)}
                 {foreach $cat in $category}
-                   {script $subcategory = $cat->subcategory}
+                    {script $subcategory = $cat->subcategory}
                     {script $count = count($subcategory)}
-                 <li>  
-                     {if empty($subcategory)}
-                        {if $cat->urlKey == $activecat | isset($parentcat) & $cat->id == $parentcat}
-                            <a id="activeLi" href="/kategorie/{echo $cat->urlKey}/">    
-                        {/if}
-                        {else}
-                            <a href="/kategorie/{echo $cat->urlKey}/">
-                        {/else}
-                        <span>{echo $cat->title}</span></a>
-                        {/if}
-                        {else}
+                    <li>  
+                        {if empty($subcategory)}
+                            {if $cat->urlKey == $activecat | isset($parentcat) & $cat->id == $parentcat}
+                                <a id="activeLi" href="/kategorie/{echo $cat->urlKey}/">    
+                            {/if}{else}
+                                <a href="/kategorie/{echo $cat->urlKey}/">
+                            {/else}
+
+                            <span>{echo $cat->title}</span></a>
+                        {/if}{else}
                             <a href="#"><span>{echo $cat->title}</span></a>
                         {/else}
 
-             
-
-                {if !empty($subcategory)}
-                    {if $count>7}<!--změna pozice dropdown menu při velkém počtu subkategorií-->
-                        {if isset($parentcat) && $parentcat == $cat->id }
-                            <ul class="dropdownmenu3-display">
-                        {/if}
-                        {else}
-                            <ul class="dropdownmenu3">
-                        {/else}
-                    {/if}
-                    {else}
-                        {if isset($parentcat) && $parentcat == $cat->id }
-                            <ul class="dropdownmenu2-display">
-                        {/if}
-                        {else}
-                            <ul class="dropdownmenu2">
-                        {/else}
-                    {/else}
-                    {foreach $subcat in $subcategory}
-                                <li>
-                            {if $subcat->urlKey == $activecat}
-                                <a id="activeLi2" href="/kategorie/{echo $subcat->urlKey}/">
-                            {/if}
-                            {else}
-                                <a href="/kategorie/{echo $subcat->urlKey}/">
+                        {if !empty($subcategory)}
+                            {if $count>7}<!--změna pozice dropdown menu při velkém počtu subkategorií-->
+                                {if isset($parentcat) && $parentcat == $cat->id }
+                                    <ul class="dropdownmenu3-display">
+                                {/if}{else}
+                                    <ul class="dropdownmenu3">
+                                {/else}
+                            {/if}{else}
+                                {if isset($parentcat) && $parentcat == $cat->id }
+                                    <ul class="dropdownmenu2-display">
+                                {/if}{else}
+                                    <ul class="dropdownmenu2">
+                                {/else}
                             {/else}
-                                <span>{echo $subcat->title}</span></a>
-                            </li>
-                        {/foreach}
+                                {foreach $subcat in $subcategory}
+                                    <li>
+                                        {if $subcat->urlKey == $activecat}
+                                            <a id="activeLi2" href="/kategorie/{echo $subcat->urlKey}/">
+                                        {/if}{else}
+                                            <a href="/kategorie/{echo $subcat->urlKey}/">
+                                        {/else}
+                                        <span>{echo $subcat->title}</span></a>
+                                    </li>
+                                {/foreach}
                             </ul>
-                {/if}
-            </li>
-            {/foreach}
-                {/if}
+                        {/if}
+                    </li>
+                {/foreach}
+            {/if}
         </ul>
     </li>
 </ul>
-

@@ -3,7 +3,6 @@
 use App\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Registry\Registry;
-use THCFrame\Controller\Exception\Model;
 
 /**
  * 
@@ -14,7 +13,7 @@ class App_Controller_Index extends Controller
     /**
      * Check if are sets category specific metadata or leave their default values
      */
-    private function _checkMetaData($layoutView, Model $object)
+    private function _checkMetaData($layoutView, App_Model_Product $object)
     {
         if($object->getMetaTitle() != ''){
             $layoutView->set('metatitle', $object->getMetaTitle());
