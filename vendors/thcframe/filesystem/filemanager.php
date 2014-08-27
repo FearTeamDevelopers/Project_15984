@@ -2,8 +2,8 @@
 
 namespace THCFrame\Filesystem;
 
-use THCFrame\Core\Base as Base;
-use THCFrame\Filesystem\Exception as Exception;
+use THCFrame\Core\Base;
+use THCFrame\Filesystem\Exception;
 use THCFrame\Registry\Registry;
 use THCFrame\Filesystem\Image;
 use THCFrame\Filesystem\File;
@@ -69,12 +69,12 @@ class FileManager extends Base
     {
         parent::__construct($options);
 
-        $configuration = Registry::get('config');
+        $configuration = Registry::get('configuration');
 
-        if (!empty($configuration->files)) {
-            $this->_pathToDocs = trim($configuration->files->pathToDocuments, '/');
-            $this->_pathToImages = trim($configuration->files->pathToImages, '/');
-            $this->_pathToThumbs = trim($configuration->files->pathToThumbs, '/');
+        if (!empty($configuration->get('files'))) {
+            $this->_pathToDocs = trim($configuration->get('files/pathToDocuments'), '/');
+            $this->_pathToImages = trim($configuration->get('files/pathToImages'), '/');
+            $this->_pathToThumbs = trim($configuration->get('files/pathToThumbs'), '/');
         } else {
             throw new \Exception('Error in configuration file');
         }

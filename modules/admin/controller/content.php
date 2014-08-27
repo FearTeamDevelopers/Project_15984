@@ -59,9 +59,11 @@ class Admin_Controller_Content extends Controller
         $view->set('photos', $this->_getPhotos());
 
         if (RequestMethods::post('submitAddContent')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/content/');
+            }
+            
             $errors = array();
-
             $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
             if (!$this->_checkUrlKey($urlKey)) {
@@ -82,7 +84,7 @@ class Admin_Controller_Content extends Controller
                 $id = $content->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('Obsah byl úspěšně uložen');
+                $view->successMessage('Obsah'.self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -112,10 +114,12 @@ class Admin_Controller_Content extends Controller
                 ->set('content', $content);
 
         if (RequestMethods::post('submitEditContent')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/content/');
+            }
+            
             $cache = Registry::get('cache');
             $errors = array();
-
             $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
             if ($content->getUrlKey() !== $urlKey && !$this->_checkUrlKey($urlKey)) {
@@ -135,7 +139,7 @@ class Admin_Controller_Content extends Controller
                 $content->save();
 
                 Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('Všechny změny byly úspěšně uloženy');
+                $view->successMessage(self::SUCCESS_MESSAGE_2);
                 $cache->erase($content->getUrlKey());
                 self::redirect('/admin/content/');
             } else {

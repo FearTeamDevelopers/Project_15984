@@ -18,6 +18,23 @@ class Controller extends BaseController
 
     private $_security;
 
+    const SUCCESS_MESSAGE_1 = ' byl(a) úspěšně vytovřen(a)';
+    const SUCCESS_MESSAGE_2 = 'Všechny změny byly úspěšně uloženy';
+    const SUCCESS_MESSAGE_3 = ' byl(a) úspěšně smazán(a)';
+    const SUCCESS_MESSAGE_4 = 'Vše bylo úspěšně aktivováno';
+    const SUCCESS_MESSAGE_5 = 'Vše bylo úspěšně deaktivováno';
+    const SUCCESS_MESSAGE_6 = 'Vše bylo úspěšně smazáno';
+    const SUCCESS_MESSAGE_7 = 'Vše bylo úspěšně nahráno';
+    const SUCCESS_MESSAGE_8 = 'Vše bylo úspěšně uloženo';
+    const SUCCESS_MESSAGE_9 = 'Vše bylo úspěšně přidáno';
+    
+    const ERROR_MESSAGE_1 = 'Oops, něco se pokazilo';
+    const ERROR_MESSAGE_2 = 'Nenalezeno';
+    const ERROR_MESSAGE_3 = 'Nastala neznámá chyby';
+    const ERROR_MESSAGE_4 = 'Na tuto operaci nemáte oprávnění';
+    const ERROR_MESSAGE_5 = 'Povinná pole nejsou validní';
+    const ERROR_MESSAGE_6 = 'Přísput odepřen';
+    
     /**
      * 
      * @param type $string
@@ -83,8 +100,8 @@ class Controller extends BaseController
     {
         $view = $this->getActionView();
 
-        if ($this->_security->getUser() && !$this->_security->isGranted('role_member')) {
-            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
+        if ($this->_security->getUser() && $this->_security->isGranted('role_member') !== true) {
+            $view->infoMessage(self::ERROR_MESSAGE_6);
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -96,7 +113,7 @@ class Controller extends BaseController
      */
     protected function isMember()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_member')) {
+        if ($this->_security->getUser() && $this->_security->isGranted('role_member') === true) {
             return true;
         } else {
             return false;
@@ -110,8 +127,8 @@ class Controller extends BaseController
     {
         $view = $this->getActionView();
 
-        if ($this->_security->getUser() && !$this->_security->isGranted('role_admin')) {
-            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
+        if ($this->_security->getUser() && $this->_security->isGranted('role_admin') !== true) {
+            $view->infoMessage(self::ERROR_MESSAGE_6);
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -123,7 +140,7 @@ class Controller extends BaseController
      */
     protected function isAdmin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_admin')) {
+        if ($this->_security->getUser() && $this->_security->isGranted('role_admin') === true) {
             return true;
         } else {
             return false;
@@ -137,8 +154,8 @@ class Controller extends BaseController
     {
         $view = $this->getActionView();
 
-        if ($this->_security->getUser() && !$this->_security->isGranted('role_superadmin')) {
-            $view->infoMessage('Přístup odepřen! Nemáte dostatečná oprávnění!');
+        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') !== true) {
+            $view->infoMessage(self::ERROR_MESSAGE_6);
             $this->_security->logout();
             self::redirect('/login');
         }
@@ -150,7 +167,7 @@ class Controller extends BaseController
      */
     protected function isSuperAdmin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin')) {
+        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') === true) {
             return true;
         } else {
             return false;
@@ -162,10 +179,7 @@ class Controller extends BaseController
      */
     public function getUser()
     {
-        $security = Registry::get('security');
-        $user = $security->getUser();
-
-        return $user;
+        return $this->_security->getUser();
     }
 
     /**
@@ -183,6 +197,20 @@ class Controller extends BaseController
 
         return $token;
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function revalidateMutliSubmissionProtectionToken()
+    {
+        $session = Registry::get('session');
+        $session->erase('submissionprotection');
+        $token = md5(microtime());
+        $session->set('submissionprotection', $token);
+        
+        return $token;
+    }
 
     /**
      * 
@@ -191,15 +219,13 @@ class Controller extends BaseController
     public function checkMutliSubmissionProtectionToken($token)
     {
         $session = Registry::get('session');
-        $view = $this->getActionView();
         $sessionToken = $session->get('submissionprotection');
 
         if ($token == $sessionToken) {
             $session->erase('submissionprotection');
-            return;
+            return true;
         } else {
-            $view->errorMessage('Bylo zabráněno vícenásobnému odeslání formuláře');
-            self::redirect('/admin/');
+            return false;
         }
     }
 
@@ -208,28 +234,9 @@ class Controller extends BaseController
      */
     public function checkToken()
     {
-        $session = Registry::get('session');
-        //$security = Registry::get('security');
-        $view = $this->getActionView();
-
-        if (base64_decode(RequestMethods::post('tk')) !== $session->get('csrftoken')) {
-            $view->errorMessage('Bezpečnostní token není validní');
-            //$security->logout();
-            self::redirect('/admin/');
-        }
-    }
-
-    /**
-     * 
-     * @return boolean
-     */
-    public function checkTokenAjax()
-    {
-        $session = Registry::get('session');
-
-        if (base64_decode(RequestMethods::post('tk')) === $session->get('csrftoken')) {
+        if($this->_security->checkCsrfToken(RequestMethods::post('tk'))){
             return true;
-        } else {
+        }else{
             return false;
         }
     }

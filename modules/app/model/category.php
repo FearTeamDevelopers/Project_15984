@@ -197,7 +197,9 @@ class App_Model_Category extends Model
     public function getChildrens()
     {
         return self::all(
-                        array('active = ?' => true, 'parentId = ?' => $this->getId())
+                array('active = ?' => true, 'parentId = ?' => $this->getId()),
+                array('*'),
+                array('rank' => 'asc')
         );
     }
 
@@ -228,7 +230,11 @@ class App_Model_Category extends Model
      */
     public static function fetchAllCategories()
     {
-        $mainCat = self::all(array('active = ?' => true, 'parentId = ?' => 0));
+        $mainCat = self::all(
+                array('active = ?' => true, 'parentId = ?' => 0),
+                array('*'),
+                array('rank' => 'asc')
+        );
         
         foreach ($mainCat as $category) {
             $category->_subcategory = self::fetchChildrens($category->id);

@@ -355,11 +355,14 @@ class Admin_Controller_Product extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddProduct')) {
-            $this->checkToken();
-            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
+            if($this->checkToken() !== true && 
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+                self::redirect('/admin/product/');
+            }
+            
             $cache = Registry::get('cache');
-
             $categoryArr = RequestMethods::post('rcat');
+            
             if (empty($categoryArr)) {
                 $this->_errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
             }
@@ -390,15 +393,17 @@ class Admin_Controller_Product extends Controller
                 }
 
                 if (empty($this->_errors)) {
-                    $view->successMessage('Produkt byl úspěšně uložen');
+                    $view->successMessage('Produkt'.self::SUCCESS_MESSAGE_1);
                     $cache->invalidate();
                     self::redirect('/admin/product/');
                 } else {
                     $view->set('product', $product)
+                            ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken())
                             ->set('errors', $this->_errors);
                 }
             } else {
                 $view->set('product', $product)
+                        ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken())
                         ->set('errors', $this->_errors);
             }
         }
@@ -415,7 +420,7 @@ class Admin_Controller_Product extends Controller
         $product = App_Model_Product::fetchProductById($id);
 
         if ($product === null) {
-            $view->warningMessage('Produkt nebyl nalezen');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/product/');
         }
 
@@ -436,7 +441,10 @@ class Admin_Controller_Product extends Controller
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/product/');
+            }
+            
             $cache = Registry::get('cache');
 
             if ($product->getProductType() == 'varianta') {
@@ -451,7 +459,7 @@ class Admin_Controller_Product extends Controller
                     $product->save();
 
                     Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
-                    $view->successMessage('Produkt byl úspěšně uložen');
+                    $view->successMessage(self::SUCCESS_MESSAGE_2);
                     self::redirect('/admin/product/edit/' . $product->getVariantFor());
                 } else {
                     Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
@@ -562,7 +570,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($this->_errors)) {
                         Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
-                        $view->successMessage('Produkt byl úspěšně uložen');
+                        $view->successMessage(self::SUCCESS_MESSAGE_2);
                         $cache->invalidate();
                         self::redirect('/admin/product/');
                     } else {
@@ -598,7 +606,10 @@ class Admin_Controller_Product extends Controller
         $view->set('product', $product);
 
         if (RequestMethods::post('submitDeleteProduct')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/product/');
+            }
+            
             $cache = Registry::get('cache');
             
             $product->deleted = true;
@@ -607,12 +618,12 @@ class Admin_Controller_Product extends Controller
                 $product->save();
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                $view->successMessage('Produkt byl úspěšně smazán');
+                $view->successMessage('Produkt'.self::SUCCESS_MESSAGE_3);
                 $cache->invalidate();
                 self::redirect('/admin/product/');
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $id));
-                $view->errorMessage('Nastala neznámá chyba');
+                $view->errorMessage(self::ERROR_MESSAGE_1);
                 self::redirect('/admin/product/');
             }
         }
@@ -627,14 +638,14 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $cache = Registry::get('cache');
             
             $product = App_Model_Product::first(
                             array('id = ?' => (int) $id, 'deleted = ?' => true));
 
             if (NULL === $product) {
-                echo 'Produkt nebyl nalezen';
+                echo self::ERROR_MESSAGE_2;
                 return;
             }
 
@@ -648,10 +659,10 @@ class Admin_Controller_Product extends Controller
                 echo 'success';
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $id));
-                echo 'Nastala neznámá chyba';
+                echo self::ERROR_MESSAGE_1;
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 
@@ -664,25 +675,25 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $product = App_Model_RecommendedProduct::first(array(
                         'productId' => (int) $productId,
                         'recommendedId = ?' => (int) $recommendedId
             ));
 
             if (NULL === $product) {
-                echo 'Produkt nebyl nalezen';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 if ($product->delete()) {
                     Event::fire('admin.log', array('success', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
                     echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
-                    echo 'Nastala neznámá chyba';
+                    echo self::ERROR_MESSAGE_1;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 
@@ -698,7 +709,9 @@ class Admin_Controller_Product extends Controller
         $view->set('productid', $productId);
 
         if (RequestMethods::post('submitSaveRecommended')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/product/');
+            }
 
             $recomprod = App_Model_Product::first(array(
                         'deleted = ?' => false,
@@ -706,7 +719,7 @@ class Admin_Controller_Product extends Controller
             ));
 
             if ($recomprod === null) {
-                $view->warningMessage('Produkt nebyl nalezen');
+                $view->warningMessage(self::ERROR_MESSAGE_2);
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
 
@@ -729,11 +742,11 @@ class Admin_Controller_Product extends Controller
                 $recommended->save();
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $productId . ' add recommended ' . $recomprod->getId()));
-                $view->successMessage('Doporučený produkt byl úspěšně přidán');
+                $view->successMessage(self::SUCCESS_MESSAGE_9);
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $productId));
-                $view->errorMessage('Nastala chyba při ukládání doporučeného produktu');
+                $view->errorMessage(self::ERROR_MESSAGE_1);
                 self::redirect('/admin/product/edit/' . $productId . '#recommended');
             }
         }
@@ -751,7 +764,7 @@ class Admin_Controller_Product extends Controller
         $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $photoId));
 
         if (null === $photo) {
-            echo 'Fotografie nebyla nalezena';
+            echo self::ERROR_MESSAGE_2;
         } else {
             if (!$photo->active) {
                 $photo->active = true;
@@ -783,11 +796,11 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
 
             if ($photo === null) {
-                echo 'Fotografie nebyla nalezena';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
@@ -797,11 +810,11 @@ class Admin_Controller_Product extends Controller
                     echo 'success';
                 } else {
                     Event::fire('app.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'Nastala chyba během mazání fotografie';
+                    echo self::ERROR_MESSAGE_1;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 
@@ -813,11 +826,11 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
 
             if ($product === null) {
-                echo 'Product nebyl nalezen';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 $unlinkMainImg = $product->getUnlinkPath();
                 $unlinkThumbImg = $product->getUnlinkThumbPath();
@@ -833,11 +846,11 @@ class Admin_Controller_Product extends Controller
                     echo 'success';
                 } else {
                     Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
-                    echo 'Nastala chyba během mazání fotky';
+                    echo self::ERROR_MESSAGE_1;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 
@@ -851,150 +864,153 @@ class Admin_Controller_Product extends Controller
         $errors = array();
         $errorsIds = array();
 
-        $this->checkToken();
-        $ids = RequestMethods::post('productsids');
-        $action = RequestMethods::post('action');
-        $cache = Registry::get('cache');
+        if ($this->checkToken()) {
+            $ids = RequestMethods::post('productsids');
+            $action = RequestMethods::post('action');
+            $cache = Registry::get('cache');
 
-        if (empty($ids)) {
-            echo 'Nějaký řádek musí být označen';
-            return;
-        }
+            if (empty($ids)) {
+                echo 'Nějaký řádek musí být označen';
+                return;
+            }
 
-        switch ($action) {
-            case 'delete':
-                $products = App_Model_Product::all(array(
-                            'deleted = ?' => false,
-                            'id IN ?' => $ids
-                ));
-                if (NULL !== $products) {
-                    foreach ($products as $product) {
-                        $product->deleted = true;
+            switch ($action) {
+                case 'delete':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->deleted = true;
 
-                        if ($product->validate()) {
-                            $product->save();
-                        } else {
-                            $errors[] = 'Nastala chyba během mazání' . $product->getTitle();
-                            $errorsIds [] = $product->getId();
+                            if ($product->validate()) {
+                                $product->save();
+                            } else {
+                                $errors[] = 'Nastala chyba během mazání' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
                         }
                     }
-                }
 
-                if (empty($errors)) {
-                    Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
-                    $cache->invalidate();
-                    echo 'Produkty byly úspěšně smazány';
-                } else {
-                    Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
-                    $message = join('<br/>', $errors);
-                    echo $message;
-                }
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
+                        $cache->invalidate();
+                        echo self::SUCCESS_MESSAGE_6;
+                    } else {
+                        Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join('<br/>', $errors);
+                        echo $message;
+                    }
 
-                break;
-            case 'overprice':
-                $products = App_Model_Product::all(array(
-                            'deleted = ?' => false,
-                            'id IN ?' => $ids
-                ));
+                    break;
+                case 'overprice':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
 
-                $val = (int) RequestMethods::post('price');
-                $oper = RequestMethods::post('operation');
+                    $val = (int) RequestMethods::post('price');
+                    $oper = RequestMethods::post('operation');
 
-                if (NULL !== $products) {
-                    foreach ($products as $product) {
-                        if ($val > 0 && $val < 1) {
-                            $product->priceOldTwo = $product->priceOldOne;
-                            $product->priceOldOne = $product->basicPrice;
-                            $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * ($product->basicPrice * $val);
-                            $product->currentPrice = $product->basicPrice;
-                        } else {
-                            $product->priceOldTwo = $product->priceOldOne;
-                            $product->priceOldOne = $product->basicPrice;
-                            $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * $val;
-                            $product->currentPrice = $product->basicPrice;
-                        }
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            if ($val > 0 && $val < 1) {
+                                $product->priceOldTwo = $product->priceOldOne;
+                                $product->priceOldOne = $product->basicPrice;
+                                $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * ($product->basicPrice * $val);
+                                $product->currentPrice = $product->basicPrice;
+                            } else {
+                                $product->priceOldTwo = $product->priceOldOne;
+                                $product->priceOldOne = $product->basicPrice;
+                                $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * $val;
+                                $product->currentPrice = $product->basicPrice;
+                            }
 
-                        if ($product->validate()) {
-                            $product->save();
-                        } else {
-                            $errors[] = 'Nastala chyba během přeceňování produktů ' . $product->getTitle();
-                            $errorsIds [] = $product->getId();
+                            if ($product->validate()) {
+                                $product->save();
+                            } else {
+                                $errors[] = 'Nastala chyba během přeceňování produktů ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
                         }
                     }
-                }
 
-                if (empty($errors)) {
-                    Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
-                    $cache->invalidate();
-                    echo 'Produkty byly úspěšně přeceněny';
-                } else {
-                    Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
-                    $message = join('<br/>', $errors);
-                    echo $message;
-                }
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
+                        $cache->invalidate();
+                        echo self::SUCCESS_MESSAGE_8;
+                    } else {
+                        Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join('<br/>', $errors);
+                        echo $message;
+                    }
 
-                break;
-            case 'activate':
-                $products = App_Model_Product::all(array(
-                            'deleted = ?' => false,
-                            'id IN ?' => $ids
-                ));
-                if (NULL !== $products) {
-                    foreach ($products as $product) {
-                        $product->active = true;
+                    break;
+                case 'activate':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->active = true;
 
-                        if ($product->validate()) {
-                            $product->save();
-                        } else {
-                            $errors[] = 'Nastala chyba při aktivování ' . $product->getTitle();
-                            $errorsIds [] = $product->getId();
+                            if ($product->validate()) {
+                                $product->save();
+                            } else {
+                                $errors[] = 'Nastala chyba při aktivování ' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
                         }
                     }
-                }
 
-                if (empty($errors)) {
-                    Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
-                    $cache->invalidate();
-                    echo 'Produkty byly úspěšně aktivovány';
-                } else {
-                    Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
-                    $message = join('<br/>', $errors);
-                    echo $message;
-                }
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
+                        $cache->invalidate();
+                        echo self::SUCCESS_MESSAGE_4;
+                    } else {
+                        Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join('<br/>', $errors);
+                        echo $message;
+                    }
 
-                break;
-            case 'deactivate':
-                $products = App_Model_Product::all(array(
-                            'deleted = ?' => false,
-                            'id IN ?' => $ids
-                ));
-                if (NULL !== $products) {
-                    foreach ($products as $product) {
-                        $product->active = false;
+                    break;
+                case 'deactivate':
+                    $products = App_Model_Product::all(array(
+                                'deleted = ?' => false,
+                                'id IN ?' => $ids
+                    ));
+                    if (NULL !== $products) {
+                        foreach ($products as $product) {
+                            $product->active = false;
 
-                        if ($product->validate()) {
-                            $product->save();
-                        } else {
-                            $errors[] = 'Nastala chyba během deaktivování' . $product->getTitle();
-                            $errorsIds [] = $product->getId();
+                            if ($product->validate()) {
+                                $product->save();
+                            } else {
+                                $errors[] = 'Nastala chyba během deaktivování' . $product->getTitle();
+                                $errorsIds [] = $product->getId();
+                            }
                         }
                     }
-                }
 
-                if (empty($errors)) {
-                    Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
-                    $cache->invalidate();
-                    echo 'Produkty byly úspěšně deaktivovány';
-                } else {
-                    Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
-                    $message = join('<br/>', $errors);
-                    echo $message;
-                }
+                    if (empty($errors)) {
+                        Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
+                        $cache->invalidate();
+                        echo self::SUCCESS_MESSAGE_5;
+                    } else {
+                        Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));
+                        $message = join('<br/>', $errors);
+                        echo $message;
+                    }
 
-                break;
-            default:
-                echo 'Neplatná akce';
-                break;
+                    break;
+                default:
+                    echo self::ERROR_MESSAGE_3;
+                    break;
+            }
+        } else {
+            echo self::ERROR_MESSAGE_1;
         }
     }
 

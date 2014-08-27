@@ -2,8 +2,7 @@
 
 namespace THCFrame\Profiler;
 
-use THCFrame\Profiler\Exception as Exception;
-use THCFrame\Registry\Registry as Registry;
+use THCFrame\Registry\Registry;
 use THCFrame\Events\Events as Event;
 
 /**
@@ -53,9 +52,9 @@ class Profiler
     {
         Event::fire('framework.profiler.construct');
 
-        $configuration = Registry::get('config');
-        $this->_enabled = (bool) $configuration->profiler->active;
-        $this->_logging = $configuration->profiler->logging;
+        $configuration = Registry::get('configuration');
+        $this->_enabled = (bool) $configuration->get('profiler/active');
+        $this->_logging = $configuration->get('profiler/logging');
 
         if (!$this->_enabled) {
             return;
@@ -107,7 +106,7 @@ class Profiler
             $str .= "<div id='profiler-basic'><span title='Request URI'>{$_SERVER['REQUEST_URI']}</span><span title='Execution time [s]'>{$time}</span>"
                     . "<span title='Memory peak usage'>{$endMemoryPeakUsage}</span><span title='Memory usage'>{$endMemoryUsage}</span>"
                     . '<span title="SQL Query"><a href="#" class="profiler-show-query">SQL Query:</a> '.  count($this->_dbData).'</span>'
-                            . '<span title="Global variables"><a href="#" class="profiler-show-globalvar">Global variables</a></span></div>';
+                            . '<span><a href="#" class="profiler-show-globalvar">Global variables</a></span></div>';
             $str .= '<div id="profiler-query"><table><tr style="font-weight:bold; border-top:1px solid black;">'
                     . '<td colspan=5>Query</td><td>Execution time [s]</td><td>Returned rows</td><td colspan=6>Backtrace</td></tr>';
             
@@ -139,8 +138,8 @@ class Profiler
             }
             $str .= '</table></div>';
             $str .= '</div><script type="text/javascript" src="/public/js/plugins/profiler.min.js"></script>';
-            \THCFrame\Core\Core::log($str, 'profiler.log', true, false);
 
+            file_put_contents('./application/logs/profiler.log', $str);
         } else {
             return;
         }
@@ -197,14 +196,6 @@ class Profiler
         }else{
             return '';
         }
-    }
-
-    /**
-     * 
-     */
-    public function __destruct()
-    {
-        Event::fire('framework.profiler.destruct');
     }
 
 }

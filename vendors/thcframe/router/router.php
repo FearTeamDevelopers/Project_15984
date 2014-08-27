@@ -2,11 +2,12 @@
 
 namespace THCFrame\Router;
 
-use THCFrame\Core\Base as Base;
-use THCFrame\Core\Core as Core;
-use THCFrame\Events\Events as Events;
-use THCFrame\Router\Exception as Exception;
-use THCFrame\Router\Route as Route;
+use THCFrame\Core\Base;
+use THCFrame\Core\Core;
+use THCFrame\Events\Events as Event;
+use THCFrame\Router\Exception;
+use THCFrame\Router\Route;
+use THCFrame\Registry\Registry;
 
 /**
  * Description of Router
@@ -165,7 +166,10 @@ class Router extends Base
      */
     private function _findRoute($path)
     {
-        Events::fire('framework.router.findroute.before', array($path));
+        Event::fire('framework.router.findroute.before', array($path));
+
+        $security = Registry::get('security');
+        $authorizationType = $security->getAuthorization()->getType();
 
         foreach ($this->_routes as $route) {
             if (TRUE === $route->matchMap($path)) {
@@ -174,7 +178,17 @@ class Router extends Base
             }
         }
 
-        Events::fire('framework.router.findroute.after', array(
+        if ($authorizationType == 'resourcebase') {
+            $role = $security->getAuthorization()->checkForResource($path);
+
+            if ($role !== null) {
+                if ($security->isGranted($role) !== true) {
+                    throw new \THCFrame\Security\Exception\Unauthorized();
+                }
+            }
+        }
+
+        Event::fire('framework.router.findroute.after', array(
             $path,
             $this->_lastRoute->getModule(),
             $this->_lastRoute->getController(),

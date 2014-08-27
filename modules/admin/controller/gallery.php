@@ -55,10 +55,12 @@ class Admin_Controller_Gallery extends Controller
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddGallery')) {
-            $this->checkToken();
-            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
+            if($this->checkToken() !== true && 
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+                self::redirect('/admin/gallery/');
+            }
+            
             $errors = array();
-
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
             if (!$this->_checkUrlKey($urlKey)) {
@@ -76,11 +78,12 @@ class Admin_Controller_Gallery extends Controller
                 $id = $gallery->save();
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Galerie byla úspěšně uložena');
+                $view->successMessage('Galerie'.self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail'));
                 $view->set('gallery', $gallery)
+                        ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken())
                         ->set('errors', $errors + $gallery->getErrors());
             }
         }
@@ -100,7 +103,7 @@ class Admin_Controller_Gallery extends Controller
         $gallery = App_Model_Gallery::fetchGalleryById($id);
 
         if ($gallery === null) {
-            $view->warningMessage('Galerie nebyla nalezena');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/gallery/');
         }
 
@@ -121,16 +124,18 @@ class Admin_Controller_Gallery extends Controller
         $gallery = App_Model_Gallery::first(array('id = ?' => (int) $id));
 
         if (NULL === $gallery) {
-            $view->warningMessage('Galerie nebyla nalezena ');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/gallery/');
         }
 
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitEditGallery')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/gallery/');
+            }
+            
             $errors = array();
-
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
             if ($gallery->getUrlKey() !== $urlKey && !$this->_checkUrlKey($urlKey)) {
@@ -147,7 +152,7 @@ class Admin_Controller_Gallery extends Controller
                 $gallery->save();
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Všechny změny byly úspěšne uloženy');
+                $view->successMessage(self::SUCCESS_MESSAGE_2);
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail', 'Gallery id: ' . $id));
@@ -174,14 +179,16 @@ class Admin_Controller_Gallery extends Controller
         );
 
         if (NULL === $gallery) {
-            $view->warningMessage('Galerie nenalezena');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/gallery/');
         }
 
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitDeleteGallery')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/gallery/');
+            }
 
             if (RequestMethods::post('action') == 1) {
                 $fm = new FileManager();
@@ -225,11 +232,11 @@ class Admin_Controller_Gallery extends Controller
 
             if ($gallery->delete()) {
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Galerie byla smazána');
+                $view->successMessage('Galerie'.self::SUCCESS_MESSAGE_3);
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail', 'Gallery id: ' . $id));
-                $view->errorMessage('Nastala neznámá chyba');
+                $view->errorMessage(self::ERROR_MESSAGE_1);
                 self::redirect('/admin/gallery/');
             }
         }
@@ -254,7 +261,7 @@ class Admin_Controller_Gallery extends Controller
         );
 
         if ($gallery === null) {
-            $view->warningMessage('Galerie nebyla nalezena');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/gallery/');
         }
 
@@ -308,7 +315,7 @@ class Admin_Controller_Gallery extends Controller
             }
 
             if (empty($errors)) {
-                $view->successMessage('Fotografie byly úspěšně nahrány');
+                $view->successMessage(self::SUCCESS_MESSAGE_7);
                 self::redirect('/admin/gallery/detail/' . $gallery->getId());
             } else {
                 $view->set('errors', $errors);
@@ -327,13 +334,13 @@ class Admin_Controller_Gallery extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $photo = App_Model_Photo::first(
                             array('id = ?' => $id), array('id', 'imgMain', 'imgThumb')
             );
 
             if (null === $photo) {
-                echo 'Fotografie nebyla nalezena';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 if ($photo->delete()) {
                     @unlink($photo->getUnlinkPath());
@@ -343,11 +350,11 @@ class Admin_Controller_Gallery extends Controller
                     echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo 'Nastala neznámá chyba';
+                    echo self::ERROR_MESSAGE_1;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 
@@ -363,11 +370,11 @@ class Admin_Controller_Gallery extends Controller
         $this->willRenderLayoutView = false;
         $this->willRenderActionView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $photo = App_Model_Photo::first(array('id = ?' => $id));
 
             if (null === $photo) {
-                echo 'Fotografie nebyla nalezena';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 if (!$photo->active) {
                     $photo->active = true;
@@ -391,7 +398,7 @@ class Admin_Controller_Gallery extends Controller
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 

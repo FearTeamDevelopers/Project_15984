@@ -74,6 +74,17 @@ class App_Model_User extends Model implements UserInterface
      * @column
      * @readwrite
      * @type text
+     * @length 30
+     *
+     * @validate alphanumeric, max(30)
+     * @label username
+     */
+    protected $_username;
+    
+    /**
+     * @column
+     * @readwrite
+     * @type text
      * @length 25
      * 
      * @validate required, alpha, max(25)

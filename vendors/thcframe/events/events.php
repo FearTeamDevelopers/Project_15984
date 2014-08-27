@@ -4,9 +4,8 @@ namespace THCFrame\Events;
 
 use THCFrame\Registry\Registry;
 
-
 /**
- * Observer
+ * Events
  * 
  * @author Tomy
  */
@@ -32,10 +31,10 @@ class Events
     public static function initialize()
     {
         
-        $configuration = Registry::get('config');
+        $configuration = Registry::get('configuration');
         
-        if (!empty($configuration->observer->event)) {
-            $events = (array) $configuration->observer->event;
+        if (!empty($configuration->get('observer/event'))) {
+            $events = (array) $configuration->get('observer/event');
 
             foreach ($events as $event => $callback) {
                 self::add($event, $callback);

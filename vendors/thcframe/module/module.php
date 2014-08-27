@@ -2,11 +2,11 @@
 
 namespace THCFrame\Module;
 
-use THCFrame\Core\Base as Base;
-use THCFrame\Events\Events as Events;
-use THCFrame\Registry\Registry as Registry;
-use THCFrame\Module\Exception as Exception;
-use THCFrame\Router\Route as Route;
+use THCFrame\Core\Base;
+use THCFrame\Events\Events as Event;
+use THCFrame\Registry\Registry;
+use THCFrame\Module\Exception;
+use THCFrame\Router\Route;
 
 /**
  * Description of Module
@@ -34,9 +34,9 @@ class Module extends Base
     {
         parent::__construct($options);
 
-        Events::fire('framework.module.initialize.before', array($this->moduleName));
+        Event::fire('framework.module.initialize.before', array($this->moduleName));
 
-        Events::fire('framework.module.initialize.after', array($this->moduleName));
+        Event::fire('framework.module.initialize.after', array($this->moduleName));
     }
 
     /**
@@ -86,8 +86,16 @@ class Module extends Base
                 $new_route->setAction($route['action']);
             }
 
-            if (isset($route['args']) && preg_match('/^:/', $route['args'])) {
-                $new_route->addDynamicElement($route['args'], $route['args']);
+            if (isset($route['args']) && is_array($route['args'])) {
+                foreach ($route['args'] as $arg) {
+                    if (preg_match('/^:/', $arg)) {
+                        $new_route->addDynamicElement($arg, $arg);
+                    }
+                }
+            } elseif (isset($route['args']) && !is_array($route['args'])) {
+                if (preg_match('/^:/', $route['args'])) {
+                    $new_route->addDynamicElement($route['args'], $route['args']);
+                }
             }
 
             $router->addRoute($new_route);

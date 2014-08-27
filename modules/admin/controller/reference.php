@@ -33,8 +33,11 @@ class Admin_Controller_Reference extends Controller
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddReference')) {
-            $this->checkToken();
-            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
+            if($this->checkToken() !== true && 
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+                self::redirect('/admin/reference/');
+            }
+            
             $cache = Registry::get('cache');
             $errors = array();
 
@@ -70,12 +73,13 @@ class Admin_Controller_Reference extends Controller
                 $id = $reference->save();
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
-                $view->successMessage('Reference byla úspěšně uložena');
+                $view->successMessage('Reference'.self::SUCCESS_MESSAGE_1);
                 $cache->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
                 Event::fire('admin.log', array('fail'));
                 $view->set('errors', $errors + $reference->getErrors())
+                        ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken())
                         ->set('reference', $reference);
             }
         }
@@ -91,14 +95,17 @@ class Admin_Controller_Reference extends Controller
         $reference = App_Model_Reference::first(array('id = ?' => (int) $id));
 
         if ($reference === null) {
-            $view->errorMessage('Novinka nebyla nalezena');
+            $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/reference/');
         }
 
         $view->set('reference', $reference);
 
         if (RequestMethods::post('submitEditReference')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/reference/');
+            }
+            
             $cache = Registry::get('cache');
             $errors = array();
 
@@ -140,7 +147,7 @@ class Admin_Controller_Reference extends Controller
                 $reference->save();
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
-                $view->successMessage('Všechny změny byly úspěšně uloženy');
+                $view->successMessage(self::SUCCESS_MESSAGE_2);
                 $cache->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
@@ -158,14 +165,14 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $cache = Registry::get('cache');
             $reference = App_Model_Reference::first(
                             array('id = ?' => $id), array('id')
             );
 
             if (NULL === $reference) {
-                echo 'Reference nebyla nalezena';
+                echo self::ERROR_MESSAGE_2;
                 return;
             } else {
                 if ($reference->delete()) {
@@ -175,12 +182,12 @@ class Admin_Controller_Reference extends Controller
                     return;
                 } else {
                     Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo 'Nastala neznámá chyba';
+                    echo self::ERROR_MESSAGE_1;
                     return;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
             return;
         }
     }
@@ -193,11 +200,11 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $reference = App_Model_Reference::first(array('id = ?' => (int) $id));
 
             if ($reference === null) {
-                echo 'Reference nebyla nalezena';
+                echo self::ERROR_MESSAGE_2;
                 return;
             } else {
                 $unlinkMainImg = $reference->getUnlinkPath();
@@ -215,12 +222,12 @@ class Admin_Controller_Reference extends Controller
                     return;
                 } else {
                     Event::fire('app.log', array('fail', 'Reference id: ' . $reference->getId()));
-                    echo 'Nastala chyba během mazání fotky';
+                    echo self::ERROR_MESSAGE_1;
                     return;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
             return;
         }
     }
@@ -234,7 +241,10 @@ class Admin_Controller_Reference extends Controller
         $errors = array();
 
         if (RequestMethods::post('performReferenceAction')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/reference/');
+            }
+            
             $ids = RequestMethods::post('refids');
             $action = RequestMethods::post('action');
             $cache = Registry::get('cache');
@@ -255,7 +265,7 @@ class Admin_Controller_Reference extends Controller
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'IDs: ' . join(',', $ids)));
                         $cache->erase('reference');
-                        $view->successMessage('Reference byly smazány');
+                        $view->successMessage(self::SUCCESS_MESSAGE_6);
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);
@@ -285,7 +295,7 @@ class Admin_Controller_Reference extends Controller
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'IDs: ' . join(',', $ids)));
                         $cache->erase('reference');
-                        $view->successMessage('Reference byly aktivovány');
+                        $view->successMessage(self::SUCCESS_MESSAGE_4);
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);
@@ -315,7 +325,7 @@ class Admin_Controller_Reference extends Controller
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'IDs: ' . join(',', $ids)));
                         $cache->erase('reference');
-                        $view->successMessage('Reference byly deaktivovány');
+                        $view->successMessage(self::SUCCESS_MESSAGE_5);
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Error count:' . count($errors)));
                         $message = join(PHP_EOL, $errors);

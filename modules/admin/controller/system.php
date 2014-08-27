@@ -99,7 +99,7 @@ class Admin_Controller_System extends Controller
             }
 
             if (empty($errors)) {
-                $view->successMessage('Nastavení bylo úspěšně změněno');
+                $view->successMessage(self::SUCCESS_MESSAGE_2);
                 self::redirect('/admin/system/');
             } else {
                 $view->set('errors', $errors);

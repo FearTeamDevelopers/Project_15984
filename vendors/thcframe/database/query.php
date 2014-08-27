@@ -77,16 +77,6 @@ class Query extends Base
 
     /**
      * 
-     * @param type $method
-     * @return \THCFrame\Database\Exception\Implementation
-     */
-    protected function _getImplementationException($method)
-    {
-        return new Exception\Implementation(sprintf('%s method not implemented', $method));
-    }
-
-    /**
-     * 
      * @param type $value
      * @return string
      */
@@ -364,9 +354,10 @@ class Query extends Base
 
         if ($result === false) {
             if (ENV == 'dev') {
-                \THCFrame\Core\Core::log($sql);
+                \THCFrame\Core\Core::getLogger()->log($sql);
                 throw new Exception\Sql(sprintf('SQL: %s', $this->connector->getLastError()));
             } else {
+                \THCFrame\Core\Core::getLogger()->log($sql);
                 throw new Exception\Sql('There was an error with your SQL query');
             }
         }
@@ -390,8 +381,10 @@ class Query extends Base
 
         if ($result === false) {
             if (ENV == 'dev') {
+                \THCFrame\Core\Core::getLogger()->log($sql);
                 throw new Exception\Sql(sprintf('SQL: %s', $this->connector->getLastError()));
             } else {
+                \THCFrame\Core\Core::getLogger()->log($sql);
                 throw new Exception\Sql('There was an error with your SQL query');
             }
         }

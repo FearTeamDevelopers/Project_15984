@@ -45,7 +45,7 @@ class Admin_Controller_Category extends Controller
                 $cat->save();
             }
             Event::fire('admin.log', array('success', 'Category update rank: ' . $cat->getId()));
-            $view->successMessage('Pořadí kategorií bylo úspěšně uloženo');
+            $view->successMessage(self::SUCCESS_MESSAGE_8);
             self::redirect('/admin/category/');
         }
     }
@@ -62,8 +62,11 @@ class Admin_Controller_Category extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddCategory')) {
-            $this->checkToken();
-            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
+            if($this->checkToken() !== true && 
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+                self::redirect('/admin/category/');
+            }
+            
             $cache = Registry::get('cache');
             $errors = array();
 
@@ -91,13 +94,14 @@ class Admin_Controller_Category extends Controller
                 $cid = $category->save();
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $cid));
-                $view->successMessage('Kategorie byla úspěšně uložena');
+                $view->successMessage('Kategorie'.self::SUCCESS_MESSAGE_1);
                 $cache->invalidate();
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail'));
                 $view->set('errors', $errors + $category->getErrors())
-                        ->set('category', $category);
+                        ->set('category', $category)
+                        ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken());
             }
         }
     }
@@ -123,7 +127,10 @@ class Admin_Controller_Category extends Controller
                 ->set('categories', $categories);
 
         if (RequestMethods::post('submitEditCategory')) {
-            $this->checkToken();
+            if($this->checkToken() !== true){
+                self::redirect('/admin/category/');
+            }
+            
             $cache = Registry::get('cache');
             $errors = array();
 
@@ -149,7 +156,7 @@ class Admin_Controller_Category extends Controller
                 $category->save();
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $category->getId()));
-                $view->successMessage('Všechny změny byly úspěšne uloženy');
+                $view->successMessage(self::SUCCESS_MESSAGE_2);
                 $cache->invalidate();
                 self::redirect('/admin/category/');
             } else {
@@ -187,7 +194,7 @@ class Admin_Controller_Category extends Controller
                 $cat->save();
             }
             Event::fire('admin.log', array('success', 'Update subcategories rank in category '. $parentCat->getId() ));
-            $view->successMessage('Pořadí kategorií bylo úspěšně uloženo');
+            $view->successMessage(self::SUCCESS_MESSAGE_8);
             self::redirect('/admin/category/');
         }
     }
@@ -200,14 +207,14 @@ class Admin_Controller_Category extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkTokenAjax()) {
+        if ($this->checkToken()) {
             $cache = Registry::get('cache');
             $category = App_Model_Category::first(array(
                         'id = ?' => (int) $id
             ));
 
             if (NULL === $category) {
-                echo 'Kategorie nenalezena';
+                echo self::ERROR_MESSAGE_2;
             } else {
                 if ($category->delete()) {
                     Event::fire('admin.log', array('success', 'Category id: ' . $id));
@@ -215,11 +222,11 @@ class Admin_Controller_Category extends Controller
                     echo 'success';
                 } else {
                     Event::fire('admin.log', array('fail', 'Category id: ' . $id));
-                    echo 'Nastala neznámá chyba';
+                    echo self::ERROR_MESSAGE_1;
                 }
             }
         } else {
-            echo 'Bezpečnostní token není validní';
+            echo self::ERROR_MESSAGE_1;
         }
     }
 

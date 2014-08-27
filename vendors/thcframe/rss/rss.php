@@ -3,7 +3,7 @@
 namespace THCFrame\Rss;
 
 use THCFrame\Core\Base;
-use THCFrame\Events\Events;
+use THCFrame\Events\Events as Event;
 use THCFrame\Rss\RssItem;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Rss\Exception;
@@ -101,7 +101,7 @@ class Rss extends Base
     public function createFeed()
     {
         if ($this->getStatus()) {
-            Events::fire('framework.rss.getFeed', array($this->getTitle()));
+            Event::fire('framework.rss.getFeed', array($this->getTitle()));
             $content = $this->getDetails() . $this->getFeedItems() . $this->getFeedEnd();
             file_put_contents('./temp/rss/rss.xml', $content);
         } else {
@@ -124,7 +124,7 @@ class Rss extends Base
                 'description' => $description
             ));
             
-            Events::fire('framework.rss.additem', array($item->getTitle()));
+            Event::fire('framework.rss.additem', array($item->getTitle()));
             $this->_items[] = $item;
         } catch (Exception\InvalidItem $e) {
             $this->status = false;
