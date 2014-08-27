@@ -12,7 +12,7 @@
         <meta name="revisit-after" content="4 Days" />
         <meta name="distribution" content="global"/>
         <meta name="robots" content="{echo $metarobots}">
-        
+
         {if isset($article)}
         <meta property="og:title" content="{echo $metatitle}" />
         <meta property="og:type" content="{echo $metaogtype}" />
@@ -29,16 +29,16 @@
         <meta property="og:type" content="{echo $metaogtype}" />
         <meta property="og:site_name" content="{echo $metaogsitename}" />
         {/else}
-        
+
         <link href="/public/images/favico.jpg" rel="icon" type="image/x-icon"/>
         <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
-        <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" />
-        
+        <link href="/public/css/styles.min.css" media="screen" rel="stylesheet" type="text/css" />
+
         {if isset($background)}
-            <link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />
         {/if}{else}
-            <link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />
         {/else}
         <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
 
@@ -49,7 +49,7 @@
 
         {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
         {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
-        
+
         <title>{echo $metatitle}</title>
     </head>
     <body lang="cs">
@@ -65,27 +65,31 @@
                     <input type="submit" id="submitsearch" name="submitsearch"  value="OK"/>
                 </form>
             </article>
-            
+
             <label for="show-menu" class="show-menu">Show Menu</label>
             <input type="checkbox" name="show-menu" id="show-menu" role="button">
             <nav id="menu">
                 {include menu.phtml}
             </nav>
         </header>
-        
+
         <section class="content">
             {yield action}
         </section>
-        
+
         <footer>
+            <a href="http://www.ebola.cz/r/10251">
+                <img src="http://www.ebola.cz/img/ebola-hosting-88x31.gif">
+            </a>
+            <br/>
             © 2014 Kantors Creative Club, Petr Vaněk, Grafico.
         </footer>
 
         <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
-        <script type="text/javascript" src="/public/js/custom/general_api.js"></script>
-        
+        <script type="text/javascript" src="/public/js/custom/general_api.min.js"></script>
+
         <!-- Piwik Code -->
-        
+
         <!-- End Piwik Code -->
     </body>
 </html>

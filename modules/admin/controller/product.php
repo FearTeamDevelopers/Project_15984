@@ -1036,7 +1036,7 @@ class Admin_Controller_Product extends Controller
                 } elseif ($column == 3) {
                     $productQuery->order('pr.productType', $dir);
                 } elseif ($column == 4) {
-                    $productQuery->order('pc.categoryId', $dir);
+                    $productQuery->order('ca.title', $dir);
                 } elseif ($column == 5) {
                     $productQuery->order('pr.productCode', $dir);
                 } elseif ($column == 6) {
@@ -1085,7 +1085,7 @@ class Admin_Controller_Product extends Controller
                 } elseif ($column == 3) {
                     $productQuery->order('pr.productType', $dir);
                 } elseif ($column == 4) {
-                    $productQuery->order('pc.categoryId', $dir);
+                    $productQuery->order('ca.title', $dir);
                 } elseif ($column == 5) {
                     $productQuery->order('pr.productCode', $dir);
                 } elseif ($column == 6) {
