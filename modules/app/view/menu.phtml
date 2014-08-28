@@ -8,7 +8,7 @@
         <ul class="hidden dropdownmenu1-display">
         {/if}
         {else}
-            <ul class="hidden dropdownmenu1">
+            <ul class="hidden dropdownmenu1-display">
         {/else}
         
             {if !empty($category)}
@@ -24,8 +24,14 @@
                             {/else}
 
                             <span>{echo $cat->title}</span></a>
-                        {/if}{else}
+                        {/if}
+                        {else}
+                            {if $cat->id == $parentcat}
+                            <a id="activeLi" href="#"><span>{echo $cat->title}</span></a>
+                            {/if}
+                            {else}
                             <a href="#"><span>{echo $cat->title}</span></a>
+                            {/else}
                         {/else}
 
                         {if !empty($subcategory)}
