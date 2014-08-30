@@ -3,6 +3,7 @@
 use App\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Registry\Registry;
+use THCFrame\Model\Model;
 
 /**
  * 
@@ -13,27 +14,27 @@ class App_Controller_Index extends Controller
     /**
      * Check if are sets category specific metadata or leave their default values
      */
-    private function _checkMetaData($layoutView, App_Model_Product $object)
+    private function _checkMetaData($layoutView, Model $object)
     {
-        if($object->getMetaTitle() != ''){
+        if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
-        
-        if($object->getMetaDescription() != ''){
+
+        if ($object->getMetaDescription() != '') {
             $layoutView->set('metadescription', $object->getMetaDescription());
         }
-        
-        if($object->getMetaKeywords() != ''){
+
+        if ($object->getMetaKeywords() != '') {
             $layoutView->set('metakeywords', $object->getMetaKeywords());
         }
-        
-        if($object->getMetaImage() != ''){
-            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz'.$object->getImgMain());
+
+        if ($object instanceof App_Model_Product) {
+            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz' . $object->getImgMain());
+            $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kostym/' . $object->getUrlKey() . '/');
         }
         
-        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kostym/'.$object->getUrlKey().'/');
         $layoutView->set('metaogtype', 'article');
-        
+
         return;
     }
 
@@ -85,10 +86,10 @@ class App_Controller_Index extends Controller
     public function index()
     {
         $layoutView = $this->getLayoutView();
-        
+
         $layoutView->set('active', 99)
-            ->set('activecat', null)
-            ->set('parentcat', null);
+                ->set('activecat', null)
+                ->set('parentcat', null);
     }
 
     /**
@@ -108,11 +109,11 @@ class App_Controller_Index extends Controller
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
             $cache->set('o-nas', $content);
         }
-        
+
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
-        
+
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
@@ -134,17 +135,15 @@ class App_Controller_Index extends Controller
             $content = $content;
         } else {
             $content = App_Model_Reference::all(
-                        array('active = ?' => true), 
-                        array('*'), 
-                        array('created' => 'desc'), 30);
-            
+                            array('active = ?' => true), array('*'), array('created' => 'desc'), 30);
+
             $cache->set('reference', $content);
         }
-        
+
         $view->set('reference', $content);
         $layoutView->set('active', 2)
-            ->set('activecat', null)
-            ->set('parentcat', null);
+                ->set('activecat', null)
+                ->set('parentcat', null);
     }
 
     /**
@@ -164,11 +163,11 @@ class App_Controller_Index extends Controller
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
             $cache->set('cenik', $content);
         }
-        
+
         $parsed = $this->_parseContentBody($content);
 
         $view->set('content', $parsed);
-        
+
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
@@ -192,11 +191,11 @@ class App_Controller_Index extends Controller
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
             $cache->set('kontakty', $content);
         }
-        
+
         $parsed = $this->_parseContentBody($content);
-        
+
         $view->set('content', $parsed);
-        
+
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
@@ -219,7 +218,7 @@ class App_Controller_Index extends Controller
         $layoutView->set('parentcat', null)
                 ->set('activecat', null)
                 ->set('active', 99);
-        
+
         if ($product === null) {
             self::redirect('/neznamykostym');
         }
@@ -278,26 +277,26 @@ class App_Controller_Index extends Controller
 
         if (RequestMethods::issetpost('submitsearch')) {
             $query = RequestMethods::post('searchquery');
-            $queryParts = explode(' ',$query);
+            $queryParts = explode(' ', $query);
 
             $args = array();
             $productWhereCond = "pr.deleted = 0 AND pr.variantFor = 0 AND pr.active = 1 AND (";
-            for($i = 0; $i<count($queryParts); $i++){
+            for ($i = 0; $i < count($queryParts); $i++) {
                 $productWhereCond .= "pr.productCode='?' OR pr.metaTitle LIKE '%%?%%' "
-                    . "OR pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR ";
+                        . "OR pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR ";
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
             }
-            
-            $productWhereCond = substr($productWhereCond, 0, strlen($productWhereCond)-4).")";
+
+            $productWhereCond = substr($productWhereCond, 0, strlen($productWhereCond) - 4) . ")";
             array_unshift($args, $productWhereCond);
-            
+
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'));
-            
+
             call_user_method_array('wheresql', $productQuery, $args);
 
             $productQuery->order('pr.created', 'DESC')
@@ -313,13 +312,13 @@ class App_Controller_Index extends Controller
                 $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
             }
-            
-            $catWhereCond = substr($catWhereCond, 0, strlen($catWhereCond)-4).")";
+
+            $catWhereCond = substr($catWhereCond, 0, strlen($catWhereCond) - 4) . ")";
             array_unshift($argscat, $catWhereCond);
 
             $categoryQuery = App_Model_Category::getQuery(
                             array('ct.id', 'ct.urlKey', 'ct.title'));
-            
+
             call_user_method_array('wheresql', $categoryQuery, $argscat);
 
             $categoryQuery->order('ct.rank', 'asc')
@@ -327,9 +326,9 @@ class App_Controller_Index extends Controller
             $categories = App_Model_Category::initialize($categoryQuery);
 
             $view->set('products', $products)
-                   ->set('query', $query)
+                    ->set('query', $query)
                     ->set('categories', $categories);
-            
+
             $layoutView->set('background', 1);
         }
     }
