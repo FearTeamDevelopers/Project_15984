@@ -290,7 +290,7 @@ class Model extends Base
         }
         
         $config = Registry::get('configuration');
-        $format = $config->get('system/dateformat');
+        $format = $config->system->dateformat;
 
         if (strlen($value) >= 6 && strlen($format) == 10) {
 
