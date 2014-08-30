@@ -4,7 +4,6 @@ namespace THCFrame\Security\Authentication;
 
 use THCFrame\Core\Base;
 use THCFrame\Security\Authentication\AuthenticationInterface;
-use THCFrame\Events\Events as Event;
 use THCFrame\Security\Exception;
 use THCFrame\Security\UserInterface;
 
@@ -100,15 +99,12 @@ class DatabaseAuthentication extends Base implements AuthenticationInterface
             if ($user instanceof AdvancedUserInterface) {
                 if (!$user->isActive()) {
                     $this->accountLockdown($user, $counter);
-                    Events::fire('framework.security.authenticate.failure', array($user, 'User account is not active'));
                     throw new Exception\UserInactive($errMessage);
                 } elseif ($user->isExpired()) {
                     $this->accountLockdown($user, $counter);
-                    Events::fire('framework.security.authenticate.failure', array($user, 'User account has expired'));
                     throw new Exception\UserExpired($errMessage);
                 } elseif ($user->isPassExpired()) {
                     $this->accountLockdown($user, $counter);
-                    Events::fire('framework.security.authenticate.failure', array($user, 'User password has expired'));
                     throw new Exception\UserPassExpired($errMessage);
                 } else {
                     $user->setLastLogin(date('Y-m-d H:i:s'));
@@ -122,13 +118,12 @@ class DatabaseAuthentication extends Base implements AuthenticationInterface
             } elseif ($user instanceof UserInterface) {
                 if (!$user->isActive()) {
                     $this->accountLockdown($user, $counter);
-                    Events::fire('framework.security.authenticate.failure', array($user, 'User account is not active'));
                     throw new Exception\UserInactive($errMessage);
                 } else {
                     $user->loginAttempCounter = 0;
                     $user->loginLockdownTime = 0;
                     $user->save();
-
+                    
                     $this->_securityContext->setUser($user);
                     return true;
                 }

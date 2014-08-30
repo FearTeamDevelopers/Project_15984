@@ -4,6 +4,8 @@ namespace THCFrame\Configuration\Driver;
 
 use THCFrame\Configuration as Configuration;
 use THCFrame\Configuration\Exception;
+use THCFrame\Core\ArrayMethods;
+use THCFrame\Registry\Registry;
 
 /**
  * Description of Ini
@@ -19,6 +21,12 @@ class Ini extends Configuration\Driver
      */
     private $_parsed;
 
+    /**
+     * @readwrite
+     * @var type 
+     */
+    private $_defaultConfig;
+    
     /**
      * Class constructor
      * 
@@ -45,7 +53,8 @@ class Ini extends Configuration\Driver
                 }
         }
 
-        $this->_config = $this->mergeConfiguration();
+        $config = $this->mergeConfiguration();
+        Registry::set('configuration', ArrayMethods::toObject($config));
     }
 
     /**
@@ -163,30 +172,6 @@ class Ini extends Configuration\Driver
             }
 
             $this->_parsed = $config;
-        }
-    }
-
-    /**
-     * 
-     * @param text $key database/schema
-     */
-    public function get($key)
-    {
-        $parts = explode('/', trim($key));
-        $partCount = count($parts);
-
-        if($partCount == 1){
-            return $this->_config[$parts[0]];
-        }elseif($partCount == 2){
-            return $this->_config[$parts[0]][$parts[1]];
-        }elseif($partCount == 3){
-            return $this->_config[$parts[0]][$parts[1]][$parts[2]];
-        }elseif($partCount == 4){
-            return $this->_config[$parts[0]][$parts[1]][$parts[2]][$parts[3]];
-        }elseif($partCount == 5){
-            return $this->_config[$parts[0]][$parts[1]][$parts[2]][$parts[3]][$parts[4]];
-        }else{
-            return null;
         }
     }
 

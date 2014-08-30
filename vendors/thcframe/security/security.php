@@ -3,7 +3,7 @@
 namespace THCFrame\Security;
 
 use THCFrame\Core\Base;
-use THCFrame\Events\Events as Events;
+use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
 use THCFrame\Security\Exception;
 use THCFrame\Security\UserInterface;
@@ -93,13 +93,13 @@ class Security extends Base implements SecurityInterface
      */
     public function initialize()
     {
-        Events::fire('framework.security.initialize.before', array($this->accessControll));
+        Event::fire('framework.security.initialize.before', array($this->accessControll));
 
         $configuration = Registry::get('configuration');
 
-        if (!empty($configuration->get('security'))) {
-            $this->_passwordEncoder = $configuration->get('security/encoder');
-            $this->_secret = $configuration->get('security/secret');
+        if (!empty($configuration->security)) {
+            $this->_passwordEncoder = $configuration->security->encoder;
+            $this->_secret = $configuration->security->secret;
         } else {
             throw new \Exception('Error in configuration file');
         }
@@ -117,10 +117,22 @@ class Security extends Base implements SecurityInterface
 
         if ($user instanceof UserInterface) {
             $this->_user = $user;
-            Events::fire('framework.security.initialize.user', array($user));
+            Event::fire('framework.security.initialize.user', array($user));
         }
 
-        Events::fire('framework.security.initialize.after', array($this->accessControll));
+        if ($this->_authorization->type == 'resourcebase') {
+            Event::add('framework.router.findroute.after', function($path) {
+                $role = $this->getAuthorization()->checkForResource($path);
+
+                if ($role !== null) {
+                    if ($this->isGranted($role) !== true) {
+                        throw new \THCFrame\Security\Exception\Unauthorized();
+                    }
+                }
+            });
+        }
+
+        Event::fire('framework.security.initialize.after', array($this->accessControll));
 
         return $this;
     }
@@ -133,14 +145,14 @@ class Security extends Base implements SecurityInterface
     {
         $session = Registry::get('session');
         $originalToken = $session->get('csrftoken');
-        
-        if(base64_decode($postToken) === base64_decode($originalToken)){
+
+        if (base64_decode($postToken) === base64_decode($originalToken)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
+
     /**
      * 
      * @param \THCFrame\Security\UserInterface $user
@@ -154,6 +166,16 @@ class Security extends Base implements SecurityInterface
                 ->set('lastActive', time());
 
         $this->_user = $user;
+        return;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    public function getUser()
+    {
+        return $this->_user;
     }
 
     /**

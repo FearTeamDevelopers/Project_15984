@@ -48,7 +48,7 @@ class Admin_Controller_Product extends Controller
         $uploadTo = trim(substr(str_replace('.', '', $urlKeyCh), 0, 3));
 
         try {
-            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
+            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo, time().'_');
             $uploadedFile = ArrayMethods::toObject($data);
         } catch (Exception $ex) {
             $this->_errors['mainfile'] = array($ex->getMessage());
@@ -134,9 +134,9 @@ class Admin_Controller_Product extends Controller
 
         if (empty($this->_errors) && $product->validate()) {
             $pid = $product->save();
-            Event::fire('app.log', array('success', 'Product id: ' . $pid));
+            Event::fire('admin.log', array('success', 'Product id: ' . $pid));
         } else {
-            Event::fire('app.log', array('fail'));
+            Event::fire('admin.log', array('fail'));
             $this->_errors = $this->_errors + $product->getErrors();
         }
 
@@ -206,9 +206,9 @@ class Admin_Controller_Product extends Controller
 
             if (empty($this->_errors) && $product->validate()) {
                 $pid = $product->save();
-                Event::fire('app.log', array('success', 'Product variant id: ' . $pid));
+                Event::fire('admin.log', array('success', 'Product variant id: ' . $pid));
             } else {
-                Event::fire('app.log', array('fail'));
+                Event::fire('admin.log', array('fail'));
                 $this->_errors = $this->_errors + $product->getErrors();
             }
         }
@@ -287,7 +287,7 @@ class Admin_Controller_Product extends Controller
         ));
 
         try {
-            $data = $fileManager->upload('secondfile', 'product/' . $uploadTo);
+            $data = $fileManager->upload('secondfile', 'product/' . $uploadTo, time().'_');
         } catch (Exception $ex) {
             $this->_errors['secondfile'] = array($ex->getMessage());
         }
@@ -305,9 +305,9 @@ class Admin_Controller_Product extends Controller
                 if ($photo->validate()) {
                     $aid = $photo->save();
 
-                    Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' for product ' . $productId));
+                    Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' for product ' . $productId));
                 } else {
-                    Event::fire('app.log', array('fail', 'Photo for product ' . $productId));
+                    Event::fire('admin.log', array('fail', 'Photo for product ' . $productId));
                     $this->_errors['secondfile'][] = $photo->getErrors();
                 }
             }
@@ -458,11 +458,11 @@ class Admin_Controller_Product extends Controller
                 if ($product->validate()) {
                     $product->save();
 
-                    Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
+                    Event::fire('admin.log', array('success', 'Product id: ' . $product->getId()));
                     $view->successMessage(self::SUCCESS_MESSAGE_2);
                     self::redirect('/admin/product/edit/' . $product->getVariantFor());
                 } else {
-                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
+                    Event::fire('admin.log', array('fail', 'Product id: ' . $product->getId()));
                     $view->set('product', $product)
                             ->set('errors', $product->getErrors());
                 }
@@ -496,7 +496,7 @@ class Admin_Controller_Product extends Controller
                         ));
 
                         try {
-                            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo);
+                            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo, time().'_');
                             $uploadedFile = ArrayMethods::toObject($data);
                             $imgMain = trim($uploadedFile->file->path, '.');
                             $imgThumb = trim($uploadedFile->thumb->path, '.');
@@ -569,17 +569,17 @@ class Admin_Controller_Product extends Controller
                     }
 
                     if (empty($this->_errors)) {
-                        Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
+                        Event::fire('admin.log', array('success', 'Product id: ' . $product->getId()));
                         $view->successMessage(self::SUCCESS_MESSAGE_2);
                         $cache->invalidate();
                         self::redirect('/admin/product/');
                     } else {
-                        Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
+                        Event::fire('admin.log', array('fail', 'Product id: ' . $product->getId()));
                         $view->set('product', $product)
                                 ->set('errors', $this->_errors + $product->getErrors());
                     }
                 } else {
-                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
+                    Event::fire('admin.log', array('fail', 'Product id: ' . $product->getId()));
                     $view->set('product', $product)
                             ->set('errors', $errors + $this->_errors + $product->getErrors());
                 }
@@ -806,10 +806,10 @@ class Admin_Controller_Product extends Controller
                     @unlink($photo->getUnlinkPath());
                     @unlink($photo->getUnlinkThumbPath());
 
-                    Event::fire('app.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
+                    Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'success';
                 } else {
-                    Event::fire('app.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
+                    Event::fire('admin.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo self::ERROR_MESSAGE_1;
                 }
             }
@@ -842,10 +842,10 @@ class Admin_Controller_Product extends Controller
                     @unlink($unlinkMainImg);
                     @unlink($unlinkThumbImg);
 
-                    Event::fire('app.log', array('success', 'Product id: ' . $product->getId()));
+                    Event::fire('admin.log', array('success', 'Product id: ' . $product->getId()));
                     echo 'success';
                 } else {
-                    Event::fire('app.log', array('fail', 'Product id: ' . $product->getId()));
+                    Event::fire('admin.log', array('fail', 'Product id: ' . $product->getId()));
                     echo self::ERROR_MESSAGE_1;
                 }
             }

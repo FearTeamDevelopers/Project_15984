@@ -2,10 +2,11 @@
 
 namespace THCFrame\Database;
 
-use THCFrame\Core\Base as Base;
-use THCFrame\Core\ArrayMethods as ArrayMethods;
-use THCFrame\Core\StringMethods as StringMethods;
+use THCFrame\Core\Base;
+use THCFrame\Core\ArrayMethods;
+use THCFrame\Core\StringMethods;
 use THCFrame\Database\Exception as Exception;
+use THCFrame\Core\Core;
 
 /**
  * Description of Query
@@ -74,6 +75,16 @@ class Query extends Base
      * @read
      */
     protected $_having = array();
+
+    /**
+     * 
+     * @param type $method
+     * @return \THCFrame\Database\Exception\Implementation
+     */
+    protected function _getImplementationException($method)
+    {
+        return new Exception\Implementation(sprintf('%s method not implemented', $method));
+    }
 
     /**
      * 
@@ -354,10 +365,10 @@ class Query extends Base
 
         if ($result === false) {
             if (ENV == 'dev') {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql(sprintf('SQL: %s', $this->connector->getLastError()));
             } else {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql('There was an error with your SQL query');
             }
         }
@@ -381,10 +392,10 @@ class Query extends Base
 
         if ($result === false) {
             if (ENV == 'dev') {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql(sprintf('SQL: %s', $this->connector->getLastError()));
             } else {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql('There was an error with your SQL query');
             }
         }

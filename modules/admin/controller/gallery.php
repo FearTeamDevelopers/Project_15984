@@ -306,9 +306,9 @@ class Admin_Controller_Gallery extends Controller
                     if ($photo->validate()) {
                         $aid = $photo->save();
 
-                        Event::fire('app.log', array('success', 'Photo id: ' . $aid . ' in gallery ' . $gallery->getId()));
+                        Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' in gallery ' . $gallery->getId()));
                     } else {
-                        Event::fire('app.log', array('fail', 'Photo in gallery ' . $gallery->getId()));
+                        Event::fire('admin.log', array('fail', 'Photo in gallery ' . $gallery->getId()));
                         $errors['photo'][] = $photo->getErrors();
                     }
                 }

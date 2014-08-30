@@ -48,9 +48,9 @@ class Authentication extends Base
         $configuration = Registry::get('configuration');
         
         if (!$this->type) {
-            if(!empty($configuration->get('security/authentication'))){
-                $this->type = $configuration->get('security/authentication/type');
-                $this->options = $configuration->get('security/authentication/credentials');
+            if(!empty($configuration->security->authentication)){
+                $this->type = $configuration->security->authentication->type;
+                $this->options = (array) $configuration->security->authentication->credentials;
             }else{
                 throw new \Exception('Error in configuration file');
             }
@@ -68,7 +68,7 @@ class Authentication extends Base
                 break;
             }
             case 'config':{
-                $users = (array) $configuration->get('security/authentication/users');
+                $users = (array) $configuration->security->authentication->users;
                 return new ConfigAuthentication($users, $security);
                 break;
             }

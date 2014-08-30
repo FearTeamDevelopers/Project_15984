@@ -534,7 +534,7 @@ class Model extends Base
     public function getTable()
     {
         if (empty($this->_table)) {
-            $tablePrefix = Registry::get('configuration')->get('database/tablePrefix');
+            $tablePrefix = Registry::get('configuration')->database->tablePrefix;
 
             if (strpos(get_class($this), '_') !== false) {
                 list($module, $type, $name) = explode('_', get_class($this));

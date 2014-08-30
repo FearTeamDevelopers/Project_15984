@@ -144,7 +144,7 @@ class Core
             return 'Function is not allowed in this environment';
         }
     }
-    
+
     /**
      * 
      * @return type
@@ -177,29 +177,25 @@ class Core
         }
 
         // Autoloader
-        require_once 'autoloader.php';
+        require_once './vendors/thcframe/core/autoloader.php';
         self::$_autoloader = new Autoloader();
         self::$_autoloader->addPrefixes(self::$_relPaths);
         self::$_autoloader->register();
+
+        // Logger
+        $logger = new \THCFrame\Logger\Logger();
+        self::$_logger = $logger->initialize();
+
+        // error and exception handlers
+        set_error_handler(__CLASS__ . '::_errorHandler');
+        set_exception_handler(__CLASS__ . '::_exceptionHandler');
 
         try {
             // configuration
             $configuration = new \THCFrame\Configuration\Configuration(
                     array('type' => 'ini', 'options' => array('env' => ENV))
             );
-            Registry::set('configuration', $configuration->initialize());
-
-            // Logger
-            $logger = new \THCFrame\Logger\Logger();
-            self::$_logger = $logger->initialize();
-            Registry::set('logger', self::$_logger);
-
-            // error and exception handlers
-            set_error_handler(__CLASS__ . '::_errorHandler');
-            set_exception_handler(__CLASS__ . '::_exceptionHandler');
-
-            // observer events from config
-            $events = \THCFrame\Events\Events::initialize();
+            Registry::set('config', $configuration->initialize());
 
             // database
             $database = new \THCFrame\Database\Database();
@@ -221,7 +217,6 @@ class Core
 
             // unset globals
             unset($configuration);
-            unset($events);
             unset($database);
             unset($cache);
             unset($session);
@@ -356,7 +351,11 @@ class Core
         $file = basename($file);
         $message = "{$type} ~ {$file} ~ {$row} ~ {$text}";
 
-        self::$_logger->logError($message);
+        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
+            self::$_logger->logError($message);
+        } else {
+            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
+        }
     }
 
     /**
@@ -373,8 +372,12 @@ class Core
 
         $message = "Uncaught exception: {$type} ~ {$file} ~ {$row} ~ {$text}" . PHP_EOL;
         $message .= $exception->getTraceAsString();
-        
-        self::$_logger->logError($message);
+
+        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
+            self::$_logger->logError($message);
+        } else {
+            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
+        }
     }
 
     /**
@@ -399,10 +402,10 @@ class Core
             unset($dispatcher);
         } catch (\Exception $e) {
             $exception = get_class($e);
-            
-            if($router instanceof \THCFrame\Router\Router){
+
+            if ($router instanceof \THCFrame\Router\Router) {
                 $module = $router->getLastRoute()->getModule();
-            }else{
+            } else {
                 $module = 'app';
             }
 

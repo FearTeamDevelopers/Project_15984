@@ -15,7 +15,7 @@ class Server extends Session\Driver
     /**
      * @readwrite
      */
-    protected $_prefix = 'app_';
+    protected $_prefix;
 
     /**
      * 

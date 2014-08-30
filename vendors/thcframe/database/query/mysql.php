@@ -4,6 +4,7 @@ namespace THCFrame\Database\Query;
 
 use THCFrame\Database as Database;
 use THCFrame\Database\Exception as Exception;
+use THCFrame\Core\Core;
 
 /**
  * Description of Mysql
@@ -27,10 +28,10 @@ class Mysql extends Database\Query
             $error = $this->connector->lastError;
 
             if (ENV == 'dev') {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql(sprintf('There was an error with your SQL query: %s', $error));
             } else {
-                \THCFrame\Core\Core::getLogger()->log($sql);
+                Core::getLogger()->logError($sql);
                 throw new Exception\Sql('There was an error with your SQL query');
             }
         }

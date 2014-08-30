@@ -71,10 +71,10 @@ class FileManager extends Base
 
         $configuration = Registry::get('configuration');
 
-        if (!empty($configuration->get('files'))) {
-            $this->_pathToDocs = trim($configuration->get('files/pathToDocuments'), '/');
-            $this->_pathToImages = trim($configuration->get('files/pathToImages'), '/');
-            $this->_pathToThumbs = trim($configuration->get('files/pathToThumbs'), '/');
+        if (!empty($configuration->files)) {
+            $this->_pathToDocs = trim($configuration->files->pathToDocuments, '/');
+            $this->_pathToImages = trim($configuration->files->pathToImages, '/');
+            $this->_pathToThumbs = trim($configuration->files->pathToThumbs, '/');
         } else {
             throw new \Exception('Error in configuration file');
         }

@@ -50,11 +50,16 @@ class Cache extends Base
         if (!$this->type) {
             $configuration = Registry::get('configuration');
 
-            if (!empty($configuration->get('cache')) && !empty($configuration->get('cache/type'))) {
-                $this->type = $configuration->get('cache/type');
-                $this->options = (array) $configuration->get('cache');
+            if (!empty($configuration->cache) && !empty($configuration->cache->type)) {
+                $this->type = $configuration->cache->type;
+                $this->options = (array) $configuration->cache;
             } else {
-                throw new \Exception('Error in configuration file');
+                $this->type = 'filecache';
+                $this->options = array(
+                    'mode' => 'active',
+                    'duration' => 1800,
+                    'suffix' => 'tmp',
+                    'path' => 'temp/cache');
             }
         }
 

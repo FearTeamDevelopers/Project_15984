@@ -5,7 +5,6 @@ namespace THCFrame\Database;
 use THCFrame\Core\Base;
 use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
-//use THCFrame\Database\Database as Database;
 use THCFrame\Database\Exception;
 
 /**
@@ -54,16 +53,16 @@ class Database extends Base
         if (!$this->type) {
             $configuration = Registry::get('configuration');
 
-            if (!empty($configuration->get('database')) && !empty($configuration->get('database/type'))) {
-                $this->type = $configuration->get('database/type');
-                $this->options = (array) $configuration->get('database');
+            if (!empty($configuration->database) && !empty($configuration->database->type)) {
+                $this->type = $configuration->database->type;
+                $this->options = (array) $configuration->database;
             } else {
                 throw new \Exception('Error in configuration file');
             }
         }
 
         Event::fire('framework.database.initialize.after', array($this->type, $this->options));
-
+        
         switch ($this->type) {
             case 'mysql': {
                     return new Connector\Mysql($this->options);

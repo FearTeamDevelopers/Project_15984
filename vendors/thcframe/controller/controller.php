@@ -128,12 +128,12 @@ class Controller extends Base
         $session = Registry::get('session');
         $router = Registry::get('router');
 
-        if (!empty($configuration->get('view'))) {
-            $this->defaultExtension = $configuration->get('view/extension');
-            $this->defaultLayout = $configuration->get('view/layout');
-            $this->mobileLayout = $configuration->get('view/mobilelayout');
-            $this->tabletLayout = $configuration->get('view/tabletlayout');
-            $this->defaultPath = $configuration->get('view/path');
+        if (!empty($configuration->view)) {
+            $this->defaultExtension = $configuration->view->extension;
+            $this->defaultLayout = $configuration->view->layout;
+            $this->mobileLayout = $configuration->view->mobilelayout;
+            $this->tabletLayout = $configuration->view->tabletlayout;
+            $this->defaultPath = $configuration->view->path;
         } else {
             throw new \Exception('Error in configuration file');
         }

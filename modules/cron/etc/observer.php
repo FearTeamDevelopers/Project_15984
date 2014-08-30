@@ -1,19 +1,33 @@
 <?php
 
 use THCFrame\Registry\Registry;
+use THCFrame\Events\SubscriberInterface;
 
 /**
  * 
  */
-class Cron_Etc_Observer
+class Cron_Etc_Observer implements SubscriberInterface
 {
+
+    /**
+     * 
+     * @return type
+     */
+    public function getSubscribedEvents()
+    {
+        return array(
+            'cron.log' => 'cronLog'
+        );
+    }
 
     /**
      * 
      * @param array $params
      */
-    public function cronLog($params = array())
+    public function cronLog()
     {
+        $params = func_get_args();
+        
         $router = Registry::get('router');
         $route = $router->getLastRoute();
 

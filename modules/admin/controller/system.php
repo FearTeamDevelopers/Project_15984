@@ -56,7 +56,7 @@ class Admin_Controller_System extends Controller
 
         $dump->create();
         $view->successMessage('Záloha databáze byla úspěšně vytvořena');
-        Event::fire('app.log', array('success', 'Database backup ' . $dump->getBackupName()));
+        Event::fire('admin.log', array('success', 'Database backup ' . $dump->getBackupName()));
         unset($fm);
         unset($dump);
         self::redirect('/admin/system/');
@@ -133,6 +133,54 @@ class Admin_Controller_System extends Controller
     /**
      * @before _secured, _admin
      */
+    public function generateSitemap()
+    {
+        $view = $this->getActionView();
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+        <urlset
+            xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+
+        $xmlEnd = '</urlset>';
+
+        $host = \THCFrame\Request\RequestMethods::server('HTTP_HOST');
+
+        $pageContentXml = "<url><loc>http://{$host}</loc></url>"
+                . "<url><loc>http://{$host}/o-nas</loc></url>"
+                . "<url><loc>http://{$host}/cenik</loc></url>"
+                . "<url><loc>http://{$host}/kontakty</loc></url>"
+                . "<url><loc>http://{$host}/reference</loc></url>" . PHP_EOL;
+
+        $categories = App_Model_Category::all(
+                        array('active = ?' => true), 
+                        array('urlKey'));
+
+        $categoryXml = '';
+        foreach ($categories as $category) {
+            $categoryXml .= "<url><loc>http://{$host}/kategorie/{$category->urlKey}/</loc></url>" . PHP_EOL;
+        }
+
+        $products = App_Model_Product::all(
+                        array('active = ?' => true, 'deleted = ?' => false, 'variantFor = ?' => 0), 
+                        array('urlKey'));
+
+        $productXml = '';
+        foreach ($products as $product) {
+            $productXml .= "<url><loc>http://{$host}/kostym/{$product->urlKey}/</loc></url>" . PHP_EOL;
+        }
+
+        file_put_contents('./sitemap.xml', $xml . $pageContentXml . $categoryXml . $productXml . $xmlEnd);
+
+        $view->successMessage('Soubor sitemap.xml byl aktualizován');
+        self::redirect('/admin/system/');
+    }
+
+    /**
+     * @before _secured, _admin
+     */
     public function generateDummyProducts()
     {
         if (ENV != 'dev') {
@@ -155,7 +203,7 @@ class Admin_Controller_System extends Controller
                     'productCode' => time() . '-' . $i,
                     'title' => time() . '-' . $i,
                     'description' => time() . '-' . $i,
-                    'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
+                    'basicPrice' => (int) substr(time(), strlen(time()) - 3, strlen(time())),
                     'regularPrice' => 0,
                     'currentPrice' => 0,
                     'quantity' => 1,
@@ -166,7 +214,7 @@ class Admin_Controller_System extends Controller
                     'isInAction' => '',
                     'newFrom' => '',
                     'newTo' => '',
-                    'hasGroupPhoto' => (int) rand(0,1),
+                    'hasGroupPhoto' => (int) rand(0, 1),
                     'imgMain' => '',
                     'imgThumb' => '',
                     'metaTitle' => '',
@@ -204,7 +252,7 @@ class Admin_Controller_System extends Controller
                         'productCode' => time() . '-' . $i . '-' . $i,
                         'title' => time() . '-' . $i . '-' . $i,
                         'description' => time() . '-' . $i . '-' . $i,
-                        'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
+                        'basicPrice' => (int) substr(time(), strlen(time()) - 3, strlen(time())),
                         'regularPrice' => 0,
                         'currentPrice' => 0,
                         'quantity' => 1,
@@ -241,7 +289,7 @@ class Admin_Controller_System extends Controller
                     'productCode' => time() . '-' . $i,
                     'title' => time() . '-' . $i,
                     'description' => time() . '-' . $i,
-                    'basicPrice' => (int) substr(time(), strlen(time())-3, strlen(time())),
+                    'basicPrice' => (int) substr(time(), strlen(time()) - 3, strlen(time())),
                     'regularPrice' => 0,
                     'currentPrice' => 0,
                     'quantity' => 1,
@@ -252,7 +300,7 @@ class Admin_Controller_System extends Controller
                     'isInAction' => '',
                     'newFrom' => '',
                     'newTo' => '',
-                    'hasGroupPhoto' => (int) rand(0,1),
+                    'hasGroupPhoto' => (int) rand(0, 1),
                     'imgMain' => '',
                     'imgThumb' => '',
                     'metaTitle' => '',
@@ -284,7 +332,7 @@ class Admin_Controller_System extends Controller
                 }
             }
         }
-        
+
         $view->infoMessage('Product import completed');
         self::redirect('/admin/');
     }

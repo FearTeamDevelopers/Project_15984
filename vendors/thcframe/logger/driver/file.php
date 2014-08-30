@@ -82,7 +82,7 @@ class File extends Logger\Driver
         $message = $message . PHP_EOL;
         $logsPath = '.' . DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
         $sysLogPath = '.' . DIRECTORY_SEPARATOR .
-                str_replace('{date}', date('Y-m-d H:i:s', time()), 
+                str_replace('{date}', date('Y-m-d', time()), 
                         trim($this->syslog, DIRECTORY_SEPARATOR));
 
         if (NULL !== $file) {
@@ -123,7 +123,7 @@ class File extends Logger\Driver
 
         $message = $message . PHP_EOL;
         $errorLogPath = '.' . DIRECTORY_SEPARATOR .
-                str_replace('{date}', date('Y-m-d H:i:s', time()), 
+                str_replace('{date}', date('Y-m-d', time()), 
                         trim($this->errorlog, DIRECTORY_SEPARATOR));
 
         if (!file_exists($errorLogPath)) {

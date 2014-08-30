@@ -51,10 +51,10 @@ class Profiler
     private function __construct()
     {
         Event::fire('framework.profiler.construct');
-
+        
         $configuration = Registry::get('configuration');
-        $this->_enabled = (bool) $configuration->get('profiler/active');
-        $this->_logging = $configuration->get('profiler/logging');
+        $this->_enabled = (bool) $configuration->profiler->active;
+        $this->_logging = $configuration->profiler->logging;
 
         if (!$this->_enabled) {
             return;
@@ -128,11 +128,16 @@ class Profiler
             
             $str .= '<div id="profiler-globalvar"><table>';
             $str .= '<tr><td colspan=2>POST</td></tr>';
-            foreach ($_POST as $key => $value) {
+            foreach ($_SESSION as $key => $value) {
                 $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
             }
             $str .= '</table><table>';
             $str .= '<tr><td colspan=2>GET</td></tr>';
+            foreach ($_POST as $key => $value) {
+                $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+            }
+            $str .= '</table><table>';
+            $str .= '<tr><td colspan=2>Session</td></tr>';
             foreach ($_GET as $key => $value) {
                 $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
             }

@@ -95,8 +95,8 @@ final class Dispatcher extends Base
 
         $configuration = Registry::get('configuration');
 
-        if (!empty($configuration->get('dispatcher'))) {
-            $this->_setSuffix($configuration->get('dispatcher/suffix'));
+        if (!empty($configuration->dispatcher)) {
+            $this->_setSuffix($configuration->dispatcher->suffix);
         } else {
             throw new \Exception('Error in configuration file');
         }
@@ -210,13 +210,13 @@ final class Dispatcher extends Base
 
         Event::fire('framework.dispatcher.beforehooks.after', array($action, $parameters));
         Event::fire('framework.dispatcher.action.before', array($action, $parameters));
-
+        
         call_user_func_array(array(
             $instance, $action), is_array($parameters) ? $parameters : array());
 
         Event::fire('framework.dispatcher.action.after', array($action, $parameters));
         Event::fire('framework.dispatcher.afterhooks.before', array($action, $parameters));
-
+        
         $hooks($methodMeta, '@after');
 
         Event::fire('framework.dispatcher.afterhooks.after', array($action, $parameters));

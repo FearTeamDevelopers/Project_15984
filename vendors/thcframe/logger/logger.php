@@ -5,7 +5,6 @@ namespace THCFrame\Logger;
 use THCFrame\Core\Base;
 use THCFrame\Events\Events as Event;
 use THCFrame\Logger\Exception;
-use THCFrame\Registry\Registry;
 
 /**
  * Factory class
@@ -47,17 +46,13 @@ class Logger extends Base
     {
         Event::fire('framework.logger.initialize.before', array($this->type, $this->options));
 
-        if (!$this->type) {
-            $configuration = Registry::get('configuration');
+        $this->type = 'file';
+        $this->options = array(
+            'path' => 'application/logs',
+            'syslog' => 'application/logs/{date}-system.log',
+            'errorlog' => 'application/logs/{date}-error.log'
+        );
 
-            if (!empty($configuration->get('logger')) && !empty($configuration->get('logger/type'))) {
-                $this->type = $configuration->get('logger/type');
-                $this->options = (array) $configuration->get('logger');
-            } else {
-                throw new \Exception('Error in configuration file');
-            }
-        }
-        
         if (!$this->type) {
             throw new Exception\Argument('Invalid type');
         }

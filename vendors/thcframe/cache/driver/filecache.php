@@ -30,6 +30,11 @@ class Filecache extends Cache\Driver
     protected $_suffix;
     
     /**
+     * @readwrite
+     */
+    protected $_mode;
+    
+    /**
      *
      * @var type 
      */
@@ -61,7 +66,7 @@ class Filecache extends Cache\Driver
      */
     public function isFresh($key)
     {
-        if (ENV == 'dev') {
+        if ($this->_mode == 'active' && ENV == 'dev') {
             return false;
         }
 

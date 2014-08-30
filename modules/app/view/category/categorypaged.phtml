@@ -7,13 +7,11 @@
                 <td>Řadit dle</td>
                 <td>
                     <select id="catvieworderby" name="catvieworderby">
-                        
                         <option value="created" {if $catorderby == "created"}selected{/if}>Nejnovější</option>
                         <option value="currentPrice" {if $catorderby == "currentPrice"}selected{/if}>Ceny</option>
                         <option value="title" {if $catorderby == "title"}selected{/if}>Jména</option>
                     </select>
-                </td></tr>
-            <tr><td></td>
+                </td>
                 <td>
                     <select id="catvieworder" name="catvieworder">
                         <option value="asc" {if $catorder == "asc"}selected{/if}>Vzestupně</option>
@@ -22,7 +20,7 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div><br style="clear: both;" />
     <div class="category">
         {foreach $product in $products}
             {if $product->hasGroupPhoto}

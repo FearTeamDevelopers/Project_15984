@@ -47,11 +47,11 @@ class Authorization extends Base
         $configuration = Registry::get('configuration');
         
         if (!$this->type) {
-            if(!empty($configuration->get('security/authorization'))){
-                $this->type = $configuration->get('security/authorization/type');
-                $this->options = (array) $configuration->get('security/authorization');
+            if(!empty($configuration->security->authorization)){
+                $this->type = $configuration->security->authorization->type;
+                $this->options = (array) $configuration->security->authorization;
                 
-                $roles = (array) $configuration->get('security/authorization/roles');
+                $roles = (array) $configuration->security->authorization->roles;
                 $roleManager = new RoleManager($roles);
             }else{
                 throw new \Exception('Error in configuration file');
@@ -70,7 +70,7 @@ class Authorization extends Base
                 break;
             }
             case 'resourcebase':{
-                $resources = (array) $configuration->get('security/authorization/resources');
+                $resources = (array) $configuration->security->authorization->resources;
                 return new ResourceBaseAuthorization($roleManager, $resources);
                 break;
             }

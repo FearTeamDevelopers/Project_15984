@@ -7,6 +7,7 @@ use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
 use THCFrame\Module\Exception;
 use THCFrame\Router\Route;
+use THCFrame\Events\SubscriberInterface;
 
 /**
  * Description of Module
@@ -20,12 +21,12 @@ class Module extends Base
      * @read
      */
     protected $_moduleName;
-    
+
     /**
      * @read
      */
     protected $_observerClass;
-    
+
     /**
      * 
      * @param type $options
@@ -36,7 +37,30 @@ class Module extends Base
 
         Event::fire('framework.module.initialize.before', array($this->moduleName));
 
+        $this->addModuleEvents();
+
         Event::fire('framework.module.initialize.after', array($this->moduleName));
+    }
+
+    /**
+     * 
+     */
+    private function addModuleEvents()
+    {
+        $mo = $this->getObserverClass();
+
+        if (isset($mo) && $mo != '') {
+            $moduleObserver = new $mo();
+
+            if ($moduleObserver instanceof SubscriberInterface) {
+                $events = $moduleObserver->getSubscribedEvents();
+
+                foreach ($events as $name => $callback) {
+
+                    Event::add($name, array($moduleObserver, $callback));
+                }
+            }
+        }
     }
 
     /**
@@ -56,50 +80,6 @@ class Module extends Base
     public function getModuleRoutes()
     {
         return $this->_routes;
-    }
-
-    /**
-     * nepouzivana
-     */
-    public function loadModuleRoutes()
-    {
-        $router = Registry::get('router');
-
-        foreach ($this->_routes as $route) {
-            $new_route = new Route\Dynamic(array('pattern' => $route['pattern']));
-
-            if (preg_match('/^:/', $route['module'])) {
-                $new_route->addDynamicElement(':module', ':module');
-            } else {
-                $new_route->setModule($route['module']);
-            }
-
-            if (preg_match('/^:/', $route['controller'])) {
-                $new_route->addDynamicElement(':controller', ':controller');
-            } else {
-                $new_route->setController($route['controller']);
-            }
-
-            if (preg_match('/^:/', $route['action'])) {
-                $new_route->addDynamicElement(':action', ':action');
-            } else {
-                $new_route->setAction($route['action']);
-            }
-
-            if (isset($route['args']) && is_array($route['args'])) {
-                foreach ($route['args'] as $arg) {
-                    if (preg_match('/^:/', $arg)) {
-                        $new_route->addDynamicElement($arg, $arg);
-                    }
-                }
-            } elseif (isset($route['args']) && !is_array($route['args'])) {
-                if (preg_match('/^:/', $route['args'])) {
-                    $new_route->addDynamicElement($route['args'], $route['args']);
-                }
-            }
-
-            $router->addRoute($new_route);
-        }
     }
 
 }

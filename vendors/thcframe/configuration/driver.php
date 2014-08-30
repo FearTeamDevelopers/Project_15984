@@ -19,18 +19,6 @@ abstract class Driver extends Base
      * @readwrite
      * @var type 
      */
-    protected $_config;
-
-    /**
-     * @readwrite
-     * @var type 
-     */
-    protected $_defaultConfig;
-
-    /**
-     * @readwrite
-     * @var type 
-     */
     protected $_env;
 
     /**
@@ -51,8 +39,6 @@ abstract class Driver extends Base
     {
         return $this;
     }
-
-    abstract protected function get($key);
 
     abstract protected function parse($path);
 

@@ -72,12 +72,14 @@ class ResourceBaseAuthorization extends Base implements AuthorizationInterface
      * @param \THCFrame\Security\UserInterface $user
      * @param type $requiredRole
      */
-    public function isGranted(UserInterface $user, $requiredRole)
+    public function isGranted($user, $requiredRole)
     {
         if ($user === null) {
             $actualRole = 'role_guest';
-        } else {
+        } elseif($user instanceof UserInterface) {
             $actualRole = strtolower($user->getRole());
+        }else{
+            $actualRole = 'role_guest';
         }
 
         $requiredRole = strtolower(trim($requiredRole));

@@ -168,23 +168,10 @@ class Router extends Base
     {
         Event::fire('framework.router.findroute.before', array($path));
 
-        $security = Registry::get('security');
-        $authorizationType = $security->getAuthorization()->getType();
-
         foreach ($this->_routes as $route) {
             if (TRUE === $route->matchMap($path)) {
                 $this->_lastRoute = $route;
                 break;
-            }
-        }
-
-        if ($authorizationType == 'resourcebase') {
-            $role = $security->getAuthorization()->checkForResource($path);
-
-            if ($role !== null) {
-                if ($security->isGranted($role) !== true) {
-                    throw new \THCFrame\Security\Exception\Unauthorized();
-                }
             }
         }
 

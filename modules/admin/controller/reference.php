@@ -217,11 +217,11 @@ class Admin_Controller_Reference extends Controller
                     @unlink($unlinkMainImg);
                     @unlink($unlinkThumbImg);
 
-                    Event::fire('app.log', array('success', 'Reference id: ' . $reference->getId()));
+                    Event::fire('admin.log', array('success', 'Reference id: ' . $reference->getId()));
                     echo 'success';
                     return;
                 } else {
-                    Event::fire('app.log', array('fail', 'Reference id: ' . $reference->getId()));
+                    Event::fire('admin.log', array('fail', 'Reference id: ' . $reference->getId()));
                     echo self::ERROR_MESSAGE_1;
                     return;
                 }
