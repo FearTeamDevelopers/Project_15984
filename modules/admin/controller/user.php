@@ -42,10 +42,11 @@ class Admin_Controller_User extends Controller
                     $security = Registry::get('security');
                     $status = $security->authenticate($email, $password);
 
-                    if ($status) {
+                    if ($status === true) {
                         $user = App_Model_User::first(array('id = ?' => $this->getUser()->getId()));
                         $user->lastLogin = date('Y-m-d H:i:s', time());
                         $user->save();
+                        unset($user);
 
                         self::redirect('/admin/');
                     } else {

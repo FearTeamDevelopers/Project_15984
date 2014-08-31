@@ -21,7 +21,7 @@ class App_Etc_Module extends Module
     protected $_observerClass = '';
     protected $_routes = array(
         array(
-            'pattern' => '/kontakty',
+            'pattern' => '/kontakt',
             'module' => 'app',
             'controller' => 'index',
             'action' => 'contact',

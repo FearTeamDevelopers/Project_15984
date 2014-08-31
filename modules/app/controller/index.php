@@ -32,7 +32,7 @@ class App_Controller_Index extends Controller
             $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz' . $object->getImgMain());
             $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kostym/' . $object->getUrlKey() . '/');
         }
-        
+
         $layoutView->set('metaogtype', 'article');
 
         return;
@@ -86,10 +86,13 @@ class App_Controller_Index extends Controller
     public function index()
     {
         $layoutView = $this->getLayoutView();
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host;
 
         $layoutView->set('active', 99)
                 ->set('activecat', null)
-                ->set('parentcat', null);
+                ->set('parentcat', null)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -111,13 +114,16 @@ class App_Controller_Index extends Controller
         }
 
         $parsed = $this->_parseContentBody($content);
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/o-nas';
 
         $view->set('content', $parsed);
 
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 1);
+                ->set('active', 1)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -140,10 +146,14 @@ class App_Controller_Index extends Controller
             $cache->set('reference', $content);
         }
 
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/reference';
+
         $view->set('reference', $content);
         $layoutView->set('active', 2)
                 ->set('activecat', null)
-                ->set('parentcat', null);
+                ->set('parentcat', null)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -165,13 +175,16 @@ class App_Controller_Index extends Controller
         }
 
         $parsed = $this->_parseContentBody($content);
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/cenik';
 
         $view->set('content', $parsed);
 
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 3);
+                ->set('active', 3)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -193,13 +206,16 @@ class App_Controller_Index extends Controller
         }
 
         $parsed = $this->_parseContentBody($content);
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/kontakt';
 
         $view->set('content', $parsed);
 
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 4);
+                ->set('active', 4)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -232,6 +248,9 @@ class App_Controller_Index extends Controller
             }
         }
 
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/kostym/' . $product->getUrlKey() . '/';
+
         $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
 
         $activeCat = $session->get('activecat', 'unknown');
@@ -248,7 +267,8 @@ class App_Controller_Index extends Controller
                 ->set('active', 99)
                 ->set('article', 1)
                 ->set('artcreated', $product->getCreated())
-                ->set('artmodified', $product->getModified());
+                ->set('artmodified', $product->getModified())
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -262,9 +282,13 @@ class App_Controller_Index extends Controller
         $activeCat = $session->get('activecat', 'unknown');
         $parentCat = $session->get('parentcat', 'unknown');
 
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/neznamykostym';
+
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
-                ->set('active', 99);
+                ->set('active', 99)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -325,11 +349,15 @@ class App_Controller_Index extends Controller
                     ->limit(10);
             $categories = App_Model_Category::initialize($categoryQuery);
 
+            $host = RequestMethods::server('HTTP_HOST');
+            $canonical = 'http://' . $host . '/hledat';
+
             $view->set('products', $products)
                     ->set('query', $query)
                     ->set('categories', $categories);
 
-            $layoutView->set('background', 1);
+            $layoutView->set('background', 1)
+                    ->set('canonical', $canonical);
         }
     }
 

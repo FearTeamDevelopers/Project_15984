@@ -127,17 +127,17 @@ class Profiler
             $str .= '</table></div>';
             
             $str .= '<div id="profiler-globalvar"><table>';
-            $str .= '<tr><td colspan=2>POST</td></tr>';
+            $str .= '<tr><td colspan=2>SESSION</td></tr>';
             foreach ($_SESSION as $key => $value) {
                 $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
             }
             $str .= '</table><table>';
-            $str .= '<tr><td colspan=2>GET</td></tr>';
+            $str .= '<tr><td colspan=2>POST</td></tr>';
             foreach ($_POST as $key => $value) {
                 $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
             }
             $str .= '</table><table>';
-            $str .= '<tr><td colspan=2>Session</td></tr>';
+            $str .= '<tr><td colspan=2>GET</td></tr>';
             foreach ($_GET as $key => $value) {
                 $str .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
             }

@@ -15,28 +15,28 @@ class App_Controller_Category extends Controller
      */
     private function _checkMetaData($layoutView, App_Model_Category $object)
     {
-        if($object->getMetaTitle() != ''){
+        if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
-        
-        if($object->getMetaDescription() != ''){
+
+        if ($object->getMetaDescription() != '') {
             $layoutView->set('metadescription', $object->getMetaDescription());
         }
-        
-        if($object->getMetaKeywords() != ''){
+
+        if ($object->getMetaKeywords() != '') {
             $layoutView->set('metakeywords', $object->getMetaKeywords());
         }
-        
-        if($object->getMetaImage() != ''){
+
+        if ($object->getMetaImage() != '') {
             $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz/public/images/meta_image.jpg');
         }
-        
-        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kategorie/'.$object->getUrlKey().'/');
+
+        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kategorie/' . $object->getUrlKey() . '/');
         $layoutView->set('metaogtype', 'article');
-        
+
         return;
     }
-    
+
     /**
      * Basic method show products in category
      * @param type $urlKey
@@ -60,13 +60,13 @@ class App_Controller_Category extends Controller
         if ($category === null) {
             self::redirect('/neznamakategorie');
         }
-        
-        $maxCatPage = $session->get('catmaxpage_'.$urlKey);
-        
-        if($maxCatPage === null){
+
+        $maxCatPage = $session->get('catmaxpage_' . $urlKey);
+
+        if ($maxCatPage === null) {
             $productCount = App_Model_ProductCategory::countProductsByCategoryId($category->getId());
             $maxCatPage = ceil($productCount / 30);
-            $session->set('catmaxpage_'.$urlKey, $maxCatPage);
+            $session->set('catmaxpage_' . $urlKey, $maxCatPage);
         }
 
         $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1');
@@ -76,7 +76,7 @@ class App_Controller_Category extends Controller
             $background = 1;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, 1, $orderby, $order);
-            
+
             if ($products == null) {
                 $background = null;
             } else {
@@ -91,12 +91,15 @@ class App_Controller_Category extends Controller
         } else {
             $layoutView->set('parentcat', $category->getId());
         }
-        
-        if((int)$maxCatPage == 1){
+
+        if ((int) $maxCatPage == 1) {
             $layoutView->set('catrelnext', 0);
-        }else{
+        } else {
             $layoutView->set('catrelnext', 2);
         }
+
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/kategorie/' . $urlKey . '/';
 
         $session->set('activecat', $urlKey)
                 ->set('activepage', 1);
@@ -109,7 +112,8 @@ class App_Controller_Category extends Controller
         $this->_checkMetaData($layoutView, $category);
         $layoutView->set('activecat', $urlKey)
                 ->set('active', 99)
-                ->set('background', $background);
+                ->set('background', $background)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -139,17 +143,17 @@ class App_Controller_Category extends Controller
             $products = $products;
         } else {
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, $page, $orderby, $order);
-            
-            if($products !== null){
+
+            if ($products !== null) {
                 $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
             }
         }
 
         $session->set('activepage', $page);
         $view->set('products', $products)
-            ->set('category', $category);
+                ->set('category', $category);
     }
-    
+
     /**
      * 
      * @param type $urlKey
@@ -175,26 +179,26 @@ class App_Controller_Category extends Controller
             self::redirect('/neznamakategorie');
         }
 
-        $maxCatPage = $session->get('catmaxpage_'.$urlKey);
-        
-        if($maxCatPage === null){
+        $maxCatPage = $session->get('catmaxpage_' . $urlKey);
+
+        if ($maxCatPage === null) {
             $productCount = App_Model_ProductCategory::countProductsByCategoryId($category->getId());
             $maxCatPage = ceil($productCount / 30);
-            $session->set('catmaxpage_'.$urlKey, $maxCatPage);
+            $session->set('catmaxpage_' . $urlKey, $maxCatPage);
         }
-        
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_'.(int)$page);
+
+        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page);
 
         if ($products !== null) {
             $products = $products;
             $background = 1;
         } else {
-            $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, (int)$page, $orderby, $order);
-            
+            $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, (int) $page, $orderby, $order);
+
             if ($products == null) {
                 $background = null;
             } else {
-                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_'.(int)$page, $products);
+                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page, $products);
                 $background = 1;
             }
         }
@@ -205,21 +209,24 @@ class App_Controller_Category extends Controller
         } else {
             $layoutView->set('parentcat', $category->getId());
         }
-        
-        if($page > 1){
+
+        if ($page > 1) {
             $layoutView->set('catrelprev', $page - 1);
-        }else{
+        } else {
             $layoutView->set('catrelprev', 0);
         }
-        
-        if((int)$page >= (int)$maxCatPage){
+
+        if ((int) $page >= (int) $maxCatPage) {
             $layoutView->set('catrelnext', 0);
-        }else{
+        } else {
             $layoutView->set('catrelnext', $page + 1);
         }
 
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/kategorie/' . $urlKey . '/' . $page . '/';
+
         $session->set('activecat', $urlKey)
-                ->set('activepage', (int)$page);
+                ->set('activepage', (int) $page);
 
         $view->set('category', $category)
                 ->set('products', $products)
@@ -229,7 +236,8 @@ class App_Controller_Category extends Controller
         $this->_checkMetaData($layoutView, $category);
         $layoutView->set('activecat', $urlKey)
                 ->set('active', 99)
-                ->set('background', $background);
+                ->set('background', $background)
+                ->set('canonical', $canonical);
     }
 
     /**
@@ -259,9 +267,13 @@ class App_Controller_Category extends Controller
     {
         $layoutView = $this->getLayoutView();
 
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/neznamakategorie';
+
         $layoutView->set('activecat', 'unknown')
                 ->set('parentcat', 'unknown')
-                ->set('active', 99);
+                ->set('active', 99)
+                ->set('canonical', $canonical);
     }
 
 }
