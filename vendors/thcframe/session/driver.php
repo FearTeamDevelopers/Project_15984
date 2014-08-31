@@ -37,4 +37,6 @@ abstract class Driver extends Base
     public abstract function set($key, $value);
 
     public abstract function erase($key);
+    
+    public abstract function clear();
 }

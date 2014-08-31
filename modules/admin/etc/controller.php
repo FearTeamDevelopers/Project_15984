@@ -260,7 +260,6 @@ class Controller extends BaseController
 
         if ($layoutView) {
             $layoutView->set('authUser', $user);
-            
             $layoutView->set('isMember', $this->isMember())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
