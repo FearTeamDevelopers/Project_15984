@@ -73,7 +73,6 @@ class Controller extends BaseController
     public function _secured()
     {
         $session = Registry::get('session');
-        $lastActive = $session->get('lastActive');
 
         $user = $this->getUser();
 
@@ -82,7 +81,7 @@ class Controller extends BaseController
         }
 
         //6h inactivity till logout
-        if ($lastActive > time() - 1800) {
+        if ($session->get('lastActive') > time() - 1800) {
             $session->set('lastActive', time());
         } else {
             $view = $this->getActionView();
