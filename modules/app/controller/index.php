@@ -229,8 +229,7 @@ class App_Controller_Index extends Controller
         $session = Registry::get('session');
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
-
-        $view->set('product', $product);
+        
         $layoutView->set('parentcat', null)
                 ->set('activecat', null)
                 ->set('active', 99);
@@ -238,6 +237,8 @@ class App_Controller_Index extends Controller
         if ($product === null) {
             self::redirect('/neznamykostym');
         }
+        
+        $view->set('product', $product);
 
         $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
 

@@ -94,7 +94,8 @@ class Admin_Controller_Product extends Controller
                 'metaDescription' => RequestMethods::post('metadescription', $desc),
                 'rssFeedTitle' => $title,
                 'rssFeedDescription' => $desc,
-                'rssFeedImg' => trim($uploadedFile->file->path, '.')
+                'rssFeedImg' => trim($uploadedFile->file->path, '.'),
+                'overlay' => RequestMethods::post('overlay')
             ));
         } else {
             $title = RequestMethods::post('title');
@@ -128,7 +129,8 @@ class Admin_Controller_Product extends Controller
                 'metaDescription' => RequestMethods::post('metadescription', $desc),
                 'rssFeedTitle' => $title,
                 'rssFeedDescription' => $desc,
-                'rssFeedImg' => trim($uploadedFile->file->path, '.')
+                'rssFeedImg' => trim($uploadedFile->file->path, '.'),
+                'overlay' => RequestMethods::post('overlay')
             ));
         }
 
@@ -201,7 +203,8 @@ class Admin_Controller_Product extends Controller
                 'metaDescription' => '',
                 'rssFeedTitle' => '',
                 'rssFeedDescription' => '',
-                'rssFeedImg' => ''
+                'rssFeedImg' => '',
+                'overlay' => ''
             ));
 
             if (empty($this->_errors) && $product->validate()) {
@@ -546,6 +549,7 @@ class Admin_Controller_Product extends Controller
                 $product->rssFeedTitle = RequestMethods::post('title');
                 $product->rssFeedDescription = RequestMethods::post('description');
                 $product->rssFeedImg = $imgMain;
+                $product->overlay = RequestMethods::post('overlay');
 
                 $categoryArr = RequestMethods::post('rcat');
                 if (empty($categoryArr)) {
@@ -1028,18 +1032,18 @@ class Admin_Controller_Product extends Controller
         if ($search != '') {
             $whereCond = "pr.deleted = 0 AND pr.variantFor = 0 "
                     . "AND (pr.productCode='?' OR pr.productType='?' "
-                    . "OR pr.currentPrice='?' "
+                    . "OR pr.currentPrice='?' OR pr.overlay='?' "
                     . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
-                    ->wheresql($whereCond, $search, $search, $search, $search, $search);
+                    ->wheresql($whereCond, $search, $search, $search, $search, $search, $search);
 
             if (RequestMethods::issetpost('iSortCol_0')) {
                 $dir = RequestMethods::issetpost('sSortDir_0') ? RequestMethods::post('sSortDir_0') : 'asc';
@@ -1071,7 +1075,7 @@ class Admin_Controller_Product extends Controller
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
                             array('ca.title' => 'catTitle'))
-                    ->wheresql($whereCond, $search, $search, $search, $search, $search);
+                    ->wheresql($whereCond, $search, $search, $search, $search, $search, $search);
 
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
@@ -1082,7 +1086,7 @@ class Admin_Controller_Product extends Controller
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'))
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
                     ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
                             array('productId', 'categoryId'))
                     ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
@@ -1129,6 +1133,10 @@ class Admin_Controller_Product extends Controller
                         && $product->getDiscountFrom() <= date('Y-m-d') 
                         && $product->getDiscountTo() >= date('Y-m-d')) {
                     $label .= "<span class='labelProduct labelProductBlue'>Ve slevě</span>";
+                }
+                
+                if($product->overlay !== ''){
+                    $label .= "<span class='labelProduct labelProductGreen'>{$product->overlay}</span>";
                 }
                 
                 if($product->active){

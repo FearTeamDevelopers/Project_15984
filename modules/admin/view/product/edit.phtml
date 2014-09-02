@@ -291,6 +291,16 @@
                         {/if}
                     </span>
                 </p>
+                <p>
+                    <label>Overlay</label>
+                    <span class="field">
+                        <input class="longinput" type="text" name="overlay" 
+                               value="{echo $product->overlay}" />
+                        {if isset($errors["overlay"])}
+                        <label class="error">{echo join("<br/>", $errors["overlay"])}</label>
+                        {/if}
+                    </span>
+                </p>
             </div>
 
             <div id="meta">

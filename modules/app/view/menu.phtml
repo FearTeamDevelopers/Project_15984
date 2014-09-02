@@ -15,9 +15,9 @@
                 {foreach $cat in $category}
                     {script $subcategory = $cat->subcategory}
                     {script $count = count($subcategory)}
-                    <li>  
+                    <li>
                         {if empty($subcategory)}
-                            {if $cat->urlKey == $activecat | isset($parentcat) & $cat->id == $parentcat}
+                            {if $cat->urlKey == $activecat || isset($parentcat) && $cat->id == $parentcat}
                                 <a id="activeLi" href="/kategorie/{echo $cat->urlKey}/">    
                             {/if}{else}
                                 <a href="/kategorie/{echo $cat->urlKey}/">

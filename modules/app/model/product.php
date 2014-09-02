@@ -353,6 +353,17 @@ class App_Model_Product extends Model
     /**
      * @column
      * @readwrite
+     * @type text
+     * @length 40
+     * 
+     * @validate alphanumeric, max(40)
+     * @label overlay
+     */
+    protected $_overlay;
+    
+    /**
+     * @column
+     * @readwrite
      * @type boolean
      * @index
      * 

@@ -90,6 +90,7 @@ class App_Controller_Category extends Controller
             $session->set('parentcat', $category->parentId);
         } else {
             $layoutView->set('parentcat', $category->getId());
+            $session->set('parentcat', $category->getId());
         }
 
         if ((int) $maxCatPage == 1) {
