@@ -37,7 +37,11 @@ class Cron_Etc_Observer implements SubscriberInterface
 
         if (!empty($params)) {
             $result = array_shift($params);
-            $paramStr = join(', ', $params);
+            
+            $paramStr = '';
+            if (!empty($params)) {
+                $paramStr = join(', ', $params);
+            }
         } else {
             $result = 'fail';
             $paramStr = '';
