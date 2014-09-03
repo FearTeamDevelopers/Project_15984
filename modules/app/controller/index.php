@@ -16,6 +16,8 @@ class App_Controller_Index extends Controller
      */
     private function _checkMetaData($layoutView, Model $object)
     {
+        $host = RequestMethods::server('HTTP_HOST');
+        
         if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
@@ -29,8 +31,8 @@ class App_Controller_Index extends Controller
         }
 
         if ($object instanceof App_Model_Product) {
-            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz' . $object->getImgMain());
-            $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kostym/' . $object->getUrlKey() . '/');
+            $layoutView->set('metaogimage', "http://{$host}" . $object->getImgMain());
+            $layoutView->set('metaogurl', "http://{$host}/kostym/" . $object->getUrlKey() . '/');
         }
 
         $layoutView->set('metaogtype', 'article');

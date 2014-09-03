@@ -15,6 +15,8 @@ class App_Controller_Category extends Controller
      */
     private function _checkMetaData($layoutView, App_Model_Category $object)
     {
+        $host = RequestMethods::server('HTTP_HOST');
+        
         if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
@@ -28,10 +30,10 @@ class App_Controller_Category extends Controller
         }
 
         if ($object->getMetaImage() != '') {
-            $layoutView->set('metaogimage', 'http://www.agenturakarneval.cz/public/images/meta_image.jpg');
+            $layoutView->set('metaogimage', "http://{$host}/public/images/meta_image.jpg");
         }
 
-        $layoutView->set('metaogurl', 'http://www.agenturakarneval.cz/kategorie/' . $object->getUrlKey() . '/');
+        $layoutView->set('metaogurl', "http://{$host}/kategorie/" . $object->getUrlKey() . '/');
         $layoutView->set('metaogtype', 'article');
 
         return;

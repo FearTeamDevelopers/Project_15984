@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Language" content="cs" />
+        {if $env == "live"}<meta http-equiv="CACHE-CONTROL" content="public, max-age=10800">{/if}
+        {else}<meta http-equiv="CACHE-CONTROL" content="no-store">{/else}
+        
+        <meta name="viewport" content="width=device-width, maximum-scale=2.0, minimum-scale=1.0, initial-scale=1.0" />
+        <meta name="language" content="czech" />
+        <meta name="keywords" content="{echo $metakeywords}" />
+        <meta name="description" content="{echo $metadescription}" />
+        <meta name="revisit-after" content="4 Days" />
+        <meta name="distribution" content="global"/>
+        <meta name="robots" content="{echo $metarobots}">
+
+        {if isset($article)}
+        <meta property="og:title" content="{echo $metatitle}" />
+        <meta property="og:type" content="{echo $metaogtype}" />
+        <meta property="og:url" content="{echo $metaogurl}" />
+        <meta property="og:image" content="{echo $metaogimage}" />
+        <meta property="og:description" content="{echo $metadescription}" />
+        <meta property="og:site_name" content="{echo $metaogsitename}" />
+        <meta property="article:published_time" content="{echo $artcreated}" />
+        <meta property="article:modified_time" content="{echo $artmodified}" />
+        {/if}{else}
+        <meta property="og:url" content="{echo $metaogurl}" />
+        <meta property="og:title" content="{echo $metatitle}" />
+        <meta property="og:description" content="{echo $metadescription}" />
+        <meta property="og:type" content="{echo $metaogtype}" />
+        <meta property="og:site_name" content="{echo $metaogsitename}" />
+        {/else}
+        <link href="/public/images/favico.jpg" rel="Shortcut Icon" type="image/x-icon"/>
+        <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/mobile.css" media="screen" rel="stylesheet" type="text/css" />
+        {if isset($background)}<link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />{/if}
+        {else}<link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />{/else}
+        <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
+
+        <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
+        <link href="/public/css/plugins/lightbox2.css" rel="stylesheet"  type="text/css" />
+        <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
+        {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
+        {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
+        <link rel="canonical" href="{echo $canonical}" />
+        
+        <title>{echo $metatitle}</title>
+    </head>
+    <body lang="cs">
+        <header>
+            <article id="logo">
+                <h1 class="visuallyhidden">Logo</h1>
+                <a href="/"><img src="/public/images/logo_final.png" alt=""></a>
+            </article>
+            <article id="search">
+                <h1 class="visuallyhidden">Search</h1>
+                <form method="post" action="/hledat">
+                    <input placeholder="Hledat..." id="searchquery" name="searchquery" type="text" >
+                    <input type="submit" id="submitsearch" name="submitsearch"  value="OK"/>
+                </form>
+            </article>
+
+            <label for="show-menu" class="show-menu">Show Menu</label>
+            <input type="checkbox" name="show-menu" id="show-menu" role="button">
+            <nav id="menu">
+                {include menu.phtml}
+            </nav>
+        </header>
+
+        <section class="content">
+            {yield action}
+        </section>
+
+        <footer>
+            
+            © 2014 Kantors Creative Club, Petr Vaněk, Grafico.
+        </footer>
+
+        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
+        <script type="text/javascript" src="/public/js/custom/general_api.min.js"></script>
+
+        <!-- Piwik Code -->
+
+        <!-- End Piwik Code -->
+    </body>
+</html>
