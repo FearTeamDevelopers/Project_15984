@@ -33,8 +33,7 @@
         <link href="/public/images/favico.jpg" rel="Shortcut Icon" type="image/x-icon"/>
         <link href="/public/css/reset.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/mobile.css" media="screen" rel="stylesheet" type="text/css" />
-        {if isset($background)}<link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />{/if}
-        {else}<link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />{/else}
+       
         <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
 
         <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
@@ -67,7 +66,6 @@
                 {include menu.phtml}
             </nav>
         </header>
-
         <section class="content">
             {yield action}
         </section>
