@@ -1,63 +1,69 @@
 <article >
     <h1 class="visuallyhidden">Kategorie</h1>
     {if !empty($products)}
-    <div class="categoryRadit transparentCategory">
-        <table>
-            <tr>
-                <td>Řadit dle</td>
-                <td>
-                    <select id="catvieworderby" name="catvieworderby">
-                        <option value="created" {if $catorderby == "created"}selected{/if}>Nejnovější</option>
-                        <option value="currentPrice" {if $catorderby == "currentPrice"}selected{/if}>Ceny</option>
-                        <option value="title" {if $catorderby == "title"}selected{/if}>Jména</option>
-                    </select>
-                </td>
-                <td>
-                    <select id="catvieworder" name="catvieworder">
-                        <option value="asc" {if $catorder == "asc"}selected{/if}>Vzestupně</option>
-                        <option value="desc" {if $catorder == "desc"}selected{/if}>Sestupně</option>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </div><br style="clear: both;" />
-    <div class="category">
-        {foreach $product in $products}
-            {if $product->hasGroupPhoto}
-                <div class="transparentCategory productCategoryGrouped">
-                    <a href="/kostym/{echo $product->urlKey}/" >
-                        <span>{echo $product->title}</span><br/>
-                        <span><img class="grouped" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
-            <!--Přidat podmínku pro $rezerve-->
-                        <div class="rezerveGr">
-                            <p class="rezervePGr">REZERVACE</p>
-                        </div>
-                        <span class="price">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
-                    </a>
-                </div>
-                
-            {/if}
-            {else}
-                 <div class="transparentCategory productCategory">
-                    <a href="/kostym/{echo $product->urlKey}/" >
-                        <span>{echo $product->title}</span><br/>
-                        <span><img class="single" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
-            <!--Přidat podmínku pro $rezerve-->
-                        <div class="rezerve">
-                            <p class="rezerveP">REZERVACE</p>
-                        </div>
-                        <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
-                    </a>
-                </div>
-            {/else}
-        {/foreach}
-    {/if}
-    {if empty($products) && $category->parentId != 0}
+        <div class="categoryRadit transparentCategory">
+            <table>
+                <tr>
+                    <td>Řadit dle</td>
+                    <td>
+                        <select id="catvieworderby" name="catvieworderby">
+                            <option value="created" {if $catorderby == "created"}selected{/if}>Nejnovější</option>
+                            <option value="currentPrice" {if $catorderby == "currentPrice"}selected{/if}>Ceny</option>
+                            <option value="title" {if $catorderby == "title"}selected{/if}>Jména</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="catvieworder" name="catvieworder">
+                            <option value="asc" {if $catorder == "asc"}selected{/if}>Vzestupně</option>
+                            <option value="desc" {if $catorder == "desc"}selected{/if}>Sestupně</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div><br style="clear: both;" />
         
+        <div class="category">
+            {foreach $product in $products}
+                {if $product->hasGroupPhoto}
+                    <div class="transparentCategory productCategoryGrouped">
+                        <a href="/kostym/{echo $product->urlKey}/" >
+                            <span>{echo $product->title}</span><br/>
+                            <span><img class="grouped" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
+
+                            {if $product->overlay != ""}
+                                <div class="rezerve">
+                                    <p class="rezerveP">{echo $product->overlay}</p>
+                                </div>
+                            {/if}
+                            <span class="price">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
+                        </a>
+                    </div>
+
+                {/if}
+                {else}
+                     <div class="transparentCategory productCategory">
+                        <a href="/kostym/{echo $product->urlKey}/" >
+                            <span>{echo $product->title}</span><br/>
+                            <span><img class="single" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
+
+                            {if $product->overlay != ""}
+                                <div class="rezerve">
+                                    <p class="rezerveP">{echo $product->overlay}</p>
+                                </div>
+                            {/if}
+                            <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
+                        </a>
+                    </div>
+                {/else}
+            {/foreach}
+        </div>
+    {/if}
+
+    {if empty($products) && $category->parentId != 0}
         <div class="errorDiv transparentAbout">
             <span>V této kategorii nejsou, žádné kostýmy</span>    
         </div>
-    {/if} 
-    </div>
+    {/if}
+    
     <a class="scroll-top" href="#"><img src="/public/images/icons/arrow_up.png" alt="scroll up"></a>
 </article>

@@ -269,8 +269,10 @@ class Admin_Controller_Gallery extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddPhoto')) {
-            $this->checkToken();
-            $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken'));
+            if($this->checkToken() !== true && 
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+                self::redirect('/admin/gallery/');
+            }
             $errors = array();
 
             $fileManager = new FileManager(array(
