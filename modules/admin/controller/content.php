@@ -73,8 +73,8 @@ class Admin_Controller_Content extends Controller
             $content = new App_Model_PageContent(array(
                 'pageName' => RequestMethods::post('page'),
                 'urlKey' => $urlKey,
-                'body' => RequestMethods::post('text', ''),
-                'bodyEn' => RequestMethods::post('texten', ''),
+                'body' => RequestMethods::post('text'),
+                'bodyEn' => RequestMethods::post('texten'),
                 'metaTitle' => RequestMethods::post('metatitle'),
                 'metaKeywords' => RequestMethods::post('metakeywords'),
                 'metaDescription' => RequestMethods::post('metadescription')
@@ -83,7 +83,7 @@ class Admin_Controller_Content extends Controller
             if (empty($errors) && $content->validate()) {
                 $id = $content->save();
 
-                Event::fire('admin.log', array('success', 'ID: ' . $id));
+                Event::fire('admin.log', array('success', 'Content id: ' . $id));
                 $view->successMessage('Obsah'.self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/content/');
             } else {
@@ -101,9 +101,7 @@ class Admin_Controller_Content extends Controller
     {
         $view = $this->getActionView();
 
-        $content = App_Model_PageContent::first(array(
-                    'id = ?' => $id
-        ));
+        $content = App_Model_PageContent::first(array('id = ?' => (int) $id));
 
         if (NULL === $content) {
             $view->errorMessage('Obsah nenalezen');
@@ -123,13 +121,13 @@ class Admin_Controller_Content extends Controller
             $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
             if ($content->getUrlKey() !== $urlKey && !$this->_checkUrlKey($urlKey)) {
-                $errors['title'] = array('Obsah s tímto názvem již existuje');
+                $errors['title'] = array('Stránka s tímto názvem již existuje');
             }
 
             $content->pageName = RequestMethods::post('page');
             $content->urlKey = $urlKey;
-            $content->body = RequestMethods::post('text', '');
-            $content->bodyEn = RequestMethods::post('texten', '');
+            $content->body = RequestMethods::post('text');
+            $content->bodyEn = RequestMethods::post('texten');
             $content->metaTitle = RequestMethods::post('metatitle');
             $content->metaKeywords = RequestMethods::post('metakeywords');
             $content->metaDescription = RequestMethods::post('metadescription');
@@ -138,13 +136,14 @@ class Admin_Controller_Content extends Controller
             if (empty($errors) && $content->validate()) {
                 $content->save();
 
-                Event::fire('admin.log', array('success', 'ID: ' . $id));
+                Event::fire('admin.log', array('success', 'Content id: ' . $id));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
                 $cache->erase($content->getUrlKey());
                 self::redirect('/admin/content/');
             } else {
-                Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                $view->set('errors', $content->getErrors());
+                Event::fire('admin.log', array('fail', 'Content id: ' . $id));
+                $view->set('errors', $content->getErrors())
+                    ->set('content', $content);
             }
         }
     }

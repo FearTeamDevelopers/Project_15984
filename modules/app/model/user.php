@@ -80,7 +80,7 @@ class App_Model_User extends Model implements UserInterface
      * @label username
      */
     protected $_username;
-    
+
     /**
      * @column
      * @readwrite
@@ -120,6 +120,27 @@ class App_Model_User extends Model implements UserInterface
      * @type datetime
      */
     protected $_lastLogin;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 30
+     *
+     * @validate numeric, max(30)
+     * @label account lockdown time
+     */
+    protected $_loginLockdownTime;
+
+    /**
+     * @column
+     * @readwrite
+     * @type tinyint
+     *
+     * @validate numeric, max(2)
+     * @label login attemp counter
+     */
+    protected $_loginAttempCounter;
 
     /**
      * @column
