@@ -239,7 +239,7 @@ h1{
     text-align:center;
 }
 .productPhoto img{
-    border:10px solid rgb(248,216,219);
+    border:10px solid rgb(255,255,255);
     min-width:300px;
     max-width:350px;
     max-height:600px;
@@ -248,7 +248,7 @@ h1{
     max-width:700px;
     min-width:500px;
     max-height:600px;
-    border:10px solid rgb(248,216,219);
+    border:10px solid rgb(255,255,255);
 }
 
 .productTable{
