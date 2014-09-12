@@ -85,6 +85,14 @@ h1{
     font-size:18px;
     overflow:auto;
 }  
+#podpis {
+    margin-top:20px;
+    margin-right:30px;
+    float:right;
+}
+#podpis img{
+    width:200px;
+}
 
 
 /********* CATEGORY ********/
@@ -678,7 +686,11 @@ nav ul li a:hover + .hidden, .hidden:hover {
 .rezerveGr{
     width:440px;
 }
+.product{max-width:600px;}
+.content{min-width:600px;}
+.category{min-width:600px;}
 }
+.about{max-width:600px;}
 
 @media (orientation: portrait) { 
 .productCategoryGrouped{
