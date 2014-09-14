@@ -17,7 +17,7 @@ class App_Controller_Index extends Controller
     private function _checkMetaData($layoutView, Model $object)
     {
         $host = RequestMethods::server('HTTP_HOST');
-        
+
         if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
@@ -161,6 +161,36 @@ class App_Controller_Index extends Controller
     /**
      * 
      */
+    public function news()
+    {
+        $view = $this->getActionView();
+        $layoutView = $this->getLayoutView();
+        $cache = Registry::get('cache');
+
+        $content = $cache->get('aktuality');
+
+        if (NULL !== $content) {
+            $content = $content;
+        } else {
+            $content = App_Model_News::all(
+                            array('active = ?' => true), array('*'), array('created' => 'desc'), 15);
+
+            $cache->set('aktuality', $content);
+        }
+
+        $host = RequestMethods::server('HTTP_HOST');
+        $canonical = 'http://' . $host . '/aktuality';
+
+        $view->set('news', $content);
+        $layoutView->set('active', 3)
+                ->set('activecat', null)
+                ->set('parentcat', null)
+                ->set('canonical', $canonical);
+    }
+
+    /**
+     * 
+     */
     public function priceList()
     {
         $view = $this->getActionView();
@@ -185,7 +215,7 @@ class App_Controller_Index extends Controller
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 3)
+                ->set('active', 4)
                 ->set('canonical', $canonical);
     }
 
@@ -216,7 +246,7 @@ class App_Controller_Index extends Controller
         $this->_checkMetaData($layoutView, $content);
         $layoutView->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('active', 4)
+                ->set('active', 5)
                 ->set('canonical', $canonical);
     }
 
@@ -231,7 +261,7 @@ class App_Controller_Index extends Controller
         $session = Registry::get('session');
 
         $product = App_Model_Product::fetchProductByUrlKey($urlKey);
-        
+
         $layoutView->set('parentcat', null)
                 ->set('activecat', null)
                 ->set('active', 99);
@@ -239,7 +269,7 @@ class App_Controller_Index extends Controller
         if ($product === null) {
             self::redirect('/neznamykostym');
         }
-        
+
         $view->set('product', $product);
 
         $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);

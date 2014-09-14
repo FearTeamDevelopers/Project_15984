@@ -51,6 +51,12 @@ class App_Etc_Module extends Module
             'action' => 'pricelist',
         ),
         array(
+            'pattern' => '/aktuality',
+            'module' => 'app',
+            'controller' => 'index',
+            'action' => 'news',
+        ),
+        array(
             'pattern' => '/reference',
             'module' => 'app',
             'controller' => 'index',

@@ -4,44 +4,41 @@
 </ul><!--maintabmenu-->
 
 <div class="content">
-    <ul class="widgetlist">
-        <li><a href="/admin/reference/add/" class="message">Nová reference</a></li>
-        <li><a href="/admin/product/add/" class="message">Nový produkt</a></li>
-        <li><a href="/admin/category/" class="upload">Kategorie</a></li>
-        <li><a href="/admin/analytics/" class="events">Analytics</a></li>
-    </ul>
+    <div class="one_half">
+        <div class="contenttitle">
+            <h2 class="button"><span>Přidat</span></h2>
+        </div><!--contenttitle-->
+        <ul class="widgetlist">
+            <li><a href="/admin/news/add/" class="message">Aktualitu</a></li>
+            <li><a href="/admin/reference/add/" class="message">Referenci</a></li>
+            <li><a href="/admin/product/add/" class="upload">Produkt</a></li>
+            <li><a href="/admin/category/" class="events">Kategorii</a></li>
+        </ul>
+    </div>
 
     <br clear="all" /><br />
 
     <div class="one_half">
         <div class="widgetbox">
-            <div class="title"><h2 class="tabbed"><span>Nejnovější galerie</span></h2></div>
-            <div class="widgetcontent padding0 statement">
-                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
-                    <colgroup>
-                        <col class="con0" />
-                        <col class="con1" />
-                        <col class="con0" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th class="head0">Název</th>
-                            <th class="head1">Vytvořeno</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {if !empty($latestgallery)}
-                            {foreach $gallery in $latestgallery}
-                                <tr>
-                                    <td>{echo $gallery->getTitle()}</td>
-                                    <td>{echo $gallery->getCreated()}</td>
-                                </tr>
-                            {/foreach}
-                        {/if} 
-                    </tbody>
-                </table>
+            <div class="title"><h2 class="tabbed"><span>Poslední aktuality</span></h2></div>
+            <div class="widgetcontent announcement">
+                {if !empty($latestnews)}
+                    {foreach $news in $latestnews}
+                        <p>
+                            <span class="radius2">Title: {echo $news->getTitle()}</span>
+                            <span class="radius2">Created: {echo $news->getCreated()}</span>
+                            <br/><br/>
+                            {echo $news->shortBody}
+                        </p>
+                        <hr/>
+                    {/foreach}
+                {/if}
+                {else}
+                <p>No news</p>
+                {/else}
             </div><!--widgetcontent-->
         </div><!--widgetbox-->
+
     </div><!--one_half-->
 
     <div class="one_half last">
@@ -62,12 +59,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {if !empty($latestnews)}
-                            {foreach $news in $latestnews}
+                        {if !empty($latestrefs)}
+                            {foreach $ref in $latestrefs}
                                 <tr>
-                                    <td>{echo $news->getTitle()}</td>
-                                    <td>{echo $news->getAuthor()}</td>
-                                    <td>{echo $news->getCreated()}</td>
+                                    <td>{echo $ref->getTitle()}</td>
+                                    <td>{echo $ref->getAuthor()}</td>
+                                    <td>{echo $ref->getCreated()}</td>
                                 </tr>
                             {/foreach}
                         {/if} 
@@ -115,8 +112,5 @@
             </div><!--widgetcontent-->
         </div><!--widgetbox--> 
     </div><!--one_half-->
-    
-    
     <br class="clear-all"/><br />
-
 </div><!--content-->

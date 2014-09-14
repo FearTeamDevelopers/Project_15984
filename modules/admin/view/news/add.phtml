@@ -1,0 +1,61 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/news/">Aktuality</a></li>
+    <li class="current"><a href="#">Přidat aktualitu</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Aktuality</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+        <p>
+            <label>Title*</label>
+            <span class="field">
+                <input type="text" name="title" value="{echo isset($news)? $news->title: ""}" />
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Author*</label>
+            <span class="field">
+                <input type="text" name="author" class="longinput" value="{echo $authUser->getWholeName()}"/>
+            </span>
+        </p>
+        <p>
+            <label>Rank<small>Max. 99</small></label>
+            <span class="field">
+                <input type="text" name="rank" class="longinput" value="{echo isset($news)? $news->rank: 1}"/>
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Text*<small>Max. 20 000 characters</small></label>
+            <span class="field">
+                <textarea rows="20" name="text" id="ckeditor">{echo isset($news)? $news->body: ""}</textarea>
+                {if isset($errors["body"])}
+                <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Teaser*<small>Max. 5000 characters</small></label>
+            <span class="field">
+                <textarea rows="20" name="shorttext" id="ckeditor2">{echo isset($news)? $news->shortBody: ""}</textarea>
+                {if isset($errors["shortBody"])}
+                <label class="error">{echo join("<br/>", $errors["shortBody"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p class="stdformbutton">
+            <input name="submitAddNews" type="submit" value="Save" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</div>
