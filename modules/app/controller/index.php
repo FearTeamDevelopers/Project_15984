@@ -173,7 +173,9 @@ class App_Controller_Index extends Controller
             $content = $content;
         } else {
             $content = App_Model_News::all(
-                            array('active = ?' => true), array('*'), array('created' => 'desc'), 15);
+                        array('active = ?' => true), 
+                        array('*'),
+                        array('created' => 'desc'), 15);
 
             $cache->set('aktuality', $content);
         }

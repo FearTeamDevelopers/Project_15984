@@ -1,0 +1,18 @@
+{if !empty($news)}
+    {foreach $new in $news}
+        <article class="transparentAbout news">
+            <div class="news-header">
+                <h1>{echo $new->title}</h1>
+                <span class="fs10">{echo $new->created}</span>
+            </div>
+            <div class="news-content">
+                <div>{echo $new->body}</div>
+            </div>
+        </article>
+    {/foreach}
+{/if}
+{else}
+    <div class="errorDiv transparentAbout">
+        <span>Nebyly nalezeny žádné aktuality</span>
+    </div>
+{/else}

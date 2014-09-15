@@ -1,11 +1,11 @@
 {if !empty($reference)}
     {foreach $ref in $reference}
         <article class="transparentAbout reference">
-            <h1 class="visuallyhidden">{echo $ref->title}</h1>
             <div class="refPhoto">
                 <a data-lightbox="image{echo $ref_i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
             </div>
             <div class="refText">
+                <h1>{echo $ref->title}</h1>
                 <div>{echo $ref->body}</div>
             </div>
         </article>

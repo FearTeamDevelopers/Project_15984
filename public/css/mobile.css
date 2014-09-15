@@ -47,6 +47,17 @@ strong{
     min-width:300px;
     position:inherit;
 }
+
+.errorDiv{
+    text-align:center;
+    padding:15px;
+    font-size: 18px;
+    width:auto;
+    margin:20px;
+    margin-top:100px;
+}
+
+.fs10{font-size: 10px;}
 /***************** Transparent *************/
 
 .transparentAbout{
@@ -185,15 +196,6 @@ h1{
 .grouped{
     max-width:280px;
     max-height:230px;
-}
-
-.errorDiv{
-    text-align:center;
-    padding:30px;
-    font-size: 18px;
-    width:200px;
-    margin:20px;
-    margin-top:100px;
 }
 
 .categoryRadit{
@@ -420,38 +422,35 @@ font-size:18px;
     height:50px;
 }
 
-
-
-
 /*********  REFERENCE ***********/
+.reference:first-child, .news:first-child{margin-top: 50px;}
 
-.reference{
-    padding-top: 10px;
-    margin-top:30px;
+.reference, .news{
+    padding: 10px;
     overflow:auto;
-    font-size:18px;
-    min-width:300px;
-    text-align:center;
-    max-width:1000px;
+    font-size:16px;
+    width:auto;
+    margin-top:30px;
+    margin: 10px;
 }
+
 .refPhoto{
-    min-width:280px;
+    width:auto;
     height:160px;
-    width:160px;
     float:left;
     text-align:center;
 }
 .refPhoto img{
-    height:150px;
+    height:160px;
 }
 .refText{
     width:60%;
-    min-width:300px;
-    margin-left:15px;
-    margin-top:20px;
-    margin-bottom:20px;
+    margin:10px;
     float:left;
 }
+
+.news-header{margin: 5px 10px;}
+.news-content{margin: 8px 10px;}
 
 /******** SEARCH *********/
 
