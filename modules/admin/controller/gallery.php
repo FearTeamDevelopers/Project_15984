@@ -284,7 +284,7 @@ class Admin_Controller_Gallery extends Controller
             ));
 
             try {
-                $data = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId());
+                $data = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId(), time().'_');
             } catch (Exception $ex) {
                 $errors['photo'] = array($ex->getMessage());
             }

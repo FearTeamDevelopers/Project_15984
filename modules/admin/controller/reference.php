@@ -51,7 +51,7 @@ class Admin_Controller_Reference extends Controller
                 ));
 
                 try {
-                    $data = $fileManager->upload('mainfile', 'reference');
+                    $data = $fileManager->upload('mainfile', 'reference', time().'_');
                     $uploadedFile = ArrayMethods::toObject($data);
                 } catch (Exception $ex) {
                     $errors['mainfile'] = array($ex->getMessage());
@@ -120,7 +120,7 @@ class Admin_Controller_Reference extends Controller
                     ));
 
                     try {
-                        $data = $fileManager->upload('mainfile', 'reference');
+                        $data = $fileManager->upload('mainfile', 'reference', time().'_');
                         $uploadedFile = ArrayMethods::toObject($data);
                     } catch (Exception $ex) {
                         $errors['mainfile'] = array($ex->getMessage());
