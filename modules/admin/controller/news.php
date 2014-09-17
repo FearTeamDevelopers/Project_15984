@@ -4,7 +4,6 @@ use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Core\StringMethods;
-use THCFrame\Registry\Registry;
 
 /**
  * 
@@ -42,7 +41,7 @@ class Admin_Controller_News extends Controller
             $news = new App_Model_News(array(
                 'title' => RequestMethods::post('title'),
                 'author' => RequestMethods::post('author', $this->getUser()->getWholeName()),
-                'shortBody' => RequestMethods::post('shorttext'),
+                'shortBody' => RequestMethods::post('shorttext', StringMethods::truncateHtml(RequestMethods::post('text'))),
                 'body' => RequestMethods::post('text'),
                 'rank' => RequestMethods::post('rank', 1)
             ));
@@ -86,7 +85,7 @@ class Admin_Controller_News extends Controller
             $news->title = RequestMethods::post('title');
             $news->author = RequestMethods::post('author', $this->getUser()->getWholeName());
             $news->body = RequestMethods::post('text');
-            $news->shortBody = RequestMethods::post('shorttext');
+            $news->shortBody = RequestMethods::post('shorttext', StringMethods::truncateHtml(RequestMethods::post('text')));
             $news->rank = RequestMethods::post('rank', 1);
             $news->active = RequestMethods::post('active');
 
