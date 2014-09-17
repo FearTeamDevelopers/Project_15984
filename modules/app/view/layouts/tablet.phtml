@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Language" content="cs" />
         {if $env == "live"}<meta http-equiv="CACHE-CONTROL" content="public, max-age=10800">{/if}
         {else}<meta http-equiv="CACHE-CONTROL" content="no-store">{/else}
-        
+
         <meta name="viewport" content="width=device-width, maximum-scale=2.0, minimum-scale=1.0, initial-scale=1.0" />
         <meta name="language" content="czech" />
         <meta name="keywords" content="{echo $metakeywords}" />
@@ -44,7 +44,7 @@
         {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
         {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
         <link rel="canonical" href="{echo $canonical}" />
-        
+
         <title>{echo $metatitle}</title>
     </head>
     <body lang="cs">
@@ -73,15 +73,31 @@
         </section>
 
         <footer>
-           
+
             © 2014 Kantors Creative Club, Petr Vaněk, Grafico.
         </footer>
 
         <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
         <script type="text/javascript" src="/public/js/custom/general_api.min.js"></script>
 
-        <!-- Piwik Code -->
-
-        <!-- End Piwik Code -->
+        {if $env == "live"}
+        <script type="text/javascript">
+            var _paq = _paq || [];
+            _paq.push(["trackPageView"]);
+            _paq.push(["enableLinkTracking"]);
+            (function () {
+                var u = "https://piwik.agenturakarneval.cz/";
+                _paq.push(["setTrackerUrl", u + "piwik.php"]);
+                _paq.push(["setSiteId", 1]);
+                var d = document, g = d.createElement("script"), s = d.getElementsByTagName("script")[0];
+                g.type = "text/javascript";
+                g.defer = true;
+                g.async = true;
+                g.src = u + "piwik.js";
+                s.parentNode.insertBefore(g, s);
+            })();
+        </script>
+        <noscript><p><img src="https://piwik.agenturakarneval.cz/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+        {/if}
     </body>
 </html>
