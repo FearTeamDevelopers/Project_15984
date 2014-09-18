@@ -61,7 +61,7 @@ class Cron_Controller_Price extends Controller
                     $product->save();
                 } else {
                     $errorCount++;
-                    Core::getLogger()->log(serialize($product->getErrors()), 'cronlog.log');
+                    Core::getLogger()->log(serialize($product->getErrors()), FILE_APPEND, true, 'cronlog.log');
                 }
             }
         }

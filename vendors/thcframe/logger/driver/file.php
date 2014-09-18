@@ -85,7 +85,7 @@ class File extends Logger\Driver
                 str_replace('{date}', date('Y-m-d', time()), 
                         trim($this->syslog, DIRECTORY_SEPARATOR));
 
-        if (NULL !== $file) {
+        if ($file !== null) {
             if (strlen($file) > 50) {
                 $file = trim(substr($file, 0, 50)) . '.log';
             }

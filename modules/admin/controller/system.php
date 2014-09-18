@@ -146,7 +146,7 @@ class Admin_Controller_System extends Controller
 
         $xmlEnd = '</urlset>';
 
-        $host = \THCFrame\Request\RequestMethods::server('HTTP_HOST');
+        $host = RequestMethods::server('HTTP_HOST');
 
         $pageContentXml = "<url><loc>http://{$host}</loc></url>"
                 . "<url><loc>http://{$host}/o-nas</loc></url>"
@@ -174,6 +174,7 @@ class Admin_Controller_System extends Controller
 
         file_put_contents('./sitemap.xml', $xml . $pageContentXml . $categoryXml . $productXml . $xmlEnd);
 
+        Event::fire('admin.log', array('success'));
         $view->successMessage('Soubor sitemap.xml byl aktualizován');
         self::redirect('/admin/system/');
     }

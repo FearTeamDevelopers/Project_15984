@@ -19,7 +19,7 @@ class Admin_Controller_Index extends Controller
         
         $latestRefs = App_Model_Reference::all(
                 array('active = ?' => true), 
-                array('id', 'author', 'title'),
+                array('id', 'author', 'title', 'created'),
                 array('created' => 'desc'), 5);
         
         $latestNews = App_Model_News::all(
