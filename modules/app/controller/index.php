@@ -356,7 +356,7 @@ class App_Controller_Index extends Controller
                             array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'));
 
-            call_user_method_array('wheresql', $productQuery, $args);
+            call_user_func_array(array($productQuery, 'wheresql'), $args);
 
             $productQuery->order('pr.created', 'DESC')
                     ->limit(50);
@@ -365,8 +365,7 @@ class App_Controller_Index extends Controller
             $argscat = array();
             $catWhereCond = "ct.active = 1 AND (";
             for ($i = 0; $i < count($queryParts); $i++) {
-                $catWhereCond .= "ct.metaTitle LIKE '%%?%%' "
-                        . "OR ct.metaKeywords LIKE '%%?%%' OR ct.title LIKE '%%?%%' OR ";
+                $catWhereCond .= "ct.title LIKE '%%?%%' OR ";
                 $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
@@ -378,7 +377,7 @@ class App_Controller_Index extends Controller
             $categoryQuery = App_Model_Category::getQuery(
                             array('ct.id', 'ct.urlKey', 'ct.title'));
 
-            call_user_method_array('wheresql', $categoryQuery, $argscat);
+            call_user_func_array(array($categoryQuery, 'wheresql'), $argscat);
 
             $categoryQuery->order('ct.rank', 'asc')
                     ->limit(10);
