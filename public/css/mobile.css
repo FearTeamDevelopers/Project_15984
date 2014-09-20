@@ -525,12 +525,14 @@ h1{
 FOOTER
 ***********/
 footer{
+    float:left;
     position:relative;
     left:0;
     bottom:0;
     padding:10px;
     color:white;
     font-size:14px;
+    border:1px solid black;
 }
 /* Smartphones (portrait) ----------- */
 /*Style 'show menu' label button and hide it by default*/
