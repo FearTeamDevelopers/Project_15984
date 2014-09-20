@@ -516,6 +516,7 @@ footer{
     padding:10px;
     color:white;
     font-size:14px;
+    z-index:-10;
 }
 /* Smartphones (portrait) ----------- */
 /*Style 'show menu' label button and hide it by default*/
@@ -562,6 +563,7 @@ header{
     float:left;
     margin-left:3px;
     position:fixed;
+    z-index:100;
 }
 .fixed{position: fixed;}
 .relative{position:relative;}
