@@ -124,7 +124,6 @@ h1{
     height:270px;
     padding:10px;
     margin:10px;
-    float:left;
     text-align:center;
     position: relative;
 }
@@ -150,8 +149,7 @@ h1{
     width:170px;
     height:270px;
     padding:10px;
-    margin:10px;
-    float:left;
+    margin:0 auto;
     text-align:center;
     position:relative;
 }
@@ -225,7 +223,7 @@ h1{
 /**********  PRODUCT  **********/
 
 .product{
-     margin-left:10px;
+    margin-left:10px;
     margin-right:10px;
     max-width:450px;
     margin-bottom:30px;
@@ -235,19 +233,18 @@ h1{
     overflow:auto;
 }
 .product h1{
-    margin-left:40px;
+    text-align:center;
     font-size:32px;
 }
 .productPhoto{
+    margin:0 auto;
     margin-top:10px;
-    margin-left:5px;
     max-width:290px;
     min-width:290px;
-    float:left;
 }
 .productPhotoGr{
     margin-top:10px;
-      margin-left:5px;
+    margin-left:5px;
     max-width:430px;
     min-width:430px;
     float:left;
@@ -255,9 +252,10 @@ h1{
 }
 .productPhoto img{
     border:10px solid white;
-    min-width:250px;
-    max-width:260px;
+    min-width:270px;
+    max-width:270px;
     max-height:600px;
+    margin:0 auto;
 }
 .productPhotoGr img{
     border:10px solid white;
@@ -275,7 +273,7 @@ h1{
 
 .productTableGr{
     float:left;
-   width:400px;
+    width:400px;
     margin-top:30px;
     margin-left:5px;
 
@@ -292,8 +290,8 @@ h1{
     margin-left:25px;
     margin-top:20px;
     float:left;
-    max-width:690px;
-    min-width:500px;
+    max-width:400px;
+    min-width:290px;
     margin-bottom:30px
 }
 
@@ -306,25 +304,30 @@ h1{
     max-width:400px;
     min-width:290px;
     margin-bottom:30px
+        
 }
 .pTable tr td{
-font-size:18px;
+    font-size:18px;
     padding-top:6px;
     padding-bottom:6px;
     width:60px;
     text-align:left;
     padding-right:10px;
+    border:0px solid black;
 
 }
 
 .pTable{
     width:400px;
+    border:0px solid black;
 }
 .pTable tr{
     width:400px;
+    border:0px solid black;
 }
 .pTableSingle{
     max-width:290px;
+
 }
 .pTableSingle tr td{
     font-size:18px;
@@ -522,7 +525,7 @@ font-size:18px;
 FOOTER
 ***********/
 footer{
-    position:fixed;
+    position:relative;
     left:0;
     bottom:0;
     padding:10px;
@@ -566,7 +569,6 @@ nav ul li ul li:hover ul{display:block;}
 
 nav ul {
     list-style-type:none;
-    margin:0;
     padding:0;
     position: static;
 }
@@ -576,14 +578,13 @@ nav ul {
     width:90%;
     left:0;
     top:0;
-    margin-left:10px;
+    margin:0 auto;
 }
 .dropdownmenu2-display, .dropdownmenu3-display{
     position:static;
     left:0;
     top:0;
     width:90%;
-    margin-left:10px;
     display:none;
 }
 /*Create a horizontal list with spacing*/
@@ -592,10 +593,14 @@ nav li {
     float: left;
     margin-bottom: 1px;
 }
-nav ul li, nav li a{
+nav ul li, nav li a, nav ul li ul li, nav ul li ul li a{
     width:100%;
+    margin:0 auto;
 }
-
+nav ul li ul{
+    width:90%;
+    margin:0 auto;
+}
 nav li a {
     display:block;
     min-width:140px;
@@ -604,7 +609,7 @@ nav li a {
     text-align: center;
     line-height: 50px;
     color: black;
-     background-image: url('../images/mobil/buttonHlavni_zvyrazneny_nevybrany.png');
+    background-image: url('../images/mobil/buttonHlavni_zvyrazneny_nevybrany.png');
     background-repeat: no-repeat;
     background-position-x: center;
     background-size:100% 100%;
@@ -628,6 +633,10 @@ nav li:hover ul a {
     color: black;
     height: 40px;
     line-height: 40px;
+    width:100%;
+}
+nav li ul li:hover ul a{
+    width:100%
 }
 
 /*Hover state for dropdown links*/
@@ -644,16 +653,16 @@ nav li ul {
 }
 
 /*Make dropdown links vertical*/
-nav li ul li {
+nav li ul li, nav li ul li ul li {
     display: block;
     float: none;
+    margin:0 auto;
 }
 
 /*Prevent text wrapping*/
 nav li ul li a {
-    width: auto;
+    width: 100%;
     min-width: 100px;
-    padding: 0 20px;
 }
 
 /*Display the dropdown on hover*/
@@ -671,7 +680,7 @@ nav ul li a:hover + .hidden, .hidden:hover {
 
 
 #menu{
-   float:left;
+    float:left;
 }
 .content{
     float:left;
@@ -679,23 +688,23 @@ nav ul li a:hover + .hidden, .hidden:hover {
 
 
 @media (orientation: landscape) { 
-.productCategoryGrouped{
-    width:440px;
-}
-.rezerveGr{
-    width:440px;
-}
-.product{max-width:600px;}
-.content{min-width:600px;}
-.category{min-width:600px;}
+    .productCategoryGrouped{
+        width:440px;
+    }
+    .rezerveGr{
+        width:440px;
+    }
+    .product{max-width:600px;}
+    .content{min-width:600px;}
+    .category{min-width:600px;}
 }
 .about{max-width:600px;}
 
 @media (orientation: portrait) { 
-.productCategoryGrouped{
-   width:280px;
-}
-.rezerveGr{
-    width:280px;
-}
+    .productCategoryGrouped{
+        width:280px;
+    }
+    .rezerveGr{
+        width:280px;
+    }
 }
