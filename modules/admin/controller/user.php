@@ -169,7 +169,7 @@ class Admin_Controller_User extends Controller
             if($this->checkToken() !== true){
                 self::redirect('/admin/user/');
             }
-            
+            $errors = array();
             $security = Registry::get('security');
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {

@@ -1026,7 +1026,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        $page = RequestMethods::post('page');
+        $page = (int)RequestMethods::post('page', 0);
         $search = RequestMethods::issetpost('sSearch') ? RequestMethods::post('sSearch') : '';
 
         if ($search != '') {
@@ -1079,7 +1079,6 @@ class Admin_Controller_Product extends Controller
 
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
-
             $count = count($productsCount);
             unset($productsCount);
         } else {
@@ -1118,7 +1117,22 @@ class Admin_Controller_Product extends Controller
             $limit = (int) RequestMethods::post('iDisplayLength');
             $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
-            $count = App_Model_Product::count(array('deleted = ?' => false, 'variantFor = ?' => 0));
+            
+            $productCountQuery = App_Model_Product::getQuery(
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                                'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
+                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                            array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
+                            array('ca.title' => 'catTitle'))
+                    ->where('pr.deleted = ?', false)
+                    ->where('pr.variantFor = ?', 0);
+            
+            $productsCount = App_Model_Product::initialize($productCountQuery);
+            unset($productCountQuery);
+            $count = count($productsCount);
+            unset($productsCount);
         }
 
         $draw = $page + 1 + time();
