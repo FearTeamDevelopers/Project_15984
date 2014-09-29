@@ -14,7 +14,7 @@
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
 
         {if $product->productType != "varianta"}
-       <div id="tabs">
+        <div id="tabs">
             <ul class="maintabmenu multipletabmenu">
                 <li><a href="#basic">Základní informace</a></li>
                 <li><a href="#additional">Doplňující informace</a></li>
@@ -69,7 +69,7 @@
                     {if $product->imgMain != ""}
                     <span class="field" id="currentLogo">
                         <img src="{echo $product->imgThumb}" alt="" height="100" />
-                        <a href="/admin/product/deleteProductMainPhoto/{echo $product->id}" id="delImg" class="btn btn3 btn_trash" title="Smazat"></a>
+                        <a href="/admin/product/deleteproductmainphoto/{echo $product->id}" id="delImg" class="btn btn3 btn_trash" title="Smazat"></a>
                     </span> 
 
                     <span class="field nodisplay" id="uploadLogo" >
@@ -136,6 +136,16 @@
                                value="{echo $product->basicPrice}" />
                         {if isset($errors["basicPrice"])}
                         <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Víkendová cena <small>Výchozí: Základní cena + 140</small></label>
+                    <span class="field">
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="weekendprice" 
+                               value="{echo $product->weekendPrice}" />
+                        {if isset($errors["weekendPrice"])}
+                        <label class="error">{echo join("<br/>", $errors["weekendPrice"])}</label>
                         {/if}
                     </span>
                 </p>
@@ -524,6 +534,16 @@
                                value="{echo $product->basicPrice}" />
                         {if isset($errors["basicPrice"])}
                         <label class="error">{echo join("<br/>", $errors["basicPrice"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Víkendová cena <small>Výchozí: Základní cena + 140</small></label>
+                    <span class="field">
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="weekendprice" 
+                               value="{echo $product->weekendPrice}" />
+                        {if isset($errors["weekendPrice"])}
+                        <label class="error">{echo join("<br/>", $errors["weekendPrice"])}</label>
                         {/if}
                     </span>
                 </p>

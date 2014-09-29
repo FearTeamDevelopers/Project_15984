@@ -220,6 +220,7 @@ h1{
     font-size:32px;
 }
 .productPhoto{
+    position: relative;
     margin-top:10px;
     margin-left:25px;
     max-width:370px;

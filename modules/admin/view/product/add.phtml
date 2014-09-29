@@ -122,6 +122,16 @@
                         {/if}
                     </span>
                 </p>
+                <p>
+                    <label>Víkendová cena <small>Výchozí: Základní cena + 140</small></label>
+                    <span class="field">
+                        <input class="longinput" type="text" title="Pouze čísla" pattern="[\d]*[\.,]?[\d]+" name="weekendprice" 
+                               value="{echo isset($product)? $product->weekendPrice: ""}" />
+                        {if isset($errors["weekendPrice"])}
+                        <label class="error">{echo join("<br/>", $errors["weekendPrice"])}</label>
+                        {/if}
+                    </span>
+                </p>
                 <div class="par">
                     <label>Kategorie*</label>
                     <div class="field">

@@ -45,7 +45,6 @@ class Controller extends BaseController
             $metaData = $metaData;
         } else {
             $metaData = array(
-                'metakeywords' => $this->loadConfigFromDb('meta_keywords'),
                 'metadescription' => $this->loadConfigFromDb('meta_description'),
                 'metarobots' => $this->loadConfigFromDb('meta_robots'),
                 'metatitle' => $this->loadConfigFromDb('meta_title'),
@@ -61,7 +60,6 @@ class Controller extends BaseController
         $this->getLayoutView()
                 ->set('category', $categories)
                 ->set('metatitle', $metaData['metatitle'])
-                ->set('metakeywords', $metaData['metakeywords'])
                 ->set('metarobots', $metaData['metarobots'])
                 ->set('metadescription', $metaData['metadescription'])
                 ->set('metaogurl', $metaData['metaogurl'])

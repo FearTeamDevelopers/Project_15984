@@ -113,10 +113,20 @@ class App_Model_Product extends Model
      * @readwrite
      * @type decimal
      *
-     * @validate numeric
+     * @validate required, numeric
      * @label basic price
      */
     protected $_basicPrice;
+
+    /**
+     * @column
+     * @readwrite
+     * @type decimal
+     *
+     * @validate numeric
+     * @label weekend price
+     */
+    protected $_weekendPrice;
 
     /**
      * @column
@@ -167,7 +177,7 @@ class App_Model_Product extends Model
      * @label quantity
      */
     protected $_quantity;
-    
+
     /**
      * @column
      * @readwrite
@@ -261,7 +271,7 @@ class App_Model_Product extends Model
      * @validate max(3)
      */
     protected $_hasGroupPhoto;
-    
+
     /**
      * @column
      * @readwrite
@@ -360,7 +370,7 @@ class App_Model_Product extends Model
      * @label overlay
      */
     protected $_overlay;
-    
+
     /**
      * @column
      * @readwrite
@@ -404,17 +414,17 @@ class App_Model_Product extends Model
      * @readwrite
      */
     protected $_recommendedProducts;
-    
+
     /**
      * @readwrite
      */
     protected $_recommendedProductObjects;
-    
+
     /**
      * @readwrite
      */
     protected $_fbLikeUrl;
-    
+
     /**
      * @readwrite
      */
@@ -494,20 +504,19 @@ class App_Model_Product extends Model
         if ($product !== null) {
             if ($product->sizeId != 0) {
                 $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
-                                array('cb.title' => 'sizeTitle'))
+                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
                         ->where('pr.urlKey = ?', $urlKey)
                         ->where('pr.deleted = ?', false);
                 $productArr = App_Model_Product::initialize($productQuery);
                 $product = array_shift($productArr);
             }
-            
+
             return $product->getProductByIdForUser();
         } else {
             return null;
         }
     }
-    
+
     /**
      * 
      * @param type $id
@@ -516,11 +525,10 @@ class App_Model_Product extends Model
     public static function fetchProductById($id)
     {
         $product = self::first(array('id = ?' => (int) $id, 'deleted = ?' => false));
-        
+
         if ($product->sizeId != 0) {
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
-                            array('cb.title' => 'sizeTitle'))
+                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
                     ->where('pr.id = ?', (int) $id)
                     ->where('pr.deleted = ?', false);
             $productArr = App_Model_Product::initialize($productQuery);
@@ -536,42 +544,40 @@ class App_Model_Product extends Model
     public function getProductByIdForUser()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
-                        array('cb.title' => 'sizeTitle'))
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
         $this->_variants = App_Model_Product::initialize($variantsQuery);
 
-        $this->_additionalPhotos = App_Model_ProductPhoto::all(array('active = ?' => true,'productId = ?' => $this->getId()));
+        $this->_additionalPhotos = App_Model_ProductPhoto::all(array('active = ?' => true, 'productId = ?' => $this->getId()));
         $this->_inCategories = App_Model_ProductCategory::all(array('productId = ?' => $this->getId()));
         $this->_recommendedProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $this->getId()));
-        
+
         if (!empty($this->_recommendedProducts)) {
             $recomProductIds = array();
             foreach ($this->_recommendedProducts as $recprod) {
                 $recomProductIds[] = $recprod->getRecommendedId();
             }
-            
+
             $this->_recommendedProductObjects = self::all(array(
                         'deleted = ?' => false,
                         'active = ?' => true,
                         'id IN ?' => $recomProductIds
-            ),array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
-        }else{
+                            ), array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
+        } else {
             $this->_recommendedProductObjects = array();
         }
 
         return $this;
     }
-    
+
     /**
      * 
      */
     public function getProductById()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
-                        array('cb.title' => 'sizeTitle'))
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
         $this->_variants = App_Model_Product::initialize($variantsQuery);
@@ -579,19 +585,19 @@ class App_Model_Product extends Model
         $this->_additionalPhotos = App_Model_ProductPhoto::all(array('productId = ?' => $this->getId()));
         $this->_inCategories = App_Model_ProductCategory::all(array('productId = ?' => $this->getId()));
         $this->_recommendedProducts = App_Model_RecommendedProduct::all(array('productId = ?' => $this->getId()));
-        
+
         if (!empty($this->_recommendedProducts)) {
             $recomProductIds = array();
             foreach ($this->_recommendedProducts as $recprod) {
                 $recomProductIds[] = $recprod->getRecommendedId();
             }
-            
+
             $this->_recommendedProductObjects = self::all(array(
                         'deleted = ?' => false,
                         'active = ?' => true,
                         'id IN ?' => $recomProductIds
-            ),array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
-        }else{
+                            ), array('id', 'title', 'urlKey', 'productCode', 'imgThumb'));
+        } else {
             $this->_recommendedProductObjects = array();
         }
 
@@ -605,14 +611,14 @@ class App_Model_Product extends Model
     public static function fetchLatestProducts()
     {
         $productQuery = App_Model_Product::getQuery(
-                    array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.title', 
-                        'pr.currentPrice', 'pr.imgThumb', 'pr.created'))
+                        array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.title',
+                            'pr.currentPrice', 'pr.imgThumb', 'pr.created'))
                 ->where('pr.deleted = ?', false)
                 ->where('pr.active = ?', true)
                 ->where('pr.variantFor = ?', 0)
                 ->order('pr.created', 'desc')
                 ->limit(10);
-        
+
         return App_Model_Product::initialize($productQuery);
     }
 
@@ -623,22 +629,20 @@ class App_Model_Product extends Model
     public static function fetchProductsByCategory($categoryUrlKey, $limit = 30, $page = 1, $orderby = 'created', $order = 'desc')
     {
         $productsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                        array('productId', 'categoryId'))
-                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
-                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey', 
-                            'isGrouped', 'isSelable', 'mainText', 
-                            'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords', 
-                            'ct.metaDescription' => 'catMetaDescription'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey',
+                    'isGrouped', 'isSelable', 'mainText',
+                    'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords',
+                    'ct.metaDescription' => 'catMetaDescription'))
                 ->where('ct.active = ?', true)
                 ->where('ct.urlKey = ?', $categoryUrlKey)
-                ->order('pr.'.$orderby, $order)
+                ->order('pr.' . $orderby, $order)
                 ->where('pr.active = ?', true)
                 ->where('pr.deleted = ?', false)
                 ->limit($limit, $page);
         $products = App_Model_Product::initialize($productsQuery);
-        
+
         return $products;
     }
-    
+
 }

@@ -74,7 +74,8 @@ class Admin_Controller_Product extends Controller
                 'productCode' => RequestMethods::post('productcode'),
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
-                'basicPrice' => RequestMethods::post('basicprice'),
+                'basicPrice' => RequestMethods::post('basicprice', 0),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
@@ -109,7 +110,8 @@ class Admin_Controller_Product extends Controller
                 'productCode' => RequestMethods::post('productcode'),
                 'title' => $title,
                 'description' => $desc,
-                'basicPrice' => RequestMethods::post('basicprice'),
+                'basicPrice' => RequestMethods::post('basicprice', 0),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
@@ -183,7 +185,8 @@ class Admin_Controller_Product extends Controller
                 'productCode' => RequestMethods::post('productcode'),
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
-                'basicPrice' => RequestMethods::post('basicprice'),
+                'basicPrice' => RequestMethods::post('basicprice', 0),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => 0,
                 'quantity' => RequestMethods::post('quantity-' . $size),
@@ -453,7 +456,8 @@ class Admin_Controller_Product extends Controller
             if ($product->getProductType() == 'varianta') {
                 $product->sizeId = RequestMethods::post('size');
                 $product->productCode = RequestMethods::post('productcode');
-                $product->basicPrice = RequestMethods::post('basicprice');
+                $product->basicPrice = RequestMethods::post('basicprice', 0);
+                $product->weekendPrice = RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140);
                 $product->quantity = 0;
                 $product->eanCode = RequestMethods::post('eancode');
                 $product->weight = RequestMethods::post('weight', 1);
@@ -528,7 +532,8 @@ class Admin_Controller_Product extends Controller
                 $product->productCode = RequestMethods::post('productcode');
                 $product->title = RequestMethods::post('title');
                 $product->description = RequestMethods::post('description');
-                $product->basicPrice = RequestMethods::post('basicprice');
+                $product->basicPrice = RequestMethods::post('basicprice', 0);
+                $product->weekendPrice = RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140);
                 $product->regularPrice = RequestMethods::post('regularprice', 0);
                 $product->currentPrice = $currentPrice;
                 $product->quantity = RequestMethods::post('quantity', 0);
@@ -924,11 +929,13 @@ class Admin_Controller_Product extends Controller
                                 $product->priceOldOne = $product->basicPrice;
                                 $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * ($product->basicPrice * $val);
                                 $product->currentPrice = $product->basicPrice;
+                                $product->weekendPrice = $product->basicPrice + 140;
                             } else {
                                 $product->priceOldTwo = $product->priceOldOne;
                                 $product->priceOldOne = $product->basicPrice;
                                 $product->basicPrice = $product->basicPrice + ($oper == '+' ? 1 : -1) * $val;
                                 $product->currentPrice = $product->basicPrice;
+                                $product->weekendPrice = $product->basicPrice + 140;
                             }
 
                             if ($product->validate()) {

@@ -341,10 +341,7 @@ class App_Controller_Index extends Controller
             $args = array();
             $productWhereCond = "pr.deleted = 0 AND pr.variantFor = 0 AND pr.active = 1 AND (";
             for ($i = 0; $i < count($queryParts); $i++) {
-                $productWhereCond .= "pr.productCode='?' OR pr.metaTitle LIKE '%%?%%' "
-                        . "OR pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR ";
-                $args[] = $queryParts[$i];
-                $args[] = $queryParts[$i];
+                $productWhereCond .= "pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR ";
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
             }
@@ -354,7 +351,7 @@ class App_Controller_Index extends Controller
 
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
-                                'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb'));
+                                'pr.title', 'pr.currentPrice', 'pr.weekPrice', 'pr.imgMain', 'pr.imgThumb'));
 
             call_user_func_array(array($productQuery, 'wheresql'), $args);
 
