@@ -35,7 +35,7 @@
                                     <p class="rezerveP">{echo $product->overlay}</p>
                                 </div>
                             {/if}
-                            <span class="price">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
+                            <span class="price">{if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč</span>
                         </a>
                     </div>
 
@@ -51,7 +51,7 @@
                                     <p class="rezerveP">{echo $product->overlay}</p>
                                 </div>
                             {/if}
-                            <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
+                            <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč</span>
                         </a>
                     </div>
                 {/else}

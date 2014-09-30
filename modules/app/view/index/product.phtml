@@ -57,8 +57,7 @@
                     </tr>
                     <tr>
                         <td>Název kostýmu:</td><td>{echo $product->title}</td>
-                       <!--WEEEEEEEEKEND-->
-                        <td>Cena za výkend:</td><td></td>
+                        <td>Cena za výkend:</td><td>{echo $product->weekendPrice}Kč</td>
                     </tr>
                 </table>
             </div>
@@ -105,7 +104,7 @@
                     </tr>
                     <tr><td>{if $selable}Cena:{/if}{else}Cena za jeden den:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
                     <!--změnit currnetPrice-->
-                    {if !$selable}<tr><td>Cena za výkend:</td><td>{echo $product->currentPrice}Kč</td></tr>{/if}
+                    {if !$selable}<tr><td>Cena za výkend:</td><td>{echo $product->weekendPrice}Kč</td></tr>{/if}
                 </table>
             </div>
 
