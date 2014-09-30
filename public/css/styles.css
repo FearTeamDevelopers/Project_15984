@@ -20,7 +20,7 @@ table tr td{
     border:1px solid black;
     padding:5px;
 }
-strong{
+strong, b{
     font-weight:bold;
 }
 
@@ -276,7 +276,7 @@ h1{
     max-width:690px;
     min-width:500px;
     margin-bottom:150px
-        
+
 }
 
 .productDescriptionGr{
@@ -458,31 +458,32 @@ h1{
     padding:10px;
 }
 .kategorieButton {
-    -moz-box-shadow: 1px 3px 13px 1px #c21b53;
-    -webkit-box-shadow: 1px 3px 13px 1px #c21b53;
-    box-shadow: 1px 3px 13px 1px #c21b53;
-    background-color:#c74545;
-    -moz-border-radius:17px;
-    -webkit-border-radius:17px;
-    border-radius:17px;
-    border:2px solid #941515;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-family:arial;
-    font-size:17px;
-    padding:8px 31px;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #2f6627;
-    margin:5px;
+
+    background-image:url('../images/button_sec_nevybrany.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+    color: black;
+    padding:10px;
+    text-decoration: none;
+    display: inline;
+    text-align: center;
+    padding-top:14px;
+    padding-bottom: 14px;
+    font-size: 20px;
+    width:130px;
+    margin:1px;
+    margin-bottom: 15px;
+    float:left;
+}
+.kategorieButton span{
+    width:130px;
 }
 .kategorieButton:hover {
-    background-color:#bd2a60;
+    background-image:url('../images/button_sec_vybrany.png');
 }
-.kategorieButton:active {
-    position:relative;
-    top:1px;
-}
+
 /* třída pro skrývání H1 u articlu*/
 .visuallyhidden {
     border: 0 none;
@@ -645,6 +646,7 @@ nav ul li ul li a:hover {
 
 }
 
+
 @media only screen 
 and (max-width : 1240px) {
     nav ul li a{
@@ -656,6 +658,6 @@ and (max-width : 1240px) {
         padding-bottom: 8px;
     }
     .dropdownmenu2, .dropdownmenu2-display{
-    top:360px;
-}
+        top:360px;
+    }
 }

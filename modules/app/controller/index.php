@@ -336,6 +336,9 @@ class App_Controller_Index extends Controller
 
         if (RequestMethods::issetpost('submitsearch')) {
             $query = RequestMethods::post('searchquery');
+            if($query !=''){
+                
+            
             $queryParts = explode(' ', $query);
 
             $args = array();
@@ -351,7 +354,7 @@ class App_Controller_Index extends Controller
 
             $productQuery = App_Model_Product::getQuery(
                             array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
-                                'pr.title', 'pr.currentPrice', 'pr.weekPrice', 'pr.imgMain', 'pr.imgThumb'));
+                                'pr.title', 'pr.currentPrice', 'pr.weekendPrice', 'pr.imgMain', 'pr.imgThumb'));
 
             call_user_func_array(array($productQuery, 'wheresql'), $args);
 
@@ -379,10 +382,12 @@ class App_Controller_Index extends Controller
             $categoryQuery->order('ct.rank', 'asc')
                     ->limit(10);
             $categories = App_Model_Category::initialize($categoryQuery);
-
+            }else{
+                $products=$categories=array();
+            }   
             $host = RequestMethods::server('HTTP_HOST');
             $canonical = 'http://' . $host . '/hledat';
-
+            
             $view->set('products', $products)
                     ->set('query', $query)
                     ->set('categories', $categories);
