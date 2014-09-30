@@ -29,9 +29,14 @@
                             <iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
                 scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
                         </td>
+                        <td>
+                            Číslo produktu:
+                        </td>
+                        <td>
+                            {echo $product->productCode}
+                        </td>
                     </tr>
                     <tr>
-                        <td>Číslo produktu:</td><td>{echo $product->productCode}</td>
                         <td>Dostupné velikosti:</td>
                         <td>
                             {if !empty($variants)}
@@ -43,10 +48,17 @@
                                 {echo $product->sizeTitle}
                             {/else}
                         </td>
+                        <td>
+                            {if $selable}Cena:{/if}{else}Cena za jeden den:{/else}
+                        </td>
+                        <td>
+                            {echo $product->currentPrice}Kč
+                        </td>
                     </tr>
                     <tr>
                         <td>Název kostýmu:</td><td>{echo $product->title}</td>
-                        <td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td>
+                       <!--WEEEEEEEEKEND-->
+                        <td>Cena za výkend:</td><td></td>
                     </tr>
                 </table>
             </div>
@@ -91,7 +103,9 @@
                             {/else}
                         </td>
                     </tr>
-                    <tr><td>{if $selable}Cena:{/if}{else}Cena od:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
+                    <tr><td>{if $selable}Cena:{/if}{else}Cena za jeden den:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
+                    <!--změnit currnetPrice-->
+                    {if !$selable}<tr><td>Cena za výkend:</td><td>{echo $product->currentPrice}Kč</td></tr>{/if}
                 </table>
             </div>
 

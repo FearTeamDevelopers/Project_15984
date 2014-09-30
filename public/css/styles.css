@@ -275,7 +275,8 @@ h1{
     float:left;
     max-width:690px;
     min-width:500px;
-    margin-bottom:30px
+    margin-bottom:150px
+        
 }
 
 .productDescriptionGr{
@@ -304,12 +305,12 @@ h1{
     background-position-x: center;
     background-position-y: center;
     background-size: 100% 100%;
-
+    position:absolute;
     width:300px;
     height:100px;
     float:left;
-    margin-left:20px;
-    margin-top:70px;
+    margin-left:420px;
+    margin-top:400px;
 }
 
 .pTableSingle tr td{
@@ -643,7 +644,9 @@ nav ul li ul li a:hover {
     background-image:url('../images/button_sec_vybrany.png');
 
 }
-
+.price, .priceSingle{
+    display:none;
+}
 @media only screen 
 and (max-width : 1240px) {
     nav ul li a{
