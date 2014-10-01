@@ -531,7 +531,9 @@ class FileManager extends Base
                                             $thumb->thumbnail($this->thumbWidth, $this->thumbHeight)->save($thumbLocName);
                                             break;
                                     }
-                                    
+
+                                    unset($img);
+                                    unset($thumb);
                                     continue;
                                 } else {
                                     $this->_uploadedFiles[] = $img;
@@ -555,6 +557,7 @@ class FileManager extends Base
                                 $file = new File($fileLocName);
 
                                 $this->_uploadedFiles[] = $file;
+                                unset($file);
                                 continue;
                             }
                         } else {
@@ -652,6 +655,9 @@ class FileManager extends Base
                                         $thumb->thumbnail($this->thumbWidth, $this->thumbHeight)->save($thumbLocName);
                                         break;
                                 }
+
+                                unset($img);
+                                unset($thumb);
                             } else {
                                 $this->_uploadedFiles[] = $img;
                             }
@@ -672,6 +678,7 @@ class FileManager extends Base
                             $file = new File($fileLocName);
 
                             $this->_uploadedFiles[] = $file;
+                            unset($file);
                         }
                     } else {
                         $this->_uploadErrors[] = sprintf('File has unsupported extension. Images: %s | Files: %s', join(', ', $this->_imageExtensions), join(', ', $this->_fileExtensions));
@@ -694,8 +701,7 @@ class FileManager extends Base
      */
     public function uploadBase64Image($base64string, $filename, $uploadTo, $namePrefix = '', $createThumb = true)
     {
-        $img = new Image();
-        $img->loadBase64($base64string);
+        $img = new Image(null, $base64string);
 
         $pathToImages = $this->getPathToImages() . '/' . $uploadTo . '/';
         $pathToThumbs = $this->getPathToThumbs() . '/' . $uploadTo . '/';
@@ -758,4 +764,15 @@ class FileManager extends Base
         return $this;
     }
 
+    /**
+     * 
+     * @return \THCFrame\Filesystem\FileManager
+     */
+    public function newUpload()
+    {
+        $this->_uploadedFiles = array();
+        $this->_uploadErrors = array();
+        
+        return $this;
+    }
 }
