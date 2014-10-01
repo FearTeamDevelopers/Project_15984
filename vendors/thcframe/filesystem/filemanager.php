@@ -531,9 +531,7 @@ class FileManager extends Base
                                             $thumb->thumbnail($this->thumbWidth, $this->thumbHeight)->save($thumbLocName);
                                             break;
                                     }
-
-                                    unset($img);
-                                    unset($thumb);
+                                    
                                     continue;
                                 } else {
                                     $this->_uploadedFiles[] = $img;
@@ -557,7 +555,6 @@ class FileManager extends Base
                                 $file = new File($fileLocName);
 
                                 $this->_uploadedFiles[] = $file;
-                                unset($file);
                                 continue;
                             }
                         } else {
@@ -655,9 +652,6 @@ class FileManager extends Base
                                         $thumb->thumbnail($this->thumbWidth, $this->thumbHeight)->save($thumbLocName);
                                         break;
                                 }
-
-                                unset($img);
-                                unset($thumb);
                             } else {
                                 $this->_uploadedFiles[] = $img;
                             }
@@ -678,7 +672,6 @@ class FileManager extends Base
                             $file = new File($fileLocName);
 
                             $this->_uploadedFiles[] = $file;
-                            unset($file);
                         }
                     } else {
                         $this->_uploadErrors[] = sprintf('File has unsupported extension. Images: %s | Files: %s', join(', ', $this->_imageExtensions), join(', ', $this->_fileExtensions));
@@ -755,9 +748,6 @@ class FileManager extends Base
                         $thumb->thumbnail($this->thumbWidth, $this->thumbHeight)->save($thumbLocName);
                         break;
                 }
-
-                unset($img);
-                unset($thumb);
             } else {
                 $this->_uploadedFiles[] = $img;
             }

@@ -22,7 +22,7 @@ class Admin_Controller_System extends Controller
     {
         
     }
-
+    
     /**
      * @before _secured, _admin
      */

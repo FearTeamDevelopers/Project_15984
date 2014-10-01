@@ -3,7 +3,6 @@
 use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
-use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
 use THCFrame\Registry\Registry;
 

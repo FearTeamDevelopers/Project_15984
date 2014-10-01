@@ -3,7 +3,6 @@
 use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
-use THCFrame\Core\ArrayMethods;
 use THCFrame\Filesystem\FileManager;
 use THCFrame\Registry\Registry;
 
@@ -267,6 +266,8 @@ class Admin_Controller_Gallery extends Controller
         $view->set('gallery', $gallery)
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
+                    THCFrame\Core\Core::getLogger()->log('before dump');
+                    
         if (RequestMethods::post('submitAddPhoto')) {
             if ($this->checkToken() !== true &&
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
@@ -281,7 +282,7 @@ class Admin_Controller_Gallery extends Controller
                 'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
             ));
 
-            $fileErrors = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId())->getUploadErrors();
+            $fileErrors = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId(), time().'_')->getUploadErrors();
             $files = $fileManager->getUploadedFiles();
 
             if (!empty($files)) {
@@ -320,7 +321,8 @@ class Admin_Controller_Gallery extends Controller
                 $view->successMessage(self::SUCCESS_MESSAGE_7);
                 self::redirect('/admin/gallery/detail/' . $gallery->getId());
             } else {
-                $view->set('errors', $errors);
+                $view->set('errors', $errors)
+                    ->set('submstoken', $this->revalidateMutliSubmissionProtectionToken());
             }
         }
     }
