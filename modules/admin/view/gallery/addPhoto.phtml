@@ -17,17 +17,6 @@
         <input type="hidden" name="tk" value="{echo $token}" />
         
         <p>
-            <label>Název</label>
-            <span class="field">
-                <input type="text" name="title" class="longinput" value="{echo isset($photo)? $photo->title: ""}"/>
-                {if isset($errors["title"])}
-                <label class="error">
-                    {echo join("<br/>", $errors["title"])}
-                </label>
-                {/if}
-            </span>
-        </p>
-        <p>
             <label>Popis</label>
             <span class="field">
                 <textarea rows="5" name="description" class="longinput">{echo isset($photo)? $photo->description: ""}</textarea>
