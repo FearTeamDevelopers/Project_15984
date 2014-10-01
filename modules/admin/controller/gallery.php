@@ -12,7 +12,7 @@ use THCFrame\Registry\Registry;
  */
 class Admin_Controller_Gallery extends Controller
 {
-    
+
     /**
      * 
      * @param type $key
@@ -51,15 +51,15 @@ class Admin_Controller_Gallery extends Controller
     public function add()
     {
         $view = $this->getActionView();
-        
+
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddGallery')) {
-            if($this->checkToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/gallery/');
             }
-            
+
             $errors = array();
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
@@ -78,7 +78,7 @@ class Admin_Controller_Gallery extends Controller
                 $id = $gallery->save();
 
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Galerie'.self::SUCCESS_MESSAGE_1);
+                $view->successMessage('Galerie' . self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -131,10 +131,10 @@ class Admin_Controller_Gallery extends Controller
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitEditGallery')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/gallery/');
             }
-            
+
             $errors = array();
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
 
@@ -174,8 +174,7 @@ class Admin_Controller_Gallery extends Controller
         $view = $this->getActionView();
 
         $gallery = App_Model_Gallery::first(
-                        array('id = ?' => (int)$id), 
-                        array('id', 'title', 'created')
+                        array('id = ?' => (int) $id), array('id', 'title', 'created')
         );
 
         if (NULL === $gallery) {
@@ -186,7 +185,7 @@ class Admin_Controller_Gallery extends Controller
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitDeleteGallery')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/gallery/');
             }
 
@@ -202,8 +201,8 @@ class Admin_Controller_Gallery extends Controller
                     $pathToThumbs = 'public/uploads/images';
                 }
 
-                $photos = App_Model_Photo::all(array('galleryId = ?' => (int)$id));
-                
+                $photos = App_Model_Photo::all(array('galleryId = ?' => (int) $id));
+
                 $ids = array();
                 foreach ($photos as $colPhoto) {
                     $ids[] = $colPhoto->getId();
@@ -232,7 +231,7 @@ class Admin_Controller_Gallery extends Controller
 
             if ($gallery->delete()) {
                 Event::fire('admin.log', array('success', 'Gallery id: ' . $id));
-                $view->successMessage('Galerie'.self::SUCCESS_MESSAGE_3);
+                $view->successMessage('Galerie' . self::SUCCESS_MESSAGE_3);
                 self::redirect('/admin/gallery/');
             } else {
                 Event::fire('admin.log', array('fail', 'Gallery id: ' . $id));
@@ -269,11 +268,10 @@ class Admin_Controller_Gallery extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddPhoto')) {
-            if($this->checkToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/gallery/');
             }
-            $errors = array();
 
             $fileManager = new FileManager(array(
                 'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
@@ -283,40 +281,42 @@ class Admin_Controller_Gallery extends Controller
                 'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
             ));
 
-            try {
-                $data = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId(), time().'_');
-            } catch (Exception $ex) {
-                $errors['photo'] = array($ex->getMessage());
-            }
+            $fileErrors = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId())->getUploadErrors();
+            $files = $fileManager->getUploadedFiles();
 
-            if (empty($data['errors']) && empty($errors['photo'])) {
-                foreach ($data['files'] as $i => $value) {
-                    $uploadedFile = ArrayMethods::toObject($value);
+            if (!empty($files)) {
+                foreach ($files as $i => $file) {
+                    if ($file instanceof \THCFrame\Filesystem\Image) {
+                        $info = $file->getOriginalInfo();
 
-                    $photo = new App_Model_Photo(array(
-                        'galleryId' => $gallery->getId(),
-                        'imgMain' => trim($uploadedFile->file->path, '.'),
-                        'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                        'title' => RequestMethods::post('title', $uploadedFile->file->filename),
-                        'description' => RequestMethods::post('description', ''),
-                        'photoName' => $uploadedFile->file->filename,
-                        'mime' => $uploadedFile->file->ext,
-                        'sizeMain' => $uploadedFile->file->size,
-                        'sizeThumb' => $uploadedFile->thumb->size
-                    ));
+                        $photo = new App_Model_Photo(array(
+                            'galleryId' => $gallery->getId(),
+                            'imgMain' => trim($file->getFilename(), '.'),
+                            'imgThumb' => trim($file->getThumbname(), '.'),
+                            'description' => RequestMethods::post('description'),
+                            'photoName' => pathinfo($file->getFilename(), PATHINFO_FILENAME),
+                            'mime' => $info['mime'],
+                            'format' => $info['format'],
+                            'width' => $file->getWidth(),
+                            'height' => $file->getHeight(),
+                            'size' => $file->getSize()
+                        ));
 
-                    if ($photo->validate()) {
-                        $aid = $photo->save();
+                        if ($photo->validate()) {
+                            $aid = $photo->save();
 
-                        Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' in gallery ' . $gallery->getId()));
-                    } else {
-                        Event::fire('admin.log', array('fail', 'Photo in gallery ' . $gallery->getId()));
-                        $errors['photo'][] = $photo->getErrors();
+                            Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' in gallery ' . $gallery->getId()));
+                        } else {
+                            Event::fire('admin.log', array('fail', 'Photo in gallery ' . $gallery->getId()));
+                            $errors['secondfile'][] = $photo->getErrors();
+                        }
                     }
                 }
             }
 
-            if (empty($errors)) {
+            $errors['secondfile'] = $fileErrors;
+
+            if (empty($errors['secondfile'])) {
                 $view->successMessage(self::SUCCESS_MESSAGE_7);
                 self::redirect('/admin/gallery/detail/' . $gallery->getId());
             } else {
@@ -344,10 +344,10 @@ class Admin_Controller_Gallery extends Controller
             if (null === $photo) {
                 echo self::ERROR_MESSAGE_2;
             } else {
-                if ($photo->delete()) {
-                    @unlink($photo->getUnlinkPath());
-                    @unlink($photo->getUnlinkThumbPath());
+                @unlink($photo->getUnlinkPath());
+                @unlink($photo->getUnlinkThumbPath());
 
+                if ($photo->delete()) {
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     echo 'success';
                 } else {

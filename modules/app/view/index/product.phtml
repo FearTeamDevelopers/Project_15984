@@ -49,7 +49,7 @@
                             {/else}
                         </td>
                         <td>
-                            {if $selable}Cena:{/if}{else}Cena za jeden den:{/else}
+                            {if $selable}Cena:{/if}{else}Cena za 1. den:{/else}
                         </td>
                         <td>
                             {echo $product->currentPrice}Kč
@@ -102,7 +102,7 @@
                             {/else}
                         </td>
                     </tr>
-                    <tr><td>{if $selable}Cena:{/if}{else}Cena za jeden den:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
+                    <tr><td>{if $selable}Cena:{/if}{else}Cena za 1. den:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
                     <!--změnit currnetPrice-->
                     {if !$selable}<tr><td>Cena za výkend:</td><td>{echo $product->weekendPrice}Kč</td></tr>{/if}
                 </table>

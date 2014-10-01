@@ -83,7 +83,7 @@ class App_Model_Reference extends Model
      * @length 250
      * 
      * @validate path, max(250)
-     * @label thum path
+     * @label thumb path
      */
     protected $_imgThumb;
 

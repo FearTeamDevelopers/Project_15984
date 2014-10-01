@@ -47,11 +47,20 @@ class Admin_Controller_Product extends Controller
 
         $uploadTo = trim(substr(str_replace('.', '', $urlKeyCh), 0, 3));
 
-        try {
-            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo, time().'_');
-            $uploadedFile = ArrayMethods::toObject($data);
-        } catch (Exception $ex) {
-            $this->_errors['mainfile'] = array($ex->getMessage());
+        $fileErrors = $fileManager->upload('mainfile', 'product/' . $uploadTo, time() . '_')->getUploadErrors();
+        $files = $fileManager->getUploadedFiles();
+
+        if (!empty($fileErrors)) {
+            $this->_errors['mainfile'] = $fileErrors;
+        }
+
+        if (!empty($files)) {
+            foreach ($files as $i => $filemain) {
+                if ($filemain instanceof \THCFrame\Filesystem\Image) {
+                    $file = $filemain;
+                    break;
+                }
+            }
         }
 
         if (RequestMethods::post('discount') &&
@@ -75,7 +84,7 @@ class Admin_Controller_Product extends Controller
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
                 'basicPrice' => RequestMethods::post('basicprice', 0),
-                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float) RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
@@ -88,14 +97,14 @@ class Admin_Controller_Product extends Controller
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
                 'hasGroupPhoto' => RequestMethods::post('photoType'),
-                'imgMain' => trim($uploadedFile->file->path, '.'),
-                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                'imgMain' => trim($file->getFilename(), '.'),
+                'imgThumb' => trim($file->getThumbname(), '.'),
                 'metaTitle' => RequestMethods::post('metatitle', $title),
                 'metaKeywords' => RequestMethods::post('metakeywords'),
                 'metaDescription' => RequestMethods::post('metadescription', $desc),
                 'rssFeedTitle' => $title,
                 'rssFeedDescription' => $desc,
-                'rssFeedImg' => trim($uploadedFile->file->path, '.'),
+                'rssFeedImg' => trim($file->getFilename(), '.'),
                 'overlay' => RequestMethods::post('overlay')
             ));
         } else {
@@ -111,7 +120,7 @@ class Admin_Controller_Product extends Controller
                 'title' => $title,
                 'description' => $desc,
                 'basicPrice' => RequestMethods::post('basicprice', 0),
-                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float) RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => $currentPrice,
                 'quantity' => RequestMethods::post('quantity', 0),
@@ -124,14 +133,14 @@ class Admin_Controller_Product extends Controller
                 'newFrom' => RequestMethods::post('newfrom'),
                 'newTo' => RequestMethods::post('newto'),
                 'hasGroupPhoto' => RequestMethods::post('photoType'),
-                'imgMain' => trim($uploadedFile->file->path, '.'),
-                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                'imgMain' => trim($file->getFilename(), '.'),
+                'imgThumb' => trim($file->getThumbname(), '.'),
                 'metaTitle' => RequestMethods::post('metatitle', $title),
                 'metaKeywords' => RequestMethods::post('metakeywords'),
                 'metaDescription' => RequestMethods::post('metadescription', $desc),
                 'rssFeedTitle' => $title,
                 'rssFeedDescription' => $desc,
-                'rssFeedImg' => trim($uploadedFile->file->path, '.'),
+                'rssFeedImg' => trim($file->getFilename(), '.'),
                 'overlay' => RequestMethods::post('overlay')
             ));
         }
@@ -186,7 +195,7 @@ class Admin_Controller_Product extends Controller
                 'title' => RequestMethods::post('title'),
                 'description' => RequestMethods::post('description'),
                 'basicPrice' => RequestMethods::post('basicprice', 0),
-                'weekendPrice' => RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140),
+                'weekendPrice' => RequestMethods::post('weekendprice', (float) RequestMethods::post('basicprice', 0) + 140),
                 'regularPrice' => RequestMethods::post('regularprice', 0),
                 'currentPrice' => 0,
                 'quantity' => RequestMethods::post('quantity-' . $size),
@@ -292,29 +301,30 @@ class Admin_Controller_Product extends Controller
             'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
         ));
 
-        try {
-            $data = $fileManager->upload('secondfile', 'product/' . $uploadTo, time().'_');
-        } catch (Exception $ex) {
+        $fileErrors = $fileManager->upload('secondfile', 'product/' . $uploadTo, time() . '_')->getUploadErrors();
+        $files = $fileManager->getUploadedFiles();
+
+        if (!empty($fileErrors)) {
             $this->_errors['secondfile'] = array($ex->getMessage());
         }
 
-        if (empty($data['errors']) && empty($this->_errors['secondfile'])) {
-            foreach ($data['files'] as $i => $value) {
-                $uploadedFile = ArrayMethods::toObject($value);
+        if (!empty($files)) {
+            foreach ($files as $i => $file) {
+                if ($file instanceof \THCFrame\Filesystem\Image) {
+                    $photo = new App_Model_ProductPhoto(array(
+                        'productId' => (int) $productId,
+                        'imgMain' => trim($file->getFilename(), '.'),
+                        'imgThumb' => trim($file->getThumbname(), '.')
+                    ));
 
-                $photo = new App_Model_ProductPhoto(array(
-                    'productId' => (int) $productId,
-                    'imgMain' => trim($uploadedFile->file->path, '.'),
-                    'imgThumb' => trim($uploadedFile->thumb->path, '.'),
-                ));
+                    if ($photo->validate()) {
+                        $aid = $photo->save();
 
-                if ($photo->validate()) {
-                    $aid = $photo->save();
-
-                    Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' for product ' . $productId));
-                } else {
-                    Event::fire('admin.log', array('fail', 'Photo for product ' . $productId));
-                    $this->_errors['secondfile'][] = $photo->getErrors();
+                        Event::fire('admin.log', array('success', 'Photo id: ' . $aid . ' in gallery ' . $gallery->getId()));
+                    } else {
+                        Event::fire('admin.log', array('fail', 'Photo in gallery ' . $gallery->getId()));
+                        $this->_errors['secondfile'][] = $photo->getErrors();
+                    }
                 }
             }
         } else {
@@ -355,20 +365,20 @@ class Admin_Controller_Product extends Controller
 
         $sizes = App_Model_Codebook::all(array('active = ?' => true, 'type = ?' => 'size'));
         $categories = App_Model_Category::fetchAllCategories();
-        
+
         $view->set('sizes', $sizes)
                 ->set('categories', $categories)
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddProduct')) {
-            if($this->checkToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/product/');
             }
-            
+
             $cache = Registry::get('cache');
             $categoryArr = RequestMethods::post('rcat');
-            
+
             if (empty($categoryArr)) {
                 $this->_errors['category'] = array('Musí být vybrána minimálně jedna kategorie');
             }
@@ -399,7 +409,7 @@ class Admin_Controller_Product extends Controller
                 }
 
                 if (empty($this->_errors)) {
-                    $view->successMessage('Produkt'.self::SUCCESS_MESSAGE_1);
+                    $view->successMessage('Produkt' . self::SUCCESS_MESSAGE_1);
                     $cache->invalidate();
                     self::redirect('/admin/product/');
                 } else {
@@ -447,17 +457,17 @@ class Admin_Controller_Product extends Controller
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/product/');
             }
-            
+
             $cache = Registry::get('cache');
 
             if ($product->getProductType() == 'varianta') {
                 $product->sizeId = RequestMethods::post('size');
                 $product->productCode = RequestMethods::post('productcode');
                 $product->basicPrice = RequestMethods::post('basicprice', 0);
-                $product->weekendPrice = RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140);
+                $product->weekendPrice = RequestMethods::post('weekendprice', (float) RequestMethods::post('basicprice', 0) + 140);
                 $product->quantity = 0;
                 $product->eanCode = RequestMethods::post('eancode');
                 $product->weight = RequestMethods::post('weight', 1);
@@ -493,25 +503,31 @@ class Admin_Controller_Product extends Controller
 
                 $uploadTo = trim(substr(str_replace('.', '', $product->getUrlKey()), 0, 3));
                 if ($product->imgMain == '') {
-                    try {
-                        $fileManager = new FileManager(array(
-                            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
-                        ));
+                    $fileManager = new FileManager(array(
+                        'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+                        'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+                        'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+                        'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+                        'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                    ));
 
-                        try {
-                            $data = $fileManager->upload('mainfile', 'product/' . $uploadTo, time().'_');
-                            $uploadedFile = ArrayMethods::toObject($data);
-                            $imgMain = trim($uploadedFile->file->path, '.');
-                            $imgThumb = trim($uploadedFile->thumb->path, '.');
-                        } catch (Exception $ex) {
-                            $errors['mainfile'] = array($ex->getMessage());
+                    $fileErrors = $fileManager->upload('mainfile', 'product/' . $uploadTo, time() . '_')->getUploadErrors();
+                    $files = $fileManager->getUploadedFiles();
+
+                    if (!empty($fileErrors)) {
+                        $errors['mainfile'] = $fileErrors;
+                    }
+
+                    if (!empty($files)) {
+                        foreach ($files as $i => $filemain) {
+                            if ($filemain instanceof \THCFrame\Filesystem\Image) {
+                                $file = $filemain;
+                                break;
+                            }
                         }
-                    } catch (Exception $ex) {
-                        $errors['mainfile'] = $ex->getMessage();
+
+                        $imgMain = trim($file->getFilename(), '.');
+                        $imgThumb = trim($file->getThumbname(), '.');
                     }
                 } else {
                     $imgMain = $product->imgMain;
@@ -533,7 +549,7 @@ class Admin_Controller_Product extends Controller
                 $product->title = RequestMethods::post('title');
                 $product->description = RequestMethods::post('description');
                 $product->basicPrice = RequestMethods::post('basicprice', 0);
-                $product->weekendPrice = RequestMethods::post('weekendprice', (float)RequestMethods::post('basicprice', 0) + 140);
+                $product->weekendPrice = RequestMethods::post('weekendprice', (float) RequestMethods::post('basicprice', 0) + 140);
                 $product->regularPrice = RequestMethods::post('regularprice', 0);
                 $product->currentPrice = $currentPrice;
                 $product->quantity = RequestMethods::post('quantity', 0);
@@ -615,19 +631,19 @@ class Admin_Controller_Product extends Controller
         $view->set('product', $product);
 
         if (RequestMethods::post('submitDeleteProduct')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/product/');
             }
-            
+
             $cache = Registry::get('cache');
-            
+
             $product->deleted = true;
 
             if ($product->validate()) {
                 $product->save();
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                $view->successMessage('Produkt'.self::SUCCESS_MESSAGE_3);
+                $view->successMessage('Produkt' . self::SUCCESS_MESSAGE_3);
                 $cache->invalidate();
                 self::redirect('/admin/product/');
             } else {
@@ -649,7 +665,7 @@ class Admin_Controller_Product extends Controller
 
         if ($this->checkToken()) {
             $cache = Registry::get('cache');
-            
+
             $product = App_Model_Product::first(
                             array('id = ?' => (int) $id, 'deleted = ?' => true));
 
@@ -718,7 +734,7 @@ class Admin_Controller_Product extends Controller
         $view->set('productid', $productId);
 
         if (RequestMethods::post('submitSaveRecommended')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/product/');
             }
 
@@ -811,10 +827,10 @@ class Admin_Controller_Product extends Controller
             if ($photo === null) {
                 echo self::ERROR_MESSAGE_2;
             } else {
-                if ($photo->delete()) {
-                    @unlink($photo->getUnlinkPath());
-                    @unlink($photo->getUnlinkThumbPath());
+                @unlink($photo->getUnlinkPath());
+                @unlink($photo->getUnlinkThumbPath());
 
+                if ($photo->delete()) {
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'success';
                 } else {
@@ -1033,7 +1049,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        $page = (int)RequestMethods::post('page', 0);
+        $page = (int) RequestMethods::post('page', 0);
         $search = RequestMethods::issetpost('sSearch') ? RequestMethods::post('sSearch') : '';
 
         if ($search != '') {
@@ -1043,13 +1059,11 @@ class Admin_Controller_Product extends Controller
                     . "OR ca.title='?' OR pr.title LIKE '%%?%%')";
 
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey',
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
-                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                            array('productId', 'categoryId'))
-                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                            array('ca.title' => 'catTitle'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond, $search, $search, $search, $search, $search, $search);
 
             if (RequestMethods::issetpost('iSortCol_0')) {
@@ -1078,10 +1092,8 @@ class Admin_Controller_Product extends Controller
             $products = App_Model_Product::initialize($productQuery);
 
             $productCountQuery = App_Model_Product::getQuery(array('pr.id'))
-                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                            array('productId', 'categoryId'))
-                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                            array('ca.title' => 'catTitle'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', array('ca.title' => 'catTitle'))
                     ->wheresql($whereCond, $search, $search, $search, $search, $search, $search);
 
             $productsCount = App_Model_Product::initialize($productCountQuery);
@@ -1090,13 +1102,11 @@ class Admin_Controller_Product extends Controller
             unset($productsCount);
         } else {
             $productQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey',
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
-                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                            array('productId', 'categoryId'))
-                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                            array('ca.title' => 'catTitle'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', array('ca.title' => 'catTitle'))
                     ->where('pr.deleted = ?', false)
                     ->where('pr.variantFor = ?', 0);
 
@@ -1124,18 +1134,16 @@ class Admin_Controller_Product extends Controller
             $limit = (int) RequestMethods::post('iDisplayLength');
             $productQuery->limit($limit, $page + 1);
             $products = App_Model_Product::initialize($productQuery);
-            
+
             $productCountQuery = App_Model_Product::getQuery(
-                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey', 
+                            array('pr.id', 'pr.active', 'pr.productType', 'pr.variantFor', 'pr.urlKey',
                                 'pr.productCode', 'pr.discount', 'pr.discountFrom', 'pr.discountTo',
                                 'pr.title', 'pr.currentPrice', 'pr.imgMain', 'pr.imgThumb', 'pr.overlay'))
-                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
-                            array('productId', 'categoryId'))
-                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', 
-                            array('ca.title' => 'catTitle'))
+                    ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
+                    ->join('tb_category', 'pc.categoryId = ca.id', 'ca', array('ca.title' => 'catTitle'))
                     ->where('pr.deleted = ?', false)
                     ->where('pr.variantFor = ?', 0);
-            
+
             $productsCount = App_Model_Product::initialize($productCountQuery);
             unset($productCountQuery);
             $count = count($productsCount);
@@ -1150,19 +1158,17 @@ class Admin_Controller_Product extends Controller
         if ($products !== null) {
             foreach ($products as $product) {
                 $label = '';
-                if ($product->getDiscount() != 0 
-                        && $product->getDiscountFrom() <= date('Y-m-d') 
-                        && $product->getDiscountTo() >= date('Y-m-d')) {
+                if ($product->getDiscount() != 0 && $product->getDiscountFrom() <= date('Y-m-d') && $product->getDiscountTo() >= date('Y-m-d')) {
                     $label .= "<span class='labelProduct labelProductBlue'>Ve slevě</span>";
                 }
-                
-                if($product->overlay !== ''){
+
+                if ($product->overlay !== '') {
                     $label .= "<span class='labelProduct labelProductGreen'>{$product->overlay}</span>";
                 }
-                
-                if($product->active){
+
+                if ($product->active) {
                     $label .= "<span class='labelProduct labelProductGreen'>Aktivní</span>";
-                }else{
+                } else {
                     $label .= "<span class='labelProduct labelProductGray'>Neaktivní</span>";
                 }
 
@@ -1173,12 +1179,12 @@ class Admin_Controller_Product extends Controller
                 $arr [] = "\"" . ucfirst($product->getProductType()) . "\"";
                 $arr [] = "\"" . $product->catTitle . "\"";
                 $arr [] = "\"" . $product->getProductCode() . "\"";
-                $arr [] = "\"" . $product->getCurrentPrice() ."\"";
-                $arr [] = "\"" .$label."\"";
+                $arr [] = "\"" . $product->getCurrentPrice() . "\"";
+                $arr [] = "\"" . $label . "\"";
 
                 $tempStr = "\"<a href='/kostym/" . $product->getUrlKey() . "/' target=_blank class='btn btn3 btn_video' title='Live preview'></a>";
                 $tempStr .= "<a href='/admin/product/edit/" . $product->id . "' class='btn btn3 btn_pencil' title='Edit'></a>";
-                
+
                 if ($this->isAdmin()) {
                     $tempStr .= "<a href='/admin/product/delete/" . $product->id . "' class='btn btn3 btn_trash' title='Delete'></a>";
                 }
@@ -1195,5 +1201,5 @@ class Admin_Controller_Product extends Controller
             echo $str;
         }
     }
-    
+
 }

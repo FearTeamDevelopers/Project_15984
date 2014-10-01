@@ -32,7 +32,7 @@ class App_Model_Photo extends Model
      * @validate required, numeric, max(8)
      */
     protected $_galleryId;
-    
+
     /**
      * @column
      * @readwrite
@@ -60,18 +60,7 @@ class App_Model_Photo extends Model
      * @type text
      * @length 250
      * 
-     * @validate required, max(250)
-     * @label thum path
-     */
-    protected $_imgThumb;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 250
-     * 
-     * @validate required, max(250)
+     * @validate required, path, max(250)
      * @label photo path
      */
     protected $_imgMain;
@@ -80,23 +69,12 @@ class App_Model_Photo extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 150
+     * @length 250
      * 
-     * @validate alphanumeric, max(150)
-     * @label title
+     * @validate required, path, max(250)
+     * @label thumb path
      */
-    protected $_title;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 256
-     * 
-     * @validate alphanumeric, max(2048)
-     * @label description
-     */
-    protected $_description;
+    protected $_imgThumb;
 
     /**
      * @column
@@ -112,12 +90,13 @@ class App_Model_Photo extends Model
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type text
+     * @length 10
      * 
-     * @validate required, numeric, max(8)
-     * @label size
+     * @validate required, alpha, max(8)
+     * @label format
      */
-    protected $_sizeMain;
+    protected $_format;
 
     /**
      * @column
@@ -125,9 +104,29 @@ class App_Model_Photo extends Model
      * @type integer
      * 
      * @validate required, numeric, max(8)
-     * @label thumb size
+     * @label size
      */
-    protected $_sizeThumb;
+    protected $_size;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * 
+     * @validate required, numeric, max(8)
+     * @label width
+     */
+    protected $_width;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * 
+     * @validate required, numeric, max(8)
+     * @label height
+     */
+    protected $_height;
 
     /**
      * @column

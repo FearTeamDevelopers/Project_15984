@@ -29,43 +29,48 @@ class Admin_Controller_Reference extends Controller
     public function add()
     {
         $view = $this->getActionView();
-        
+
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddReference')) {
-            if($this->checkToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/reference/');
             }
-            
+
             $cache = Registry::get('cache');
             $errors = array();
 
-            try {
-                $fileManager = new FileManager(array(
-                    'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                    'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                    'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                    'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                    'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
-                ));
+            $fileManager = new FileManager(array(
+                'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+                'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+                'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+                'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+                'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+            ));
 
-                try {
-                    $data = $fileManager->upload('mainfile', 'reference', time().'_');
-                    $uploadedFile = ArrayMethods::toObject($data);
-                } catch (Exception $ex) {
-                    $errors['mainfile'] = array($ex->getMessage());
+            $fileErrors = $fileManager->upload('mainfile', 'reference', time() . '_')->getUploadErrors();
+            $files = $fileManager->getUploadedFiles();
+
+            if (!empty($fileErrors)) {
+                $errors['mainfile'] = $fileErrors;
+            }
+
+            if (!empty($files)) {
+                foreach ($files as $i => $filemain) {
+                    if ($filemain instanceof \THCFrame\Filesystem\Image) {
+                        $file = $filemain;
+                        break;
+                    }
                 }
-            } catch (Exception $ex) {
-                $errors['mainfile'] = array($ex->getMessage());
             }
 
             $reference = new App_Model_Reference(array(
                 'title' => RequestMethods::post('title'),
                 'author' => RequestMethods::post('author', $this->getUser()->getWholeName()),
                 'isCorporate' => RequestMethods::post('corporate'),
-                'imgMain' => trim($uploadedFile->file->path, '.'),
-                'imgThumb' => trim($uploadedFile->thumb->path, '.'),
+                'imgMain' => trim($file->getFilename(), '.'),
+                'imgThumb' => trim($file->getThumbname(), '.'),
                 'body' => RequestMethods::post('text')
             ));
 
@@ -73,7 +78,7 @@ class Admin_Controller_Reference extends Controller
                 $id = $reference->save();
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
-                $view->successMessage('Reference'.self::SUCCESS_MESSAGE_1);
+                $view->successMessage('Reference' . self::SUCCESS_MESSAGE_1);
                 $cache->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
@@ -102,33 +107,39 @@ class Admin_Controller_Reference extends Controller
         $view->set('reference', $reference);
 
         if (RequestMethods::post('submitEditReference')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/reference/');
             }
-            
+
             $cache = Registry::get('cache');
             $errors = array();
 
             if ($reference->imgMain == '') {
-                try {
-                    $fileManager = new FileManager(array(
-                        'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                        'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                        'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                        'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                        'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
-                    ));
+                $fileManager = new FileManager(array(
+                    'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
+                    'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
+                    'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
+                    'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
+                    'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                ));
 
-                    try {
-                        $data = $fileManager->upload('mainfile', 'reference', time().'_');
-                        $uploadedFile = ArrayMethods::toObject($data);
-                    } catch (Exception $ex) {
-                        $errors['mainfile'] = array($ex->getMessage());
+                $fileErrors = $fileManager->upload('mainfile', 'reference', time() . '_')->getUploadErrors();
+                $files = $fileManager->getUploadedFiles();
+
+                if (!empty($fileErrors)) {
+                    $errors['mainfile'] = $fileErrors;
+                }
+
+                if (!empty($files)) {
+                    foreach ($files as $i => $filemain) {
+                        if ($filemain instanceof \THCFrame\Filesystem\Image) {
+                            $file = $filemain;
+                            break;
+                        }
                     }
-                    $imgMain = trim($uploadedFile->file->path, '.');
-                    $imgThumb = trim($uploadedFile->thumb->path, '.');
-                } catch (Exception $ex) {
-                    $errors['mainfile'] = $ex->getMessage();
+
+                    $imgMain = trim($file->getFilename(), '.');
+                    $imgThumb = trim($file->getThumbname(), '.');
                 }
             } else {
                 $imgMain = $reference->imgMain;
@@ -231,7 +242,7 @@ class Admin_Controller_Reference extends Controller
             return;
         }
     }
-    
+
     /**
      * @before _secured, _admin
      */
@@ -241,10 +252,10 @@ class Admin_Controller_Reference extends Controller
         $errors = array();
 
         if (RequestMethods::post('performReferenceAction')) {
-            if($this->checkToken() !== true){
+            if ($this->checkToken() !== true) {
                 self::redirect('/admin/reference/');
             }
-            
+
             $ids = RequestMethods::post('refids');
             $action = RequestMethods::post('action');
             $cache = Registry::get('cache');
