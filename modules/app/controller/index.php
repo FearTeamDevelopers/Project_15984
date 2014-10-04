@@ -26,11 +26,7 @@ class App_Controller_Index extends Controller
             $layoutView->set('metadescription', $object->getMetaDescription());
         }
 
-        if ($object->getMetaKeywords() != '') {
-            $layoutView->set('metakeywords', $object->getMetaKeywords());
-        }
-
-        if ($object instanceof App_Model_Product) {
+        if ($object instanceof \App_Model_Product) {
             $layoutView->set('metaogimage', "http://{$host}" . $object->getImgMain());
             $layoutView->set('metaogurl', "http://{$host}/kostym/" . $object->getUrlKey() . '/');
         }

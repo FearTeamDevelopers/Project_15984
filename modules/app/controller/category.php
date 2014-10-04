@@ -13,7 +13,7 @@ class App_Controller_Category extends Controller
     /**
      * Check if are sets category specific metadata or leave their default values
      */
-    private function _checkMetaData($layoutView, App_Model_Category $object)
+    private function _checkMetaData($layoutView, \App_Model_Category $object)
     {
         $host = RequestMethods::server('HTTP_HOST');
         
@@ -23,10 +23,6 @@ class App_Controller_Category extends Controller
 
         if ($object->getMetaDescription() != '') {
             $layoutView->set('metadescription', $object->getMetaDescription());
-        }
-
-        if ($object->getMetaKeywords() != '') {
-            $layoutView->set('metakeywords', $object->getMetaKeywords());
         }
 
         if ($object->getMetaImage() != '') {
