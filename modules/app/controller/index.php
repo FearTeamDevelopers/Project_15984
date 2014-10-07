@@ -151,7 +151,8 @@ class App_Controller_Index extends Controller
         $layoutView->set('active', 2)
                 ->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('canonical', $canonical);
+                ->set('canonical', $canonical)
+                ->set('metatitle', 'Agentura Karneval - Reference');
     }
 
     /**
@@ -183,7 +184,8 @@ class App_Controller_Index extends Controller
         $layoutView->set('active', 3)
                 ->set('activecat', null)
                 ->set('parentcat', null)
-                ->set('canonical', $canonical);
+                ->set('canonical', $canonical)
+                ->set('metatitle', 'Agentura Karneval - Novinky');
     }
 
     /**
@@ -319,7 +321,8 @@ class App_Controller_Index extends Controller
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
                 ->set('active', 99)
-                ->set('canonical', $canonical);
+                ->set('canonical', $canonical)
+                ->set('metatitle', 'Agentura Karneval - Neznámý kostým');
     }
 
     /**
@@ -389,7 +392,8 @@ class App_Controller_Index extends Controller
                     ->set('categories', $categories);
 
             $layoutView->set('background', 1)
-                    ->set('canonical', $canonical);
+                    ->set('canonical', $canonical)
+                    ->set('metatitle', 'Agentura Karneval - Hledat');
         }
     }
 

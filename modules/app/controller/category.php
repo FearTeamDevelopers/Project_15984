@@ -272,7 +272,8 @@ class App_Controller_Category extends Controller
         $layoutView->set('activecat', 'unknown')
                 ->set('parentcat', 'unknown')
                 ->set('active', 99)
-                ->set('canonical', $canonical);
+                ->set('canonical', $canonical)
+                ->set('metatitle', 'Agentura Karneval - Neznámá kategorie');
     }
 
 }
