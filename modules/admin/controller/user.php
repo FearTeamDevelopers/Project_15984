@@ -43,11 +43,6 @@ class Admin_Controller_User extends Controller
                     $status = $security->authenticate($email, $password);
 
                     if ($status === true) {
-                        $user = App_Model_User::first(array('id = ?' => $this->getUser()->getId()));
-                        $user->lastLogin = date('Y-m-d H:i:s', time());
-                        $user->save();
-                        unset($user);
-
                         self::redirect('/admin/');
                     } else {
                         $view->set('account_error', 'Email a/nebo heslo není správně');
@@ -130,7 +125,7 @@ class Admin_Controller_User extends Controller
                 'email' => RequestMethods::post('email'),
                 'password' => $hash,
                 'salt' => $salt,
-                'role' => RequestMethods::post('role', 'role_publisher'),
+                'role' => RequestMethods::post('role', 'role_member'),
                 'loginLockdownTime' => '',
                 'loginAttempCounter' => 0
             ));
@@ -278,7 +273,7 @@ class Admin_Controller_User extends Controller
             $user->email = RequestMethods::post('email');
             $user->password = $hash;
             $user->salt = $salt;
-            $user->role = RequestMethods::post('role');
+            $user->role = RequestMethods::post('role', $user->getRole());
             $user->active = RequestMethods::post('active');
 
             if (empty($errors) && $user->validate()) {

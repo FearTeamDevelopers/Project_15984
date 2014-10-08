@@ -8,7 +8,7 @@
     <div class="contenttitle radiusbottom0">
         <h2 class="form"><span>Informace o uživateli</span></h2>
     </div>
-    
+
     <form class="stdform stdform2" method="post" action="#">
         <input type="hidden" name="tk" id="tk" value="{echo $token}" />
         <p>
@@ -66,7 +66,7 @@
             </label>
             {/if}
         </p>
-        
+        {if $isSuperAdmin}
         <p>
             <label>Role</label>
             <span class="field">
@@ -87,13 +87,14 @@
                     <option value="role_superadmin">Super Admin</option>
                     {/else}
                 </select>
+                {if isset($errors["role"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["role"])}
+                </label>
+                {/if}
             </span>
-            {if isset($errors["role"])}
-            <label class="error">
-                {echo join("<br/>", $errors["role"])}
-            </label>
-            {/if}
         </p>
+        {/if}
         <p>
             <label>Aktivní</label>
             <span class="field">

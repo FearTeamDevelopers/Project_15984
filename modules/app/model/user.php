@@ -170,7 +170,15 @@ class App_Model_User extends Model implements UserInterface
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }
-
+    
+    /**
+     * 
+     * @param type $datetime
+     */
+    public function setLastLogin($datetime)
+    {
+        $this->_lastLogin = $datetime;
+    }
     /**
      * 
      * @param type $value
