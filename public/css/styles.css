@@ -588,6 +588,12 @@ nav ul li a {
     width:160px;
     display: block;
     text-align: center;
+    
+    transition:opacity 0.5s linear;
+    -webkit-transition:opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -o-transition: opacity 0.5s linear;
+    
 }
 nav ul li a:hover, #activeLi1 {
     background-image:url('../images/button_hlavni_vybrany.png');
@@ -600,11 +606,22 @@ nav ul li a span{
 /********* DROPDOWN MENU ***********/
 .dropdownmenu1-display{display:block;}
 .dropdownmenu1{display:none;}
-nav ul li:hover ul{display:block;}
-nav ul li:hover ul li ul{display:none;}
 .dropdownmenu2{display:none;}
 .dropdownmenu3{display:none;}
-nav ul li ul li:hover ul{display:block;}
+
+nav ul li:hover ul{
+    display:block;
+    transition-delay:5s;
+    -webkit-transition-delay: 5s;
+    -moz-transition-delay: 5s;
+    -o-transition-delay: 5s;
+}
+nav ul li:hover ul li ul{display:none;}
+
+nav ul li ul li:hover ul{
+    display:block;
+    
+}
 
 .dropdownmenu1{
     margin-left:10px;
@@ -617,30 +634,38 @@ nav ul li ul li:hover ul{display:block;}
 .dropdownmenu3{
     position:absolute;
     left:200px;
-    top:60px;
+    top:13%;
 }
 .dropdownmenu3-display{
     display:block;
     position:absolute;
     left:200px;
-    top:60px;
+    top:13%;
 }
 .dropdownmenu2-display{
     display:block;
     position:absolute;
     left:200px;
     top:60%;
-
 }
+
 nav ul li ul li a {
     background-image:url('../images/button_sec_nevybrany.png');
     padding-top:14px;
     padding-bottom: 14px;
     font-size: 16px;
     width:130px;
+    transition:opacity 0.5s linear;
+    -webkit-transition:opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -o-transition: opacity 0.5s linear;
 }
 nav ul li ul li a:hover {
     background-image:url('../images/button_sec_vybrany.png');
+    transition-delay:5s;
+    -webkit-transition-delay: 5s;
+    -moz-transition-delay: 5s;
+    -o-transition-delay: 5s;
 }
 #activeLi{
     margin-left:20px;
@@ -680,7 +705,7 @@ and (max-width : 1240px) {
         margin-left:70px;
     }
 
-    nav{position: relative;}
+    nav{position: relative; margin-bottom: 100px;}
 
     header{
         width:230px;
@@ -705,6 +730,11 @@ and (max-width : 1240px) {
         width:160px;
         display: block;
         text-align: center;
+        
+        transition:opacity 0.5s linear;
+    -webkit-transition:opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -o-transition: opacity 0.5s linear;
     }
 
     nav ul li ul li a {
@@ -713,9 +743,18 @@ and (max-width : 1240px) {
         padding-bottom: 10px;
         font-size: 17px;
         width:130px;
+        
+        transition:opacity 0.5s linear;
+    -webkit-transition:opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
+    -o-transition: opacity 0.5s linear;
     }
 
     .dropdownmenu3, .dropdownmenu3-display{
-        top:-30px;
+        top:1%;
+    }
+    
+    .dropdownmenu2, .dropdownmenu2-display{
+        top:45%;
     }
 }
