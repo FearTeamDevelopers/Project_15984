@@ -9,9 +9,7 @@ use THCFrame\Registry\Registry;
 use THCFrame\Security\SecurityInterface;
 
 /**
- * Description of Authentication
- *
- * @author Tomy
+ * Authentication factory class
  */
 class Authentication extends Base
 {
@@ -39,7 +37,9 @@ class Authentication extends Base
     }
 
     /**
-     * 
+     * Factory method
+     * It accepts initialization options and selects the type of returned object, 
+     * based on the internal $_type property
      */
     public function initialize(SecurityInterface $security)
     {

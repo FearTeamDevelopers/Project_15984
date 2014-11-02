@@ -10,28 +10,32 @@ use THCFrame\Security\UserInterface;
 use THCFrame\Security\SecurityInterface;
 
 /**
- * Description of Security
- *
- * @author Tomy
+ * Security context class. Wrapper for authentication and authorization methods
  */
 class Security extends Base implements SecurityInterface
 {
 
     /**
+     * Instance of authentication class
+     * 
      * @read
-     * @var type 
+     * @var THCFrame\Security\Authentication\Authentication 
      */
     protected $_authentication;
 
     /**
+     * Instance of authorization class
+     * 
      * @read
-     * @var type 
+     * @var THCFrame\Security\Authorization\Authorization 
      */
     protected $_authorization;
 
     /**
+     * Hash alghoritm
+     * 
      * @read
-     * @var type 
+     * @var string
      */
     protected $_passwordEncoder;
 
@@ -42,8 +46,10 @@ class Security extends Base implements SecurityInterface
     protected $_userToken;
 
     /**
+     * Cross-site request forgery protection
+     * 
      * @read
-     * @var type
+     * @var string
      */
     protected $_csrfToken;
 
@@ -88,8 +94,8 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
-     * Method initialize security context. Check session for user token and creates
-     * role structure or acl object.
+     * Method initialize security context. Check session for user token and
+     * initialize authentication and authorization classes
      */
     public function initialize()
     {
@@ -185,7 +191,9 @@ class Security extends Base implements SecurityInterface
     public function logout()
     {
         $session = Registry::get('session');
-        $session->clear();
+        $session->erase('authUser')
+                ->erase('lastActive')
+                ->erase('csrftoken');
 
         $this->_user = NULL;
         @session_regenerate_id();
@@ -228,7 +236,7 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
-     * Method returns salted hash of param value. Specific salt can be set as second
+     * Return salted hash of value. Specific salt can be set as second
      * parameter, if its not secret from configuration file is used
      * 
      * @param type $value
@@ -256,10 +264,11 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
+     * Authentication facade method
      * 
-     * @param type $name
-     * @param type $pass
-     * @return type
+     * @param string $name
+     * @param string $pass
+     * @return mixed
      */
     public function authenticate($name, $pass)
     {
@@ -271,9 +280,10 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
+     * Authorization facade method
      * 
-     * @param type $requiredRole
-     * @return type
+     * @param string $requiredRole
+     * @return mixed
      */
     public function isGranted($requiredRole)
     {
@@ -285,9 +295,10 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
+     * Encrypt provided text
      * 
-     * @param type $text
-     * @return type
+     * @param string $text
+     * @return string
      */
     public function encrypt($text)
     {
@@ -303,8 +314,10 @@ class Security extends Base implements SecurityInterface
     }
 
     /**
+     * Decrypt encrypted text
      * 
-     * @param type $encryptedText
+     * @param string $encryptedText
+     * @return string
      */
     public function decrypt($encryptedText)
     {
@@ -316,7 +329,7 @@ class Security extends Base implements SecurityInterface
         $ciphertext_dec = substr($ciphertext_dec, $iv_size);
         $plaintext_dec = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
 
-        echo $plaintext_dec . "\n";
+        return $plaintext_dec;
     }
 
     /**

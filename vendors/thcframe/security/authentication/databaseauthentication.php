@@ -8,9 +8,7 @@ use THCFrame\Security\Exception;
 use THCFrame\Security\UserInterface;
 
 /**
- * Description of DatabaseAuthentication
- *
- * @author Tomy
+ * DatabaseAuthentication verify user identity against database records
  */
 class DatabaseAuthentication extends Base implements AuthenticationInterface
 {
@@ -35,6 +33,11 @@ class DatabaseAuthentication extends Base implements AuthenticationInterface
     
     private $_securityContext;
 
+    /**
+     * 
+     * @param THCFrame\Security\Security $securityContext
+     * @param array $options
+     */
     public function __construct($securityContext, $options = array())
     {
         parent::__construct($options);
@@ -42,9 +45,10 @@ class DatabaseAuthentication extends Base implements AuthenticationInterface
     }
 
     /**
+     * Account lock checker
      * 
-     * @param \App_Model_User $user
-     * @param type $counter
+     * @param UserInterface $user
+     * @param integer $counter
      */
     private function accountLockdown(UserInterface $user, $counter)
     {
@@ -60,10 +64,10 @@ class DatabaseAuthentication extends Base implements AuthenticationInterface
     /**
      * Main authentication method which is used for user authentication
      * based on two credentials such as username and password. These login
-     * credentials are set in configuration file.
+     * credentials are set in database.
      * 
-     * @param type $name
-     * @param type $pass
+     * @param string $name
+     * @param string $pass
      */
     public function authenticate($name, $pass)
     {

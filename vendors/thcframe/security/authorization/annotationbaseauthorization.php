@@ -8,26 +8,30 @@ use THCFrame\Security\UserInterface;
 use THCFrame\Security\Exception;
 
 /**
- * Description of AnnotationBaseAuthorization
- *
- * @author Tomy
+ * AnnotationBaseAuthorization use method annotation comments to identify minimal
+ * required role
  */
 class AnnotationBaseAuthorization extends Base implements AuthorizationInterface
 {
 
     /**
+     * Authorization type
+     * 
      * @read
      * @var type 
      */
     protected $_type = 'annotationbase';
     
     /**
+     * RoleManager instance
+     * 
      * @read
-     * @var type
+     * @var \THCFrame\Security\Authorization\RoleManager
      */
     protected $_roleManager;
 
     /**
+     * Object constructor
      * 
      * @param \THCFrame\Security\Authorization\RoleManager $roleManager
      */
@@ -39,10 +43,10 @@ class AnnotationBaseAuthorization extends Base implements AuthorizationInterface
     }
 
     /**
-     * Method checks if logged user has required role
+     * Check if logged user has access to the requested resource
      * 
      * @param \THCFrame\Security\UserInterface $user
-     * @param type $requiredRole
+     * @param string $requiredRole
      * @return boolean
      * @throws Exception\Role
      */

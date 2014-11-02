@@ -3,9 +3,7 @@
 namespace THCFrame\Core;
 
 /**
- * Description of StringMethods
- *
- * @author Tomy
+ * StringMethods class
  */
 class StringMethods
 {
@@ -177,8 +175,9 @@ class StringMethods
     }
 
     /**
+     * Return delimiter
      * 
-     * @return type
+     * @return string
      */
     public static function getDelimiter()
     {
@@ -186,8 +185,9 @@ class StringMethods
     }
 
     /**
+     * Set delimiter
      * 
-     * @param type $delimiter
+     * @param string $delimiter
      */
     public static function setDelimiter($delimiter)
     {
@@ -200,8 +200,8 @@ class StringMethods
      * The match() method will return the first captured substring, 
      * the entire substring match, or null.
      * 
-     * @param type $string
-     * @param type $pattern
+     * @param string $string
+     * @param string $pattern
      * @return null
      */
     public static function match($string, $pattern)
@@ -372,13 +372,13 @@ class StringMethods
     /**
      * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
      *
-     * @param string $text String to truncate.
-     * @param integer $length Length of returned string, including ellipsis.
-     * @param string $ending Ending to be appended to the trimmed string.
+     * @param string $text String to truncate
+     * @param integer $length Length of returned string, including ellipsis
+     * @param string $ending Ending to be appended to the trimmed string
      * @param boolean $exact If false, $text will not be cut mid-word
      * @param boolean $considerHtml If true, HTML tags would be handled correctly
      *
-     * @return string Trimmed string.
+     * @return string Trimmed string
      */
     public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true)
     {

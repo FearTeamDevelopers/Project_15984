@@ -1,6 +1,11 @@
 RewriteEngine On
 RewriteBase /
 
+#RewriteCond %{HTTPS} off
+#RewriteCond %{REQUEST_URI} ^/(admin|login).*$ [OR]
+#RewriteCond %{REQUEST_URI} piwik\.agenturakarneval\.cz
+#RewriteRule (.*) https://%{HTTP_HOST}/$1 [R=301,L,NC]
+
 <ifModule mod_gzip.c>
 mod_gzip_on Yes
 mod_gzip_dechunk Yes
@@ -159,7 +164,7 @@ RewriteRule ^([^/]+/)*([^/.]+\.)+php$ - [F]
 
 ########## Begin - Preventing Bandwidth Image Theft
 RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !^http://(www\.)?(agenturakarneval|karneval|karneval\.fear-team)\.(cz|dev) [NC]
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?(agenturakarneval|karneval|karneval\.fear-team)\.(cz|dev) [NC]
 RewriteRule \.(jpe?g|gif|bmp|png|ico)$ - [F]
 ########## End - Preventing Bandwidth Image Theft
 

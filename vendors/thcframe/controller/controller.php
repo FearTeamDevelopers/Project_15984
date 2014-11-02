@@ -10,15 +10,16 @@ use THCFrame\Controller\Exception;
 use THCFrame\View\Exception as ViewException;
 
 /**
- * Description of Controller
- *
- * @author Tomy
+ * Parent controller class
  */
 class Controller extends Base
 {
 
     /**
+     * Controller name
+     * 
      * @read
+     * @var string
      */
     protected $_name;
 
@@ -100,8 +101,9 @@ class Controller extends Base
     }
     
     /**
+     * Static function for redirects
      * 
-     * @param type $url
+     * @param string $url
      */
     public static function redirect($url = null)
     {
@@ -115,8 +117,9 @@ class Controller extends Base
     }
 
     /**
+     * Object constructor
      * 
-     * @param type $options
+     * @param array $options
      */
     public function __construct($options = array())
     {
@@ -124,6 +127,7 @@ class Controller extends Base
 
         Event::fire('framework.controller.construct.before', array($this->name));
 
+        //get resources
         $configuration = Registry::get('configuration');
         $session = Registry::get('session');
         $router = Registry::get('router');
@@ -138,6 +142,7 @@ class Controller extends Base
             throw new \Exception('Error in configuration file');
         }
 
+        //collect main variables
         $module = $router->getLastRoute()->getModule();
         $controller = $router->getLastRoute()->getController();
         $action = $router->getLastRoute()->getAction();
@@ -155,6 +160,7 @@ class Controller extends Base
         $defaultPath = sprintf($this->defaultPath, $module);
         $defaultExtension = $this->defaultExtension;
 
+        //create view instances
         if ($this->willRenderLayoutView) {
             $view = new View(array(
                 'file' => APP_PATH . "/{$defaultPath}/{$defaultLayout}.{$defaultExtension}"
@@ -175,6 +181,7 @@ class Controller extends Base
     }
 
     /**
+     * Return action view
      * 
      * @return View
      */
@@ -184,6 +191,7 @@ class Controller extends Base
     }
     
     /**
+     * Return layout view
      * 
      * @return View
      */
@@ -193,8 +201,10 @@ class Controller extends Base
     }
     
     /**
+     * Return model instance
      * 
-     * @param type $model
+     * @param string $model Format: module/model_name
+     * @param null|array $options
      */
     public function getModel($model, $options = NULL)
     {
@@ -217,8 +227,7 @@ class Controller extends Base
     }
 
     /**
-     * header('X-Frame-Options: deny') is implemented here as protection against
-     * clickjacking.
+     * Main render method
      * 
      * @throws View\Exception\Renderer
      */
@@ -247,10 +256,16 @@ class Controller extends Base
                 $view = $this->layoutView;
                 $results = $view->render();
                 
+                http_response_code(200);
+                
+                //protection against clickjacking
                 header('X-Frame-Options: deny');
                 header("Content-type: {$defaultContentType}");
                 echo $results;
             } else if ($doAction) {
+                http_response_code(200);
+                
+                //protection against clickjacking
                 header('X-Frame-Options: deny');
                 header("Content-type: {$defaultContentType}");
                 echo $results;
@@ -266,7 +281,7 @@ class Controller extends Base
     }
 
     /**
-     * 
+     * Object destruct
      */
     public function __destruct()
     {

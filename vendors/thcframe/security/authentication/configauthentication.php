@@ -6,9 +6,8 @@ use THCFrame\Core\Base;
 use THCFrame\Security\Authentication\AuthenticationInterface;
 
 /**
- * Description of configauthentication
- *
- * @author Tomy
+ * ConfigAuthentication verify user identity against informations stored in
+ * config file
  */
 class ConfigAuthentication extends Base implements AuthenticationInterface
 {
@@ -18,12 +17,18 @@ class ConfigAuthentication extends Base implements AuthenticationInterface
      * @var type 
      */
     protected $_type = 'config';
+    
+    /**
+     * Accepted identities from config file
+     * 
+     * @var array
+     */
     protected $_users = array();
     
     private $_securityContext;
 
     /**
-     * 
+     * Create user objects base on informations in config file
      */
     private function normalizeUsers()
     {
@@ -46,9 +51,10 @@ class ConfigAuthentication extends Base implements AuthenticationInterface
     }
     
     /**
+     * Object constructor
      * 
-     * @param type $users
-     * @param type $securityContext
+     * @param THCFrame\Security\Security $securityContext
+     * @param array $users
      */
     public function __construct($securityContext, $users = array())
     {
@@ -61,9 +67,12 @@ class ConfigAuthentication extends Base implements AuthenticationInterface
     }
 
     /**
+     * Main authentication method which is used for user authentication
+     * based on two credentials such as username and password. These login
+     * credentials are set in configuration file.
      * 
-     * @param type $name
-     * @param type $pass
+     * @param string $name
+     * @param string $pass
      */
     public function authenticate($name, $pass)
     {

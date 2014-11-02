@@ -5,16 +5,40 @@ namespace THCFrame\Core;
 use THCFrame\Core\Exception as Exception;
 use THCFrame\Registry\Registry;
 use THCFrame\Core\Autoloader;
+use THCFrame\Logger\Logger;
 
 /**
- * 
+ * THCFrame core class
  */
 class Core
 {
 
+    /**
+     * Logger instance
+     * 
+     * @var THCFrame\Logger\Logger
+     */
     private static $_logger;
+    
+    /**
+     * Autoloader instance
+     * 
+     * @var THCFrame\Core\Autoloader 
+     */
     private static $_autoloader;
+    
+    /**
+     * Registered modules
+     * 
+     * @var array 
+     */
     private static $_modules = array();
+    
+    /**
+     * Main application paths
+     * 
+     * @var array 
+     */
     private static $_relPaths = array(
         '/vendors',
         './vendors',
@@ -24,6 +48,12 @@ class Core
         './modules',
         '.'
     );
+    
+    /**
+     * List of exceptions
+     * 
+     * @var array 
+     */
     private static $_exceptions = array(
         '401' => array(
             'THCFrame\Security\Exception\Role',
@@ -132,7 +162,63 @@ class Core
         return stripslashes(trim($array));
     }
 
+        /**
+     * Error handler
+     * 
+     * @param type $number
+     * @param type $text
+     * @param type $file
+     * @param type $row
+     */
+    protected static function _errorHandler($number, $text, $file, $row)
+    {
+        switch ($number) {
+            case E_WARNING: case E_USER_WARNING :
+                $type = 'Warning';
+                break;
+            case E_NOTICE: case E_USER_NOTICE:
+                $type = 'Notice';
+                break;
+            default:
+                $type = 'Error';
+                break;
+        }
+
+        $file = basename($file);
+        $message = "{$type} ~ {$file} ~ {$row} ~ {$text}";
+
+        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
+            self::$_logger->logError($message);
+        } else {
+            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
+        }
+    }
+
     /**
+     * Exception handler
+     * 
+     * @param Exception $exception
+     */
+    protected static function _exceptionHandler(\Exception $exception)
+    {
+        $type = get_class($exception);
+        $file = $exception->getFile();
+        $row = $exception->getLine();
+        $text = $exception->getMessage();
+
+        $message = "Uncaught exception: {$type} ~ {$file} ~ {$row} ~ {$text}" . PHP_EOL;
+        $message .= $exception->getTraceAsString();
+
+        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
+            self::$_logger->logError($message);
+        } else {
+            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
+        }
+    }
+    
+    /**
+     * Generates new application secret which is used is hashing
+     * functions. Can be used only in dev env
      * 
      * @return string
      */
@@ -146,8 +232,9 @@ class Core
     }
 
     /**
+     * Return logger instance
      * 
-     * @return type
+     * @return THCFrame\Logger\Logger
      */
     public static function getLogger()
     {
@@ -155,6 +242,7 @@ class Core
     }
 
     /**
+     * Main framework initialization method
      * 
      * @return type
      * @throws Exception
@@ -183,7 +271,7 @@ class Core
         self::$_autoloader->register();
 
         // Logger
-        $logger = new \THCFrame\Logger\Logger();
+        $logger = new Logger();
         self::$_logger = $logger->initialize();
 
         // error and exception handlers
@@ -229,6 +317,9 @@ class Core
                 foreach ($classes as $class) {
                     if ($class == $exception) {
                         $defaultErrorFile = APP_PATH . "/modules/app/view/errors/{$template}.phtml";
+                        
+                        ob_clean();
+                        http_response_code($template);
                         header('Content-type: text/html');
                         include($defaultErrorFile);
                         exit();
@@ -237,6 +328,8 @@ class Core
             }
 
             // render fallback template
+            ob_clean();
+            http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';
             if (ENV == 'dev') {
@@ -247,8 +340,10 @@ class Core
     }
 
     /**
+     * Register new modules within application. 
+     * As parameter is given an array with module names
      * 
-     * @param type $moduleArray
+     * @param array $moduleArray
      */
     public static function registerModules(array $moduleArray)
     {
@@ -258,6 +353,8 @@ class Core
     }
 
     /**
+     * Register single module based on provided module name.
+     * Module instance is created and stored in _modules array
      * 
      * @throws \THCFrame\Module\Exception\Multiload
      */
@@ -279,9 +376,10 @@ class Core
     }
 
     /**
+     * Return instance of registered module based on provided module name
      * 
-     * @param type $moduleName
-     * @return null
+     * @param string $moduleName
+     * @return null | THCFrame\Module\Module
      */
     public static function getModule($moduleName)
     {
@@ -295,8 +393,9 @@ class Core
     }
 
     /**
+     * Return array with registered modules
      * 
-     * @return type
+     * @return null | array
      */
     public static function getModules()
     {
@@ -308,8 +407,9 @@ class Core
     }
 
     /**
+     * Return registered module names
      * 
-     * @return null
+     * @return null | array
      */
     public static function getModuleNames()
     {
@@ -326,67 +426,16 @@ class Core
         }
     }
 
-    /**
-     * Error handler
-     * 
-     * @param type $number
-     * @param type $text
-     * @param type $file
-     * @param type $row
-     */
-    public static function _errorHandler($number, $text, $file, $row)
-    {
-        switch ($number) {
-            case E_WARNING: case E_USER_WARNING :
-                $type = 'Warning';
-                break;
-            case E_NOTICE: case E_USER_NOTICE:
-                $type = 'Notice';
-                break;
-            default:
-                $type = 'Error';
-                break;
-        }
 
-        $file = basename($file);
-        $message = "{$type} ~ {$file} ~ {$row} ~ {$text}";
-
-        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
-            self::$_logger->logError($message);
-        } else {
-            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
-        }
-    }
 
     /**
-     * Exception handler
-     * 
-     * @param Exception $exception
-     */
-    public static function _exceptionHandler(\Exception $exception)
-    {
-        $type = get_class($exception);
-        $file = $exception->getFile();
-        $row = $exception->getLine();
-        $text = $exception->getMessage();
-
-        $message = "Uncaught exception: {$type} ~ {$file} ~ {$row} ~ {$text}" . PHP_EOL;
-        $message .= $exception->getTraceAsString();
-
-        if (self::$_logger instanceof \THCFrame\Logger\Driver) {
-            self::$_logger->logError($message);
-        } else {
-            file_put_contents('./application/logs/error.log', $message . PHP_EOL);
-        }
-    }
-
-    /**
-     * 
+     * Initialize router and dispatcher and dispatch request.
+     * If there is some error method tries to find and render error template
      */
     public static function run()
     {
         try {
-            // router
+            //router
             $router = new \THCFrame\Router\Router(array(
                 'url' => urldecode($_SERVER['REQUEST_URI'])
             ));
@@ -409,6 +458,8 @@ class Core
                     if ($class == $exception) {
                         $defaultErrorFile = "./modules/app/view/errors/{$template}.phtml";
 
+                        ob_clean();
+                        http_response_code($template);
                         header('Content-type: text/html');
                         include($defaultErrorFile);
                         exit();
@@ -417,6 +468,8 @@ class Core
             }
 
             // render fallback template
+            ob_clean();
+            http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';
             if (ENV == 'dev') {
@@ -426,4 +479,13 @@ class Core
         }
     }
 
+    /**
+     * Return framework version
+     * 
+     * @return string
+     */
+    public static function getFrameworkVersion()
+    {
+        return '1.1.2';
+    }
 }

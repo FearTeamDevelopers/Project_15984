@@ -3,9 +3,9 @@
 namespace THCFrame\Security\Authorization;
 
 use THCFrame\Security\UserInterface;
+
 /**
- *
- * @author Tomy
+ * AuthorizationInterface ensure that authorization class will have isGranted method
  */
 interface AuthorizationInterface
 {
