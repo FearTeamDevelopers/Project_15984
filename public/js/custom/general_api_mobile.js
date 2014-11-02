@@ -30,18 +30,6 @@ jQuery(document).ready(function () {
             });
         }
 
-        if (jQuery(window).height() < 925 && jQuery(window).scrollTop() > 250) {
-            jQuery('nav').css("top", function () {
-                return jQuery(window).scrollTop() - 290;
-            });
-
-            jQuery('.dropdownmenu3, .dropdownmenu3-display').css('top', '100px');
-        }
-
-        if (jQuery(window).height() < 925 && jQuery(window).scrollTop() < 250) {
-            jQuery('.dropdownmenu3, .dropdownmenu3-display').css('top', '-30px');
-        }
-
         if (!jQuery('.scroll-top').is('visible') && scrollPosition > 5000) {
             jQuery('.scroll-top').show("slow");
         }

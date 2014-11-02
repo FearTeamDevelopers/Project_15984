@@ -343,7 +343,8 @@ class App_Controller_Index extends Controller
             $args = array();
             $productWhereCond = "pr.deleted = 0 AND pr.variantFor = 0 AND pr.active = 1 AND (";
             for ($i = 0; $i < count($queryParts); $i++) {
-                $productWhereCond .= "pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR ";
+                $productWhereCond .= "pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR pr.productCode='?' OR ";
+                $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
                 $args[] = $queryParts[$i];
             }
@@ -365,8 +366,6 @@ class App_Controller_Index extends Controller
             $catWhereCond = "ct.active = 1 AND (";
             for ($i = 0; $i < count($queryParts); $i++) {
                 $catWhereCond .= "ct.title LIKE '%%?%%' OR ";
-                $argscat[] = $queryParts[$i];
-                $argscat[] = $queryParts[$i];
                 $argscat[] = $queryParts[$i];
             }
 

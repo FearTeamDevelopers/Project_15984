@@ -6,9 +6,8 @@
     <li><a {if $active == 5} id="activeLi1" {/if} href="/kontakt"><span>Kontakt</span></a></li>
     <li><a href="#"><span>Půjčovna</span></a>
         {if isset($activecat)}
-        <ul class="hidden dropdownmenu1-display">
-        {/if}
-        {else}
+            <ul class="hidden dropdownmenu1-display">
+        {/if}{else}
             <ul class="hidden dropdownmenu1">
         {/else}
         
@@ -25,12 +24,10 @@
                             {/else}
 
                             <span>{echo $cat->title}</span></a>
-                        {/if}
-                        {else}
+                        {/if}{else}
                             {if $cat->id == $parentcat}
                             <a id="activeLi" href="#"><span>{echo $cat->title}</span></a>
-                            {/if}
-                            {else}
+                            {/if}{else}
                             <a href="#"><span>{echo $cat->title}</span></a>
                             {/else}
                         {/else}

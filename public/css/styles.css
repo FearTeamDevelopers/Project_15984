@@ -480,7 +480,7 @@ h1{
     clear:both;
     float:left;
     padding-bottom:20px;
-    
+
 }
 .kategorieButton span{
     width:130px;
@@ -612,24 +612,24 @@ nav ul li ul li:hover ul{display:block;}
 .dropdownmenu2{
     position:absolute;
     left:200px;
-    top:510px;
+    top:60%;
 }
 .dropdownmenu3{
     position:absolute;
     left:200px;
-    top:50px;
+    top:60px;
 }
 .dropdownmenu3-display{
     display:block;
     position:absolute;
     left:200px;
-    top:50px;
+    top:60px;
 }
 .dropdownmenu2-display{
     display:block;
     position:absolute;
     left:200px;
-    top:510px;
+    top:60%;
 
 }
 nav ul li ul li a {
@@ -648,7 +648,6 @@ nav ul li ul li a:hover {
 }
 #activeLi2{
     background-image:url('../images/button_sec_vybrany.png');
-
 }
 
 
@@ -664,5 +663,59 @@ and (max-width : 1240px) {
     }
     .dropdownmenu2, .dropdownmenu2-display{
         top:360px;
+    }
+}
+
+@media only screen and (max-height: 925px){
+
+    .about{
+        padding-left:30px;
+        padding-right:30px;
+        padding-bottom:40px;
+        padding-top: 40px;
+        min-width:330px;
+        max-width: 800px;
+        margin-right:20px;
+        margin-top:15%;
+        margin-left:70px;
+    }
+
+    nav{position: relative;}
+
+    header{
+        width:230px;
+        float:left;
+        margin-left:5px;
+        position:relative;
+    }
+
+    nav ul li a {
+        background-image:url('../images/button_hlavni_nevybrany.png');
+        background-repeat: no-repeat;
+        background-position-x: center;
+        background-position-y: center;
+        background-size: 100% 100%;
+
+        color: black;
+        padding:8px;
+        padding-top:12px;
+        padding-bottom: 12px;
+        font-size: 20px;
+        text-decoration: none;
+        width:160px;
+        display: block;
+        text-align: center;
+    }
+
+    nav ul li ul li a {
+        background-image:url('../images/button_sec_nevybrany.png');
+        padding-top:10px;
+        padding-bottom: 10px;
+        font-size: 17px;
+        width:130px;
+    }
+
+    .dropdownmenu3, .dropdownmenu3-display{
+        top:-30px;
     }
 }
