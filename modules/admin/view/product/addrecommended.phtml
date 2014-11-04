@@ -1,6 +1,6 @@
 <div class="content">
     <form class="stdform stdform2" method="post" action="/admin/product/addrecommended/{echo $productid}">
-        <input type="hidden" name="tk" id="tk" value="{echo $token}" />
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
         <p>
             <label>ID produktu</label>
             <span class="field" >

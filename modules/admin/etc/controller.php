@@ -5,7 +5,6 @@ namespace Admin\Etc;
 use THCFrame\Events\Events as Events;
 use THCFrame\Registry\Registry as Registry;
 use THCFrame\Controller\Controller as BaseController;
-use THCFrame\Request\RequestMethods;
 use THCFrame\Core\StringMethods;
 
 /**
@@ -37,21 +36,6 @@ class Controller extends BaseController
     
     /**
      * 
-     * @param type $string
-     * @return type
-     */
-    protected function _createUrlKey($string)
-    {
-        $string = StringMethods::removeDiacriticalMarks($string);
-        $string = str_replace(array('.', ',', '_', '(', ')', '[', ']', '|', ' '), '-', $string);
-        $string = str_replace(array('?', '!', '@', '&', '*', ':', '+', '=', '~', '°', '´', '`', '%', "'", '"'), '', $string);
-        $string = trim($string);
-        $string = trim($string, '-');
-        return strtolower($string);
-    }
-
-    /**
-     * 
      * @param type $options
      */
     public function __construct($options = array())
@@ -66,6 +50,21 @@ class Controller extends BaseController
             $database->disconnect();
         });
     }
+    
+    /**
+     * 
+     * @param type $string
+     * @return type
+     */
+    protected function _createUrlKey($string)
+    {
+        $string = StringMethods::removeDiacriticalMarks($string);
+        $string = str_replace(array('.', ',', '_', '(', ')', '[', ']', '|', ' '), '-', $string);
+        $string = str_replace(array('?', '!', '@', '&', '*', ':', '+', '=', '~', '°', '´', '`', '%', "'", '"'), '', $string);
+        $string = trim($string);
+        $string = trim($string, '-');
+        return strtolower($string);
+    }
 
     /**
      * @protected
@@ -73,22 +72,21 @@ class Controller extends BaseController
     public function _secured()
     {
         $session = Registry::get('session');
-
         $user = $this->getUser();
 
         if (!$user) {
+            $this->_security->logout();
             self::redirect('/login');
         }
 
-        //6h inactivity till logout
-        if ($session->get('lastActive') > time() - 1800) {
+        //15min inactivity till logout
+        if (time() - $session->get('lastActive') <  900) {
             $session->set('lastActive', time());
         } else {
             $view = $this->getActionView();
 
             $view->infoMessage('Byl jste odhlášen z důvodu dlouhé neaktivity');
-            $this->_security->logout();
-            self::redirect('/login');
+            self::redirect('/logout');
         }
     }
 
@@ -97,12 +95,10 @@ class Controller extends BaseController
      */
     public function _member()
     {
-        $view = $this->getActionView();
-
         if ($this->_security->getUser() && $this->_security->isGranted('role_member') !== true) {
+            $view = $this->getActionView();
             $view->infoMessage(self::ERROR_MESSAGE_6);
-            $this->_security->logout();
-            self::redirect('/login');
+            self::redirect('/logout');
         }
     }
 
@@ -124,12 +120,10 @@ class Controller extends BaseController
      */
     public function _admin()
     {
-        $view = $this->getActionView();
-
         if ($this->_security->getUser() && $this->_security->isGranted('role_admin') !== true) {
+            $view = $this->getActionView();
             $view->infoMessage(self::ERROR_MESSAGE_6);
-            $this->_security->logout();
-            self::redirect('/login');
+            self::redirect('/logout');
         }
     }
 
@@ -151,12 +145,10 @@ class Controller extends BaseController
      */
     public function _superadmin()
     {
-        $view = $this->getActionView();
-
         if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') !== true) {
+            $view = $this->getActionView();
             $view->infoMessage(self::ERROR_MESSAGE_6);
-            $this->_security->logout();
-            self::redirect('/login');
+            self::redirect('/logout');
         }
     }
 
@@ -229,13 +221,13 @@ class Controller extends BaseController
     }
 
     /**
-     * 
+     * CSRF token verification method
      */
-    public function checkToken()
+    public function checkCSRFToken()
     {
-        if($this->_security->checkCsrfToken(RequestMethods::post('tk'))){
+        if ($this->_security->getCSRF()->verifyRequest()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -247,22 +239,24 @@ class Controller extends BaseController
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $user = $this->getUser();
+        $user = $this->_security->getUser();
 
         if ($view) {
-            $view->set('authUser', $user);
+            $view->set('authUser', $user)
+                    ->set('env', ENV);
             $view->set('isMember', $this->isMember())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
-                    ->set('token', $this->_security->getCsrfToken());
+                    ->set('token', $this->_security->getCSRF()->getToken());
         }
 
         if ($layoutView) {
-            $layoutView->set('authUser', $user);
+            $layoutView->set('authUser', $user)
+                    ->set('env', ENV);
             $layoutView->set('isMember', $this->isMember())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
-                    ->set('token', $this->_security->getCsrfToken());
+                    ->set('token', $this->_security->getCSRF()->getToken());
         }
 
         parent::render();

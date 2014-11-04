@@ -19,7 +19,7 @@ class Admin_Controller_Gallery extends Controller
      */
     private function _checkUrlKey($key)
     {
-        $status = App_Model_Category::first(array('urlKey = ?' => $key));
+        $status = App_Model_Gallery::first(array('urlKey = ?' => $key));
 
         if ($status === null) {
             return true;
@@ -54,7 +54,7 @@ class Admin_Controller_Gallery extends Controller
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddGallery')) {
-            if ($this->checkToken() !== true &&
+            if ($this->checkCSRFToken() !== true &&
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/gallery/');
             }
@@ -130,7 +130,7 @@ class Admin_Controller_Gallery extends Controller
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitEditGallery')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/gallery/');
             }
 
@@ -184,7 +184,7 @@ class Admin_Controller_Gallery extends Controller
         $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitDeleteGallery')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/gallery/');
             }
 
@@ -269,7 +269,7 @@ class Admin_Controller_Gallery extends Controller
                     THCFrame\Core\Core::getLogger()->log('before dump');
                     
         if (RequestMethods::post('submitAddPhoto')) {
-            if ($this->checkToken() !== true &&
+            if ($this->checkCSRFToken() !== true &&
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/gallery/');
             }
@@ -338,7 +338,7 @@ class Admin_Controller_Gallery extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $photo = App_Model_Photo::first(
                             array('id = ?' => $id), array('id', 'imgMain', 'imgThumb')
             );
@@ -374,7 +374,7 @@ class Admin_Controller_Gallery extends Controller
         $this->willRenderLayoutView = false;
         $this->willRenderActionView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $photo = App_Model_Photo::first(array('id = ?' => $id));
 
             if (null === $photo) {

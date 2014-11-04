@@ -62,7 +62,7 @@ class Admin_Controller_Category extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddCategory')) {
-            if($this->checkToken() !== true && 
+            if($this->checkCSRFToken() !== true && 
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
                 self::redirect('/admin/category/');
             }
@@ -127,7 +127,7 @@ class Admin_Controller_Category extends Controller
                 ->set('categories', $categories);
 
         if (RequestMethods::post('submitEditCategory')) {
-            if($this->checkToken() !== true){
+            if($this->checkCSRFToken() !== true){
                 self::redirect('/admin/category/');
             }
             
@@ -207,7 +207,7 @@ class Admin_Controller_Category extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $cache = Registry::get('cache');
             $category = App_Model_Category::first(array(
                         'id = ?' => (int) $id

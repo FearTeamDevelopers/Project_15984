@@ -22,6 +22,7 @@ class File extends Logger\Driver
     public function __construct($options = array())
     {
         parent::__construct($options);
+
         $logsPath = '.' . DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
 
         if (!is_dir($logsPath)) {
@@ -39,7 +40,7 @@ class File extends Logger\Driver
      */
     public function deleteOldLogs($olderThan)
     {
-        $path = DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
+        $path = '.'.DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
 
         if (is_dir($path)) {
             $logsPath = $path;
@@ -54,10 +55,10 @@ class File extends Logger\Driver
             if (!$item->isDot() && $item->isFile()) {
                 $date = substr($item->getFilename(), 0, 10);
 
-                if(!preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2}$#', $date)){
+                if (!preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2}$#', $date)) {
                     continue;
                 }
-                
+
                 if (time() - strtotime($date) > time() - strtotime($olderThan)) {
                     $arr[] = $logsPath . DIRECTORY_SEPARATOR . $item->getFilename();
                 }
@@ -87,9 +88,8 @@ class File extends Logger\Driver
 
         $message = $message . PHP_EOL;
         $logsPath = '.' . DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
-        $sysLogPath = '.' . DIRECTORY_SEPARATOR .
-                str_replace('{date}', date('Y-m-d', time()), 
-                        trim($this->syslog, DIRECTORY_SEPARATOR));
+        $sysLogPath = '.' . DIRECTORY_SEPARATOR . 
+                str_replace('{date}', date('Y-m-d', time()), trim($this->syslog, DIRECTORY_SEPARATOR));
 
         if (NULL !== $file) {
             if (strlen($file) > 50) {
@@ -129,9 +129,8 @@ class File extends Logger\Driver
         }
 
         $message = $message . PHP_EOL;
-        $errorLogPath = '.' . DIRECTORY_SEPARATOR .
-                str_replace('{date}', date('Y-m-d', time()), 
-                        trim($this->errorlog, DIRECTORY_SEPARATOR));
+        $errorLogPath = '.' . DIRECTORY_SEPARATOR . 
+                str_replace('{date}', date('Y-m-d', time()), trim($this->errorlog, DIRECTORY_SEPARATOR));
 
         if (!file_exists($errorLogPath)) {
             file_put_contents($errorLogPath, $message, $flag);

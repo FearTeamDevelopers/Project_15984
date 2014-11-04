@@ -157,13 +157,13 @@ jQuery(document).ready(function() {
 
         var url = jQuery(this).attr('href');
         var action = jQuery('.tableoptions select[name=action]').children('option:selected').val();
-        var tk = jQuery('#tk').val();
+        var csrf = jQuery('#csrf').val();
 
         if (action == 'overprice') {
             var operation = jQuery('.overprice-option select').children('option:selected').val();
             var price = jQuery('.overprice-option').children('input.microinput').val();
 
-            jQuery.post(url, {tk: tk, action: action, productsids: selected, price: price, operation: operation}, function(msg) {
+            jQuery.post(url, {csrf: csrf, action: action, productsids: selected, price: price, operation: operation}, function(msg) {
                 jQuery('#dialog p').text(msg);
 
                 jQuery('#dialog').dialog({
@@ -183,7 +183,7 @@ jQuery(document).ready(function() {
                 });
             });
         } else {
-            jQuery.post(url, {tk: tk, action: action, productsids: selected}, function(msg) {
+            jQuery.post(url, {csrf: csrf, action: action, productsids: selected}, function(msg) {
                 jQuery('#dialog p').text(msg);
 
                 jQuery('#dialog').dialog({
@@ -544,9 +544,9 @@ jQuery(document).ready(function() {
     jQuery('a#delImg').click(function() {
         event.preventDefault();
         var url = jQuery(this).attr('href');
-        var tk = jQuery('#tk').val();
+        var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, {tk: tk}, function(msg) {
+        jQuery.post(url, {csrf: csrf}, function(msg) {
             if (msg == 'success') {
                 jQuery('#currentLogo').hide(500);
                 jQuery('#uploadLogo').removeClass('nodisplay');
@@ -566,9 +566,9 @@ jQuery(document).ready(function() {
 
         if (c) {
             var url = jQuery(this).attr('href');
-            var tk = jQuery('#tk').val();
+            var csrf = jQuery('#csrf').val();
 
-            jQuery.post(url, {tk: tk}, function(msg) {
+            jQuery.post(url, {csrf: csrf}, function(msg) {
                 if (msg == 'success') {
                     parent.hide('explode', 500);
                 } else {
@@ -584,9 +584,9 @@ jQuery(document).ready(function() {
         event.preventDefault();
         var parent = jQuery(this).parents('li');
         var url = jQuery(this).attr('href');
-        var tk = jQuery('#tk').val();
+        var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, {tk: tk}, function(msg) {
+        jQuery.post(url, {csrf: csrf}, function(msg) {
             if (msg == 'active') {
                 parent.removeClass('photoinactive').addClass('photoactive');
             } else if (msg == 'inactive') {
@@ -606,9 +606,9 @@ jQuery(document).ready(function() {
 
         if (c) {
             var url = jQuery(this).attr('href');
-            var token = jQuery('#tk').val();
+            var token = jQuery('#csrf').val();
 
-            jQuery.post(url, {tk: token}, function(msg) {
+            jQuery.post(url, {csrf: token}, function(msg) {
                 if (msg == 'success') {
                     parentTr.fadeOut();
                 } else {
@@ -626,9 +626,9 @@ jQuery(document).ready(function() {
 
         if (c) {
             var url = jQuery(this).attr('href');
-            var tk = jQuery('#tk').val();
+            var csrf = jQuery('#csrf').val();
 
-            jQuery.post(url, {tk: tk}, function(msg) {
+            jQuery.post(url, {csrf: csrf}, function(msg) {
                 if (msg == 'success') {
                     parentTr.fadeOut();
                 } else {
@@ -645,9 +645,9 @@ jQuery(document).ready(function() {
 
         if (c) {
             var url = jQuery(this).attr('href');
-            var tk = jQuery('#tk').val();
+            var csrf = jQuery('#csrf').val();
 
-            jQuery.post(url, {tk: tk}, function(msg) {
+            jQuery.post(url, {csrf: csrf}, function(msg) {
                 if (msg == 'success') {
                     parentTr.fadeOut();
                 } else {

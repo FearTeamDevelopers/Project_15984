@@ -60,7 +60,11 @@ class Core
             'THCFrame\Security\Exception\Unauthorized',
             'THCFrame\Security\Exception\UserExpired',
             'THCFrame\Security\Exception\UserInactive',
-            'THCFrame\Security\Exception\UserPassExpired'
+            'THCFrame\Security\Exception\UserPassExpired',
+            'THCFrame\Security\Exception\CSRF',
+            'THCFrame\Security\Exception\WrongPassword',
+            'THCFrame\Security\Exception\UserNotExists',
+            'THCFrame\Security\Exception\BruteForceAttack'
         ),
         '404' => array(
             'THCFrame\Router\Exception\Module',
@@ -159,7 +163,7 @@ class Core
         if (is_array($array)) {
             return array_map(__CLASS__ . '::_clean', $array);
         }
-        return stripslashes(trim($array));
+        return htmlspecialchars(trim($array), ENT_QUOTES, 'UTF-8');
     }
 
         /**
@@ -170,7 +174,7 @@ class Core
      * @param type $file
      * @param type $row
      */
-    protected static function _errorHandler($number, $text, $file, $row)
+    public static function _errorHandler($number, $text, $file, $row)
     {
         switch ($number) {
             case E_WARNING: case E_USER_WARNING :
@@ -199,7 +203,7 @@ class Core
      * 
      * @param Exception $exception
      */
-    protected static function _exceptionHandler(\Exception $exception)
+    public static function _exceptionHandler(\Exception $exception)
     {
         $type = get_class($exception);
         $file = $exception->getFile();
@@ -318,7 +322,6 @@ class Core
                     if ($class == $exception) {
                         $defaultErrorFile = APP_PATH . "/modules/app/view/errors/{$template}.phtml";
                         
-                        ob_clean();
                         http_response_code($template);
                         header('Content-type: text/html');
                         include($defaultErrorFile);
@@ -328,7 +331,6 @@ class Core
             }
 
             // render fallback template
-            ob_clean();
             http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';
@@ -458,7 +460,6 @@ class Core
                     if ($class == $exception) {
                         $defaultErrorFile = "./modules/app/view/errors/{$template}.phtml";
 
-                        ob_clean();
                         http_response_code($template);
                         header('Content-type: text/html');
                         include($defaultErrorFile);
@@ -468,7 +469,6 @@ class Core
             }
 
             // render fallback template
-            ob_clean();
             http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';

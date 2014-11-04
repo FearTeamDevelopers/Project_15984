@@ -4,6 +4,7 @@ use Admin\Etc\Controller;
 use THCFrame\Registry\Registry;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
+use THCFrame\Security\PasswordManager;
 
 /**
  * Description of Admin_Controller_User
@@ -99,7 +100,7 @@ class Admin_Controller_User extends Controller
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
         
         if (RequestMethods::post('submitAddUser')) {
-            if($this->checkToken() !== true && 
+            if($this->checkCSRFToken() !== true && 
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
                 self::redirect('/admin/user/');
             }
@@ -116,8 +117,8 @@ class Admin_Controller_User extends Controller
                 $errors['email'] = array('Tento email se již používá');
             }
 
-            $salt = $security->createSalt();
-            $hash = $security->getSaltedHash(RequestMethods::post('password'), $salt);
+            $salt = PasswordManager::createSalt();
+            $hash = PasswordManager::_hashPassword(RequestMethods::post('password'), $salt);
 
             $user = new App_Model_User(array(
                 'firstname' => RequestMethods::post('firstname'),
@@ -163,7 +164,7 @@ class Admin_Controller_User extends Controller
         $view->set('user', $user);
 
         if (RequestMethods::post('submitUpdateProfile')) {
-            if($this->checkToken() !== true){
+            if($this->checkCSRFToken() !== true){
                 self::redirect('/admin/user/');
             }
             $errors = array();
@@ -190,8 +191,8 @@ class Admin_Controller_User extends Controller
                 $salt = $user->getSalt();
                 $hash = $user->getPassword();
             } else {
-                $salt = $security->createSalt();
-                $hash = $security->getSaltedHash($pass, $salt);
+                $salt = PasswordManager::createSalt();
+                $hash = PasswordManager::_hashPassword($pass, $salt);
             }
 
             $user->firstname = RequestMethods::post('firstname');
@@ -237,7 +238,7 @@ class Admin_Controller_User extends Controller
         $view->set('user', $user);
 
         if (RequestMethods::post('submitEditUser')) {
-            if($this->checkToken() !== true){
+            if($this->checkCSRFToken() !== true){
                 self::redirect('/admin/user/');
             }
             
@@ -264,8 +265,8 @@ class Admin_Controller_User extends Controller
                 $salt = $user->getSalt();
                 $hash = $user->getPassword();
             } else {
-                $salt = $security->createSalt();
-                $hash = $security->getSaltedHash($pass, $salt);
+                $salt = PasswordManager::createSalt();
+                $hash = PasswordManager::_hashPassword($pass, $salt);
             }
 
             $user->firstname = RequestMethods::post('firstname');
@@ -299,7 +300,7 @@ class Admin_Controller_User extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $user = App_Model_User::first(array('id = ?' => $id));
 
             if (NULL === $user) {

@@ -84,9 +84,17 @@ class Controller extends BaseController
      */
     public function render()
     {
-        $this->getLayoutView()
-                ->set('env', ENV);
-        
+        $view = $this->getActionView();
+        $layoutView = $this->getLayoutView();
+
+        if ($view) {
+            $view->set('env', ENV);
+        }
+
+        if ($layoutView) {
+            $layoutView->set('env', ENV);
+        }
+
         parent::render();
     }
 

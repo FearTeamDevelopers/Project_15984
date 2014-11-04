@@ -370,7 +370,7 @@ class Admin_Controller_Product extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddProduct')) {
-            if ($this->checkToken() !== true &&
+            if ($this->checkCSRFToken() !== true &&
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/product/');
             }
@@ -456,7 +456,7 @@ class Admin_Controller_Product extends Controller
                 ->set('sizes', $sizes);
 
         if (RequestMethods::post('submitEditProduct')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/product/');
             }
 
@@ -630,7 +630,7 @@ class Admin_Controller_Product extends Controller
         $view->set('product', $product);
 
         if (RequestMethods::post('submitDeleteProduct')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/product/');
             }
 
@@ -662,7 +662,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $cache = Registry::get('cache');
 
             $product = App_Model_Product::first(
@@ -699,7 +699,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $product = App_Model_RecommendedProduct::first(array(
                         'productId' => (int) $productId,
                         'recommendedId = ?' => (int) $recommendedId
@@ -733,7 +733,7 @@ class Admin_Controller_Product extends Controller
         $view->set('productid', $productId);
 
         if (RequestMethods::post('submitSaveRecommended')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/product/');
             }
 
@@ -820,7 +820,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
 
             if ($photo === null) {
@@ -850,7 +850,7 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $product = App_Model_Product::first(array('deleted = ?' => false, 'id = ?' => (int) $id));
 
             if ($product === null) {
@@ -888,7 +888,7 @@ class Admin_Controller_Product extends Controller
         $errors = array();
         $errorsIds = array();
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $ids = RequestMethods::post('productsids');
             $action = RequestMethods::post('action');
             $cache = Registry::get('cache');

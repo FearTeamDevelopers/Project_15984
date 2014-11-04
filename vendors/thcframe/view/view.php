@@ -138,7 +138,7 @@ class View extends Base
      */
     public function getHttpReferer()
     {
-        if (empty(RequestMethods::server('HTTP_REFERER'))) {
+        if (RequestMethods::server('HTTP_REFERER') === false) {
             return null;
         } else {
             return RequestMethods::server('HTTP_REFERER');

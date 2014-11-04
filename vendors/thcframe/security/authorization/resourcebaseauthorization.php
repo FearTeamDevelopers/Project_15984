@@ -4,7 +4,7 @@ namespace THCFrame\Security\Authorization;
 
 use THCFrame\Core\Base;
 use THCFrame\Security\Authorization\AuthorizationInterface;
-use THCFrame\Security\UserInterface;
+use THCFrame\Security\Model\BasicUser;
 
 /**
  * ResourceBaseAuthorization use resource and his permissions defined in config file
@@ -85,7 +85,7 @@ class ResourceBaseAuthorization extends Base implements AuthorizationInterface
     {
         if ($user === null) {
             $actualRole = 'role_guest';
-        } elseif($user instanceof UserInterface) {
+        } elseif($user instanceof BasicUser) {
             $actualRole = strtolower($user->getRole());
         }else{
             $actualRole = 'role_guest';

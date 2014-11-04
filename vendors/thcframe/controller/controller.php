@@ -8,6 +8,7 @@ use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
 use THCFrame\Controller\Exception;
 use THCFrame\View\Exception as ViewException;
+use THCFrame\Request\RequestMethods;
 
 /**
  * Parent controller class
@@ -107,12 +108,15 @@ class Controller extends Base
      */
     public static function redirect($url = null)
     {
+        $schema = 'http';
+        $host = RequestMethods::server('HTTP_HOST');
+
         if (NULL === $url) {
-            header("Location: /");
-            exit();
+            header("Location: {$schema}://{$host}");
+            exit;
         } else {
-            header("Location: {$url}");
-            exit();
+            header("Location: {$schema}://{$host}{$url}");
+            exit;
         }
     }
 
@@ -256,14 +260,11 @@ class Controller extends Base
                 $view = $this->layoutView;
                 $results = $view->render();
                 
-                http_response_code(200);
-                
                 //protection against clickjacking
                 header('X-Frame-Options: deny');
                 header("Content-type: {$defaultContentType}");
                 echo $results;
             } else if ($doAction) {
-                http_response_code(200);
                 
                 //protection against clickjacking
                 header('X-Frame-Options: deny');

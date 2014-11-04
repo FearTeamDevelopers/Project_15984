@@ -25,8 +25,6 @@ class ConfigAuthentication extends Base implements AuthenticationInterface
      */
     protected $_users = array();
     
-    private $_securityContext;
-
     /**
      * Create user objects base on informations in config file
      */
@@ -53,15 +51,13 @@ class ConfigAuthentication extends Base implements AuthenticationInterface
     /**
      * Object constructor
      * 
-     * @param THCFrame\Security\Security $securityContext
      * @param array $users
      */
-    public function __construct($securityContext, $users = array())
+    public function __construct($users = array())
     {
         parent::__construct();
         
         $this->_users = $users;
-        $this->_securityContext = $securityContext;
         
         $this->normalizeUsers();
     }

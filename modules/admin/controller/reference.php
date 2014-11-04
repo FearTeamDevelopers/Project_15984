@@ -33,7 +33,7 @@ class Admin_Controller_Reference extends Controller
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddReference')) {
-            if ($this->checkToken() !== true &&
+            if ($this->checkCSRFToken() !== true &&
                     $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/reference/');
             }
@@ -107,7 +107,7 @@ class Admin_Controller_Reference extends Controller
         $view->set('reference', $reference);
 
         if (RequestMethods::post('submitEditReference')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/reference/');
             }
 
@@ -176,7 +176,7 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $cache = Registry::get('cache');
             $reference = App_Model_Reference::first(
                             array('id = ?' => $id), array('id')
@@ -186,7 +186,13 @@ class Admin_Controller_Reference extends Controller
                 echo self::ERROR_MESSAGE_2;
                 return;
             } else {
+                $unlinkMainImg = $reference->getUnlinkPath();
+                $unlinkThumbImg = $reference->getUnlinkThumbPath();
+                
                 if ($reference->delete()) {
+                    @unlink($unlinkMainImg);
+                    @unlink($unlinkThumbImg);
+                    
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     $cache->erase('reference');
                     echo 'success';
@@ -211,7 +217,7 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkToken()) {
+        if ($this->checkCSRFToken()) {
             $reference = App_Model_Reference::first(array('id = ?' => (int) $id));
 
             if ($reference === null) {
@@ -252,7 +258,7 @@ class Admin_Controller_Reference extends Controller
         $errors = array();
 
         if (RequestMethods::post('performReferenceAction')) {
-            if ($this->checkToken() !== true) {
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/reference/');
             }
 
