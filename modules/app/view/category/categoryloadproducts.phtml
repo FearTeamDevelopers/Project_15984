@@ -11,7 +11,12 @@
                             <p class="rezerveP">{echo $product->overlay}</p>
                         </div>
                     {/if}
-                    <span class="price">{if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč</span>
+                    
+                    {if !$category->isGrouped}
+                        <span class="price">
+                            {if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč
+                        </span>
+                    {/if}
                 </a>
             </div>
         {/if}
@@ -26,7 +31,12 @@
                             <p class="rezerveP">{echo $product->overlay}</p>
                         </div>
                     {/if}
-                    <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč</span>
+                    
+                    {if !$category->isGrouped}
+                        <span class="priceSingle">
+                            {if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč
+                        </span>
+                    {/if}
                 </a>
             </div>
         {/else}

@@ -4,7 +4,8 @@
 /application/configuration/update.sql
 /application/logs/
 /public/uploads/
-/temp/
+/temp/cache/
+/temp/db/
 /nbproject/
 /sitemap.xml
 /googlef731e53ddaa1ca37.html

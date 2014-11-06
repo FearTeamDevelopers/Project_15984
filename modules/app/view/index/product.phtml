@@ -12,18 +12,18 @@
             </div>
             <br/>
             {if !empty($additionalPhotos)}
-            <div class="additionalPhotos">
-                {foreach $photo in $additionalPhotos}
-                <a data-lightbox="imageGr" data-title="{echo $product->title}"  href="{echo $photo->imgMain}"><span><img src="{echo $photo->imgThumb}"></span></a>
-                {/foreach}
-            </div>
+                <div class="additionalPhotos">
+                    {foreach $photo in $additionalPhotos}
+                    <a data-lightbox="imageGr" data-title="{echo $product->title}"  href="{echo $photo->imgMain}"><span><img src="{echo $photo->imgThumb}"></span></a>
+                    {/foreach}
+                </div>
 
-            <div class="productTableGr ">
+                <div class="productTableGr">
             {/if}{else}
                 <div class="productTableGr">
             {/else}
 
-                <table class="pTable ">
+                <table class="pTable">
                     <tr>
                         <td colspan="2">
                             <iframe src="//www.facebook.com/plugins/like.php?href={echo $fblike}&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" 
