@@ -48,16 +48,10 @@
                                 {echo $product->sizeTitle}
                             {/else}
                         </td>
-                        <td>
-                            {if $selable}Cena:{/if}{else}Cena za 1. den:{/else}
-                        </td>
-                        <td>
-                            {echo $product->currentPrice}Kč
-                        </td>
+                        
                     </tr>
                     <tr>
                         <td>Název kostýmu:</td><td>{echo $product->title}</td>
-                        <td>Cena za víkend:</td><td>{echo $product->weekendPrice}Kč</td>
                     </tr>
                 </table>
             </div>
@@ -102,9 +96,21 @@
                             {/else}
                         </td>
                     </tr>
-                    <tr><td>{if $selable}Cena:{/if}{else}Cena za 1. den:{/else}</td><td>{echo $product->currentPrice}Kč</td></tr>
-                    <!--změnit currnetPrice-->
-                    {if !$selable}<tr><td>Cena za víkend:</td><td>{echo $product->weekendPrice}Kč</td></tr>{/if}
+                    {if !$actualcat->isGrouped}
+                        <tr>
+                            <td>{if $actualcat->isSelable}Cena:{/if}{else}Cena za 1. den:{/else}</td>
+                            <td>{echo $product->currentPrice}Kč</td>
+                        </tr>
+                        <!--změnit currnetPrice-->
+                        {if !$actualcat->isSelable}
+                            <tr>
+                                <td>Cena za víkend:</td>
+                                <td>{echo $product->weekendPrice}Kč</td>
+                            </tr>
+                        {/if}
+                    {/if}{else}
+                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    {/else}
                 </table>
             </div>
 

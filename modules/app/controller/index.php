@@ -270,15 +270,6 @@ class App_Controller_Index extends Controller
 
         $view->set('product', $product);
 
-        $productCategory = App_Model_Category::fetchCategoryByProductUrlKey($urlKey);
-
-        $isSelable = false;
-        foreach ($productCategory as $cat) {
-            if ($cat->isSelable) {
-                $isSelable = true;
-            }
-        }
-
         $host = RequestMethods::server('HTTP_HOST');
         $canonical = 'http://' . $host . '/kostym/' . $product->getUrlKey() . '/';
 
@@ -287,8 +278,14 @@ class App_Controller_Index extends Controller
         $activeCat = $session->get('activecat', 'unknown');
         $parentCat = $session->get('parentcat', 'unknown');
 
+        if($activeCat != 'unknown'){
+            $actualCat = App_Model_Category::first(array('urlKey = ?' => $activeCat));
+        }else{
+            $actualCat = App_Model_Category::first(array('id = ?' => 1));;
+        }
+
         $view->set('product', $product)
-                ->set('selable', $isSelable)
+                ->set('actualcat', $actualCat)
                 ->set('fblike', $fblike);
 
         $this->_checkMetaData($layoutView, $product);

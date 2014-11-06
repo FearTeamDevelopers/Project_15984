@@ -35,15 +35,8 @@
                                     <p class="rezerveP">{echo $product->overlay}</p>
                                 </div>
                             {/if}
-                            
-                            {if !$category->isGrouped}
-                                <span class="price">
-                                    {if $category->isSelable}Cena{/if}{else}Za 1. den{/else} {echo $product->currentPrice}Kč
-                                </span>
-                            {/if}
                         </a>
                     </div>
-
                 {/if}
                 {else}
                      <div class="transparentCategory productCategory">
