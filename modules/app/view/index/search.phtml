@@ -1,12 +1,12 @@
 {if !empty($categories)}
 <article class="searchCategory transparentAbout">
-    <h1 class="visuallyhidden">Search content</h1>
+    <h1 class="visuallyhidden">Search in categories</h1>
     <span>Výraz <i><b>{echo $query}</b></i> byl nalezen v těchto kategoriích:</span><br/>
 </article>
 <div class="searchCategories">
-{foreach $cat in $categories}
-<a class="kategorieButton" href="/kategorie/{echo $cat->urlKey}/"><span>{echo $cat->title}</span></a>
-{/foreach}
+    {foreach $cat in $categories}
+    <a class="kategorieButton" href="/kategorie/{echo $cat->urlKey}/"><span>{echo $cat->title}</span></a>
+    {/foreach}
 </div>
 {/if}
 <br class="clear-all"/>
@@ -19,7 +19,7 @@
 </article>
 
 <article class="category">
-    <h1 class="visuallyhidden">Category</h1>
+    <h1 class="visuallyhidden">Search in costumes</h1>
     {foreach $product in $products}
     {if $product->hasGroupPhoto}
     <div class="transparentCategory productCategoryGrouped">

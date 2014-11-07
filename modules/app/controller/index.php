@@ -331,48 +331,30 @@ class App_Controller_Index extends Controller
         if (RequestMethods::get('search')) {
             $query = RequestMethods::get('lookfor');
 
+            $query = str_replace(array('.', ',', '_', '(', ')', '[', ']', '|'), '', $query);
+            $query = str_replace(array('?', '!', '@', '&', '*', ':', '+', '=', '~', '°', '´', '`', '%', "'", '"'), '', $query);
+        
             if ($query != '') {
-                $queryParts = explode(' ', $query);
-
-                $args = array();
                 $productWhereCond = "pr.deleted = 0 AND pr.variantFor = 0 AND pr.active = 1 AND (";
-                for ($i = 0; $i < count($queryParts); $i++) {
-                    $productWhereCond .= "pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR pr.productCode='?' OR ";
-                    $args[] = $queryParts[$i];
-                    $args[] = $queryParts[$i];
-                    $args[] = $queryParts[$i];
-                }
-
-                $productWhereCond = substr($productWhereCond, 0, strlen($productWhereCond) - 4) . ")";
-                array_unshift($args, $productWhereCond);
+                $productWhereCond .= "pr.metaKeywords LIKE '%%?%%' OR pr.title LIKE '%%?%%' OR pr.productCode='?')";
 
                 $productQuery = App_Model_Product::getQuery(
                                 array('pr.id', 'pr.urlKey', 'pr.productCode', 'pr.hasGroupPhoto',
                                     'pr.title', 'pr.currentPrice', 'pr.weekendPrice', 'pr.imgMain', 'pr.imgThumb'));
 
-                call_user_func_array(array($productQuery, 'wheresql'), $args);
+                $productQuery->wheresql($productWhereCond, $query, $query, $query);
+                $productQuery->order('pr.created', 'DESC');
 
-                $productQuery->order('pr.created', 'DESC')
-                        ->limit(50);
                 $products = App_Model_Product::initialize($productQuery);
 
-                $argscat = array();
-                $catWhereCond = "ct.active = 1 AND (";
-                for ($i = 0; $i < count($queryParts); $i++) {
-                    $catWhereCond .= "ct.title LIKE '%%?%%' OR ";
-                    $argscat[] = $queryParts[$i];
-                }
-
-                $catWhereCond = substr($catWhereCond, 0, strlen($catWhereCond) - 4) . ")";
-                array_unshift($argscat, $catWhereCond);
+                $catWhereCond = "ct.active = 1 AND ct.title LIKE '%%?%%'";
 
                 $categoryQuery = App_Model_Category::getQuery(
                                 array('ct.id', 'ct.urlKey', 'ct.title'));
-
-                call_user_func_array(array($categoryQuery, 'wheresql'), $argscat);
-
+                $categoryQuery->wheresql($catWhereCond, $query);
                 $categoryQuery->order('ct.rank', 'asc')
                         ->limit(10);
+                
                 $categories = App_Model_Category::initialize($categoryQuery);
             } else {
                 $products = $categories = array();

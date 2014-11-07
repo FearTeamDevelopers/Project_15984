@@ -28,7 +28,7 @@ class Controller extends BaseController
             self::redirect('/login');
         }
 
-        if ($session->get('lastActive') > time() - 1800) {
+        if (time() - $session->get('lastActive') <  1800) {
             $session->set('lastActive', time());
         } else {
             $view = $this->getActionView();
