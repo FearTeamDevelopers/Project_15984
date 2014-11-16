@@ -305,7 +305,7 @@ h1{
     max-width:400px;
     min-width:290px;
     margin-bottom:30px
-        
+
 }
 .pTable tr td{
     font-size:18px;
@@ -448,7 +448,7 @@ h1{
     height:160px;
 }
 .refText{
-    width:60%;
+    width:100%;
     margin:10px;
     float:left;
 }
@@ -508,7 +508,7 @@ h1{
     clear:both;
     float:left;
     padding-bottom:20px;
-    
+
 }
 .kategorieButton span{
     width:130px;
@@ -702,10 +702,18 @@ nav ul li a:hover + .hidden, .hidden:hover {
         width:440px;
     }
     .product{max-width:600px;}
-    .content{min-width:600px;}
-    .category{min-width:600px;}
+    .content{min-width:400px;}
+    .category{min-width:400px;}
+    
+    .refText{
+        width:60%;
+        margin:10px;
+        float:left;
+    }
+    .about{max-width:600px;}
+
 }
-.about{max-width:600px;}
+
 
 @media (orientation: portrait) { 
     .productCategoryGrouped{

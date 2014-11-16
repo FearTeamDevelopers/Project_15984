@@ -88,6 +88,7 @@ class App_Controller_Index extends Controller
         $canonical = 'http://' . $host;
 
         $layoutView->set('active', 99)
+                ->set('showmenu', 1)
                 ->set('activecat', null)
                 ->set('parentcat', null)
                 ->set('canonical', $canonical);
@@ -327,6 +328,7 @@ class App_Controller_Index extends Controller
     {
         $layoutView = $this->getLayoutView();
         $view = $this->getActionView();
+        $session = Registry::get('session');
 
         if (RequestMethods::get('search')) {
             $query = RequestMethods::get('lookfor');
@@ -362,12 +364,20 @@ class App_Controller_Index extends Controller
             
             $host = RequestMethods::server('HTTP_HOST');
             $canonical = 'http://' . $host . '/hledat';
+            $activeCat = $session->get('activecat', 'unknown');
+            $parentCat = $session->get('parentcat', 'unknown');
 
             $view->set('products', $products)
                     ->set('query', $query)
+                    ->set('category', array())
                     ->set('categories', $categories);
 
-            $layoutView->set('background', 1)
+            $layoutView
+                    ->set('category', array())
+                    ->set('active', 0)
+                    ->set('activecat', $activeCat)
+                    ->set('parentcat', $parentCat)
+                    ->set('background', 1)
                     ->set('canonical', $canonical)
                     ->set('metatitle', 'Agentura Karneval - Hledat');
         }

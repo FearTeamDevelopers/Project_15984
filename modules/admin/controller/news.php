@@ -12,7 +12,7 @@ class Admin_Controller_News extends Controller
 {
 
     /**
-     * @before _secured, _admin
+     * @before _secured, _member
      */
     public function index()
     {

@@ -346,10 +346,13 @@ class Admin_Controller_Gallery extends Controller
             if (null === $photo) {
                 echo self::ERROR_MESSAGE_2;
             } else {
-                @unlink($photo->getUnlinkPath());
-                @unlink($photo->getUnlinkThumbPath());
+                $mainPath = $photo->getUnlinkPath();
+                $thumbPath = $photo->getUnlinkThumbPath();
 
                 if ($photo->delete()) {
+                    @unlink($mainPath);
+                    @unlink($thumbPath);
+                    
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     echo 'success';
                 } else {

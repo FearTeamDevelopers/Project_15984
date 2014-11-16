@@ -94,7 +94,6 @@ class Admin_Controller_User extends Controller
      */
     public function add()
     {
-        $security = Registry::get('security');
         $view = $this->getActionView();
         
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
@@ -118,7 +117,7 @@ class Admin_Controller_User extends Controller
             }
 
             $salt = PasswordManager::createSalt();
-            $hash = PasswordManager::_hashPassword(RequestMethods::post('password'), $salt);
+            $hash = PasswordManager::hashPassword(RequestMethods::post('password'), $salt);
 
             $user = new App_Model_User(array(
                 'firstname' => RequestMethods::post('firstname'),
@@ -168,7 +167,6 @@ class Admin_Controller_User extends Controller
                 self::redirect('/admin/user/');
             }
             $errors = array();
-            $security = Registry::get('security');
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
                 $errors['password2'] = array('Hesla se neshodují');
@@ -192,7 +190,7 @@ class Admin_Controller_User extends Controller
                 $hash = $user->getPassword();
             } else {
                 $salt = PasswordManager::createSalt();
-                $hash = PasswordManager::_hashPassword($pass, $salt);
+                $hash = PasswordManager::hashPassword($pass, $salt);
             }
 
             $user->firstname = RequestMethods::post('firstname');
@@ -223,7 +221,6 @@ class Admin_Controller_User extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
-        $security = Registry::get('security');
 
         $user = App_Model_User::first(array('id = ?' => (int)$id));
 
@@ -266,7 +263,7 @@ class Admin_Controller_User extends Controller
                 $hash = $user->getPassword();
             } else {
                 $salt = PasswordManager::createSalt();
-                $hash = PasswordManager::_hashPassword($pass, $salt);
+                $hash = PasswordManager::hashPassword($pass, $salt);
             }
 
             $user->firstname = RequestMethods::post('firstname');

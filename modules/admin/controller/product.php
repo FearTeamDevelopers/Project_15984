@@ -722,7 +722,7 @@ class Admin_Controller_Product extends Controller
     }
 
     /**
-     * @before _secured, _admin
+     * @before _secured, _member
      * @param type $productId
      */
     public function addRecommended($productId)
@@ -826,10 +826,13 @@ class Admin_Controller_Product extends Controller
             if ($photo === null) {
                 echo self::ERROR_MESSAGE_2;
             } else {
-                @unlink($photo->getUnlinkPath());
-                @unlink($photo->getUnlinkThumbPath());
+                $mainPath = $photo->getUnlinkPath();
+                $thumbPath = $photo->getUnlinkThumbPath();
 
                 if ($photo->delete()) {
+                    @unlink($mainPath);
+                    @unlink($thumbPath);
+                    
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'success';
                 } else {

@@ -27,9 +27,6 @@ class Admin_Controller_Content extends Controller
         }
     }
 
-    /**
-     * @before _secured, _member
-     */
     private function _getPhotos()
     {
         $photos = App_Model_Photo::all(array('active = ?' => true));

@@ -31,12 +31,12 @@
         <link href="/public/css/tablet.min.css" media="screen" rel="stylesheet" type="text/css" />
         {if isset($background)}<link href="/public/css/style_basic_bg1.css" media="screen" rel="stylesheet" type="text/css" />{/if}
         {else}<link href="/public/css/style_basic_bg.css" media="screen" rel="stylesheet" type="text/css" />{/else}
-        <!--[if IE]> <link href="/public/css/styles.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
+        <link href="/public/css/plugins/lightbox2.min.css" rel="stylesheet"  type="text/css" />
+        <!--[if IE]> <link href="/public/css/tablet.min.css" media="screen" rel="stylesheet" type="text/css" /><![endif]-->
 
         <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
-        <link href="/public/css/plugins/lightbox2.min.css" rel="stylesheet"  type="text/css" />
-        <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/modernizr.js"></script>
+
         {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
         {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
         <link rel="canonical" href="{echo $canonical}" />
@@ -77,8 +77,10 @@
             Petr Vaněk, Grafico
         </footer>
 
-        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
-        <script type="text/javascript" src="/public/js/custom/generalAppMobile.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js" async></script>
+        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js" async></script> 
+        <script type="text/javascript" src="/public/js/custom/generalAppMobile.min.js" async></script>
 
         {if $env == "live"}
         <script type="text/javascript">

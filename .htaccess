@@ -256,7 +256,7 @@ RewriteRule \.(jpe?g|gif|bmp|png|ico)$ - [F]
 ########## End - Preventing Bandwidth Image Theft
 
 RewriteCond %{REQUEST_FILENAME} -s
-RewriteRule /public/(.*)/(.*)\.(css|jpe?g|gif|png|js|ico)$ - [NC,L]
+RewriteRule /public/(.*)\.(css|jpe?g|gif|png|js|ico)$ - [NC,L]
 
 RewriteCond %{REQUEST_URI} (^/tests/(.*)$) 
 RewriteRule .* - [F]

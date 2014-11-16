@@ -107,7 +107,7 @@ class Admin_Controller_Category extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function edit($id)
     {
@@ -167,8 +167,7 @@ class Admin_Controller_Category extends Controller
     }
 
     /**
-     * 
-     * @param type $id
+     * @before _secured, _admin
      */
     public function detail($id)
     {
@@ -200,7 +199,7 @@ class Admin_Controller_Category extends Controller
     }
 
     /**
-     * @before _secured, _member
+     * @before _secured, _admin
      */
     public function delete($id)
     {

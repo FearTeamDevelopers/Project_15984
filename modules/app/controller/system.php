@@ -16,11 +16,10 @@ class App_Controller_System extends Controller
      */
     public function showProfiler()
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
 
-        $profiler = Profiler::getProfiler();
-        echo $profiler->printProfilerRecord();
+        echo Profiler::display();
     }
 
     /**
@@ -28,8 +27,8 @@ class App_Controller_System extends Controller
      */
     public function logresolution()
     {
-        $this->_willRenderActionView = false;
-        $this->_willRenderLayoutView = false;
+        $this->willRenderActionView = false;
+        $this->willRenderLayoutView = false;
         
         $width = RequestMethods::post('scwidth');
         $height = RequestMethods::post('scheight');

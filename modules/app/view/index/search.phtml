@@ -1,50 +1,47 @@
 {if !empty($categories)}
-<article class="searchCategory transparentAbout">
-    <h1 class="visuallyhidden">Search in categories</h1>
-    <span>Výraz <i><b>{echo $query}</b></i> byl nalezen v těchto kategoriích:</span><br/>
-</article>
-<div class="searchCategories">
-    {foreach $cat in $categories}
-    <a class="kategorieButton" href="/kategorie/{echo $cat->urlKey}/"><span>{echo $cat->title}</span></a>
-    {/foreach}
-</div>
+    <article class="searchCategory transparentAbout">
+        <h1 class="visuallyhidden">Search in categories</h1>
+        <span>Výraz <i><b>{echo $query}</b></i> byl nalezen v těchto kategoriích:</span><br/>
+    </article>
+    <div class="searchCategories">
+        {foreach $cat in $categories}
+            <a class="kategorieButton" href="/kategorie/{echo $cat->urlKey}/"><span>{echo $cat->title}</span></a>
+        {/foreach}
+    </div>
 {/if}
+
 <br class="clear-all"/>
 {if !empty($products)}
-<article class="searchProduct ">
-    <h1 class="visuallyhidden">Search content</h1>
-    <div>
-        <span class="transparentAbout">Výraz <i>{echo $query}</i> byl nalezen v těchto kostýmech:</span>
-    </div>
-</article>
+    <article class="searchProduct ">
+        <h1 class="visuallyhidden">Search content</h1>
+        <div>
+            <span class="transparentAbout">Výraz <i>{echo $query}</i> byl nalezen v těchto kostýmech:</span>
+        </div>
+    </article>
 
-<article class="category">
-    <h1 class="visuallyhidden">Search in costumes</h1>
-    {foreach $product in $products}
-    {if $product->hasGroupPhoto}
-    <div class="transparentCategory productCategoryGrouped">
-        <a href="/kostym/{echo $product->urlKey}/" >
-            <span>{echo $product->title}</span><br/>
-            <span><img class="grouped" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
-            <span>{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
-        </a>
-    </div>
-    {/if}
-    {else}
-    <div class="transparentCategory productCategory">
-        <a href="/kostym/{echo $product->urlKey}/" >
-            <span>{echo $product->title}</span><br/>
-            <span><img class="single" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
-            <span class="priceSingle">{if $category->isSelable}Cena{/if}{else}Cena od{/else} {echo $product->currentPrice}Kč</span>
-        </a>
-    </div>
-    {/else}
-    {/foreach}
-</article>
+    <article class="category">
+        <h1 class="visuallyhidden">Search in costumes</h1>
+        {foreach $product in $products}
+            {if $product->hasGroupPhoto}
+                <div class="transparentCategory productCategoryGrouped">
+                    <a href="/kostym/{echo $product->urlKey}/" >
+                        <span>{echo $product->title}</span><br/>
+                        <span><img class="grouped" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
+                    </a>
+                </div>
+            {/if}{else}
+                <div class="transparentCategory productCategory">
+                    <a href="/kostym/{echo $product->urlKey}/" >
+                        <span>{echo $product->title}</span><br/>
+                        <span><img class="single" src="{echo $product->imgThumb}" alt="{echo $product->title}"></span><br/>
+                    </a>
+                </div>
+            {/else}
+        {/foreach}
+    </article>
 {/if}{else}
-<br/>
-<br/>
-<div class="searchCategory transparentCategory">
-    <span>Nebyly nalezeny žádné kostýmy</span>    
-</div>
+    <br/><br/>
+    <div class="searchCategory transparentCategory">
+        <span>Nebyly nalezeny žádné kostýmy</span>    
+    </div>
 {/else}
