@@ -36,12 +36,14 @@ class Admin_Controller_Product extends Controller
             }
         }
 
+        $cfg = Registry::get('configuration');
+
         $fileManager = new FileManager(array(
-            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+            'thumbWidth' => $cfg->thumb_width,
+            'thumbHeight' => $cfg->thumb_height,
+            'thumbResizeBy' => $cfg->thumb_resizeby,
+            'maxImageWidth' => $cfg->photo_maxwidth,
+            'maxImageHeight' => $cfg->photo_maxheight
         ));
 
         $uploadTo = trim(substr(str_replace('.', '', $urlKeyCh), 0, 3));
@@ -292,12 +294,14 @@ class Admin_Controller_Product extends Controller
      */
     private function _uploadAdditionalPhotos($productId, $uploadTo)
     {
+        $cfg = Registry::get('configuration');
+
         $fileManager = new FileManager(array(
-            'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-            'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-            'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-            'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-            'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+            'thumbWidth' => $cfg->thumb_width,
+            'thumbHeight' => $cfg->thumb_height,
+            'thumbResizeBy' => $cfg->thumb_resizeby,
+            'maxImageWidth' => $cfg->photo_maxwidth,
+            'maxImageHeight' => $cfg->photo_maxheight
         ));
 
         $fileErrors = $fileManager->upload('secondfile', 'product/' . $uploadTo, time() . '_')->getUploadErrors();
@@ -832,7 +836,7 @@ class Admin_Controller_Product extends Controller
                 if ($photo->delete()) {
                     @unlink($mainPath);
                     @unlink($thumbPath);
-                    
+
                     Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
                     echo 'success';
                 } else {

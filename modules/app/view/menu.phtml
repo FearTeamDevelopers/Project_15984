@@ -1,9 +1,6 @@
 <ul>
     <li><a {if $active == 1} id="activeLi1" {/if} href="/o-nas"><span>O nás</span></a></li>
-    <li><a {if $active == 2} id="activeLi1" {/if} href="/reference"><span>Reference</span></a></li>
-    <li><a {if $active == 3} id="activeLi1" {/if} href="/aktuality"><span>Aktuality</span></a></li>
-    <li><a {if $active == 4} id="activeLi1" {/if} href="/cenik"><span>Ceník</span></a></li>
-    <li><a {if $active == 5} id="activeLi1" {/if} href="/kontakt"><span>Kontakt</span></a></li>
+    
     <li><a href="#"><span>Půjčovna</span></a>
         {if isset($activecat) && $activecat != "unknown"}
             <ul class="hidden dropdownmenu1-display">
@@ -63,4 +60,9 @@
             {/if}
         </ul>
     </li>
+    <li><a {if $active == 5} id="activeLi1" {/if} href="/kontakt"><span>Kontakt</span></a></li>
+    <li><a {if $active == 2} id="activeLi1" {/if} href="/reference"><span>Reference</span></a></li>
+    <li><a {if $active == 3} id="activeLi1" {/if} href="/aktuality"><span>Aktuality</span></a></li>
+    <li><a {if $active == 4} id="activeLi1" {/if} href="/cenik"><span>Ceník</span></a></li>
+    
 </ul>

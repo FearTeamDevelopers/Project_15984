@@ -274,12 +274,14 @@ class Admin_Controller_Gallery extends Controller
                 self::redirect('/admin/gallery/');
             }
 
+            $cfg = Registry::get('configuration');
+
             $fileManager = new FileManager(array(
-                'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                'thumbWidth' => $cfg->thumb_width,
+                'thumbHeight' => $cfg->thumb_height,
+                'thumbResizeBy' => $cfg->thumb_resizeby,
+                'maxImageWidth' => $cfg->photo_maxwidth,
+                'maxImageHeight' => $cfg->photo_maxheight
             ));
 
             $fileErrors = $fileManager->upload('secondfile', 'gallery/' . $gallery->getId(), time().'_')->getUploadErrors();

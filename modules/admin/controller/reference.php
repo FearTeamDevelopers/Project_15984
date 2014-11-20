@@ -40,13 +40,14 @@ class Admin_Controller_Reference extends Controller
 
             $cache = Registry::get('cache');
             $errors = array();
+            $cfg = Registry::get('configuration');
 
             $fileManager = new FileManager(array(
-                'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                'thumbWidth' => $cfg->thumb_width,
+                'thumbHeight' => $cfg->thumb_height,
+                'thumbResizeBy' => $cfg->thumb_resizeby,
+                'maxImageWidth' => $cfg->photo_maxwidth,
+                'maxImageHeight' => $cfg->photo_maxheight
             ));
 
             $fileErrors = $fileManager->upload('mainfile', 'reference', time() . '_')->getUploadErrors();
@@ -115,12 +116,14 @@ class Admin_Controller_Reference extends Controller
             $errors = array();
 
             if ($reference->imgMain == '') {
+                $cfg = Registry::get('configuration');
+
                 $fileManager = new FileManager(array(
-                    'thumbWidth' => $this->loadConfigFromDb('thumb_width'),
-                    'thumbHeight' => $this->loadConfigFromDb('thumb_height'),
-                    'thumbResizeBy' => $this->loadConfigFromDb('thumb_resizeby'),
-                    'maxImageWidth' => $this->loadConfigFromDb('photo_maxwidth'),
-                    'maxImageHeight' => $this->loadConfigFromDb('photo_maxheight')
+                    'thumbWidth' => $cfg->thumb_width,
+                    'thumbHeight' => $cfg->thumb_height,
+                    'thumbResizeBy' => $cfg->thumb_resizeby,
+                    'maxImageWidth' => $cfg->photo_maxwidth,
+                    'maxImageHeight' => $cfg->photo_maxheight
                 ));
 
                 $fileErrors = $fileManager->upload('mainfile', 'reference', time() . '_')->getUploadErrors();
@@ -188,11 +191,11 @@ class Admin_Controller_Reference extends Controller
             } else {
                 $unlinkMainImg = $reference->getUnlinkPath();
                 $unlinkThumbImg = $reference->getUnlinkThumbPath();
-                
+
                 if ($reference->delete()) {
                     @unlink($unlinkMainImg);
                     @unlink($unlinkThumbImg);
-                    
+
                     Event::fire('admin.log', array('success', 'ID: ' . $id));
                     $cache->erase('reference');
                     echo 'success';

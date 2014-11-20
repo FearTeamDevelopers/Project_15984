@@ -23,6 +23,7 @@ class Controller extends BaseController
         parent::__construct($options);
 
         $cache = Registry::get('cache');
+        $cfg = Registry::get('configuration');
 
         // schedule disconnect from database 
         Events::add('framework.controller.destruct.after', function($name) {
@@ -45,13 +46,13 @@ class Controller extends BaseController
             $metaData = $metaData;
         } else {
             $metaData = array(
-                'metadescription' => $this->loadConfigFromDb('meta_description'),
-                'metarobots' => $this->loadConfigFromDb('meta_robots'),
-                'metatitle' => $this->loadConfigFromDb('meta_title'),
-                'metaogurl' => $this->loadConfigFromDb('meta_og_url'),
-                'metaogtype' => $this->loadConfigFromDb('meta_og_type'),
-                'metaogimage' => $this->loadConfigFromDb('meta_og_image'),
-                'metaogsitename' => $this->loadConfigFromDb('meta_og_site_name')
+                'metadescription' => $cfg->meta_description,
+                'metarobots' => $cfg->meta_robots,
+                'metatitle' => $cfg->meta_title,
+                'metaogurl' => $cfg->meta_og_url,
+                'metaogtype' => $cfg->meta_og_type,
+                'metaogimage' => $cfg->meta_og_image,
+                'metaogsitename' => $cfg->meta_og_site_name
             );
 
             $cache->set('global_meta_data', $metaData);
