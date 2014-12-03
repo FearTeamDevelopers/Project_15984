@@ -5,6 +5,7 @@ namespace App\Etc;
 use THCFrame\Events\Events;
 use THCFrame\Registry\Registry;
 use THCFrame\Controller\Controller as BaseController;
+use THCFrame\Request\RequestMethods;
 
 /**
  * Module specific controller class extending framework controller class
@@ -15,6 +16,20 @@ class Controller extends BaseController
 {
 
     /**
+     * Store initialized cache object
+     * @var type 
+     * @read
+     */
+    protected $_cache;
+    
+    /**
+     * Store server host name
+     * @var type 
+     * @read
+     */
+    protected $_serverHost;
+    
+    /**
      * 
      * @param type $options
      */
@@ -22,7 +37,8 @@ class Controller extends BaseController
     {
         parent::__construct($options);
 
-        $cache = Registry::get('cache');
+        $this->_serverHost = RequestMethods::server('HTTP_HOST');
+        $this->_cache = Registry::get('cache');
         $cfg = Registry::get('configuration');
 
         // schedule disconnect from database 
@@ -31,16 +47,16 @@ class Controller extends BaseController
             $database->disconnect();
         });
 
-        $menuCat = $cache->get('menucat');
+        $menuCat = $this->getCache()->get('menucat');
 
         if (NULL !== $menuCat) {
             $categories = $menuCat;
         } else {
             $categories = \App_Model_Category::fetchAllCategories();
-            $cache->set('menucat', $categories);
+            $this->getCache()->set('menucat', $categories);
         }
 
-        $metaData = $cache->get('global_meta_data');
+        $metaData = $this->getCache()->get('global_meta_data');
 
         if (NULL !== $metaData) {
             $metaData = $metaData;
@@ -55,7 +71,7 @@ class Controller extends BaseController
                 'metaogsitename' => $cfg->meta_og_site_name
             );
 
-            $cache->set('global_meta_data', $metaData);
+            $this->getCache()->set('global_meta_data', $metaData);
         }
 
         $this->getLayoutView()

@@ -59,14 +59,14 @@
             </span> 
 
             <span class="field nodisplay" id="uploadLogo" >
-                <input type="file" name="mainfile" />
+                <input type="file" name="mainfile" accept="image/*"/>
                 {if isset($errors["mainfile"])}
                 <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                 {/if}
             </span>
             {/if}{else}
             <span class="field" id="uploadLogo">
-                <input type="file" name="mainfile" />
+                <input type="file" name="mainfile" accept="image/*"/>
                 {if isset($errors["mainfile"])}
                 <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                 {/if}

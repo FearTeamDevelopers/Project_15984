@@ -53,7 +53,7 @@
                             <td>{echo $ref->getCreated()}</td>
                             <td>
                                 <a href="/admin/reference/edit/{echo $ref->id}" alt= "Editovat"class="btn btn3 btn_pencil" title="Edit"></a>
-                                {if $isAdmin}<a href="/admin/reference/delete/{echo $ref->id}" alt="Smazat" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                                {if $isAdmin}<a href="/admin/reference/delete/{echo $ref->id}" alt="Smazat" class="btn btn3 btn_trash ajaxDelete" title="Delete"></a>{/if}
                             </td>
                         </tr>
                     {/foreach}

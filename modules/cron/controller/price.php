@@ -12,7 +12,7 @@ class Cron_Controller_Price extends Controller
 {
 
     /**
-     * @before _cron
+     * 
      */
     public function calculateProductPrice()
     {

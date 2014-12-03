@@ -39,7 +39,7 @@
                 <td>{echo $product->getProductCode()}</td>
                 <td>{echo $product->getCurrentPrice()}</td>
                 <td>
-                    <a href="/admin/product/undelete/{echo $product->id}" class="btn btn3 btn_refresh undeleteRow" title="Obnovit"></a>
+                    <a href="/admin/product/undelete/{echo $product->id}" class="btn btn3 btn_refresh ajaxUndelete" title="Obnovit"></a>
                 </td>
             </tr>
             {/foreach}

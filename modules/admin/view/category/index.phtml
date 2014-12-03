@@ -48,7 +48,7 @@
                             <td>
                                 <a href="/admin/category/detail/{echo $category->id}" class="btn btn3 btn_info2" title="Podkategorie"></a>
                                 <a href="/admin/category/edit/{echo $category->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
-                                {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
+                                {if $isAdmin}<a href="/admin/category/delete/{echo $category->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>{/if}
                             </td>
                         </tr>
                     {/foreach}

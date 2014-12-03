@@ -112,8 +112,7 @@ class Admin_Controller_Content extends Controller
             if($this->checkCSRFToken() !== true){
                 self::redirect('/admin/content/');
             }
-            
-            $cache = Registry::get('cache');
+
             $errors = array();
             $urlKey = $this->_createUrlKey(RequestMethods::post('page'));
 
@@ -135,7 +134,7 @@ class Admin_Controller_Content extends Controller
 
                 Event::fire('admin.log', array('success', 'Content id: ' . $id));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
-                $cache->erase($content->getUrlKey());
+                Registry::get('cache')->erase($content->getUrlKey());
                 self::redirect('/admin/content/');
             } else {
                 Event::fire('admin.log', array('fail', 'Content id: ' . $id));

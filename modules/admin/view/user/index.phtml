@@ -34,7 +34,7 @@
                         <td>{if ($user->active)}<span class="labelProduct labelProductGreen">Active</span>{/if}</td>
                         <td>
                             <a href="/admin/user/edit/{echo $user->id}" class="btn btn3 btn_pencil"></a> 
-                            {if $isSuperAdmin}<a href="/admin/user/delete/{echo $user->id}" class="btn btn3 btn_trash deleteRow"></a>{/if}
+                            {if $isSuperAdmin}<a href="/admin/user/delete/{echo $user->id}" class="btn btn3 btn_trash ajaxDelete"></a>{/if}
                         </td>
                     </tr>
                 {/foreach}

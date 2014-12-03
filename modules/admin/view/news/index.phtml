@@ -42,7 +42,7 @@
                             <td>{echo $_news->getCreated()}</td>
                             <td>
                                 <a href="/admin/news/edit/{echo $_news->id}" class="btn btn3 btn_pencil" title="Edit"></a>
-                                {if $isAdmin}<a href="/admin/news/delete/{echo $_news->id}" class="btn btn3 btn_trash deleteRow" title="Delete"></a>{/if}
+                                {if $isAdmin}<a href="/admin/news/delete/{echo $_news->id}" class="btn btn3 btn_trash ajaxDelete" title="Delete"></a>{/if}
                             </td>
                         </tr>
                     {/foreach}

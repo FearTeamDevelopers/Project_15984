@@ -8,7 +8,7 @@
         <h2 class="table"><span>Nový produkt</span></h2>
     </div><!--contenttitle-->
 
-    <form class="stdform stdform2 uploadPhotoForm" method="post" action="#" enctype="multipart/form-data">
+    <form class="stdform stdform2 uploadForm" method="post" action="#" enctype="multipart/form-data">
         <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
         <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
@@ -66,7 +66,7 @@
                 <p>
                     <label>Hlavní foto*<small>*.jpg, *.jpeg, *.png, *.gif</small></label>
                     <span class="field">
-                        <input type="file" name="mainfile"/>
+                        <input type="file" name="mainfile" accept="image/*"/>
                         {if isset($errors["mainfile"])}
                         <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                         {/if}

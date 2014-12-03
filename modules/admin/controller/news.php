@@ -19,7 +19,7 @@ class Admin_Controller_News extends Controller
         $view = $this->getActionView();
 
         $news = App_Model_News::all();
-        
+
         $view->set('news', $news);
     }
 
@@ -31,13 +31,13 @@ class Admin_Controller_News extends Controller
         $view = $this->getActionView();
 
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
-        
+
         if (RequestMethods::post('submitAddNews')) {
-            if($this->checkCSRFToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkCSRFToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/news/');
             }
-            
+
             $news = new App_Model_News(array(
                 'title' => RequestMethods::post('title'),
                 'author' => RequestMethods::post('author', $this->getUser()->getWholeName()),
@@ -50,7 +50,7 @@ class Admin_Controller_News extends Controller
                 $id = $news->save();
 
                 Event::fire('admin.log', array('success', 'News id: ' . $id));
-                $view->successMessage('Aktualita'.self::SUCCESS_MESSAGE_1);
+                $view->successMessage('Aktualita' . self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/news/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -68,20 +68,20 @@ class Admin_Controller_News extends Controller
     {
         $view = $this->getActionView();
 
-        $news = App_Model_News::first(array('id = ?' => (int)$id));
+        $news = App_Model_News::first(array('id = ?' => (int) $id));
 
         if ($news === null) {
             $view->warningMessage(self::ERROR_MESSAGE_2);
             self::redirect('/admin/news/');
         }
-        
+
         $view->set('news', $news);
 
         if (RequestMethods::post('submitEditNews')) {
-            if($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/news/');
             }
-            
+
             $news->title = RequestMethods::post('title');
             $news->author = RequestMethods::post('author', $this->getUser()->getWholeName());
             $news->body = RequestMethods::post('text');
@@ -109,25 +109,21 @@ class Admin_Controller_News extends Controller
     {
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
-        
-        if ($this->checkCSRFToken()) {
-            $news = App_Model_News::first(
-                            array('id = ?' => (int) $id), array('id')
-            );
 
-            if (NULL === $news) {
-                echo self::ERROR_MESSAGE_2;
-            } else {
-                if ($news->delete()) {
-                    Event::fire('admin.log', array('success', 'News id: ' . $id));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'News id: ' . $id));
-                    echo self::ERROR_MESSAGE_1;
-                }
-            }
+        $news = App_Model_News::first(
+                        array('id = ?' => (int) $id), array('id')
+        );
+
+        if (NULL === $news) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
+            if ($news->delete()) {
+                Event::fire('admin.log', array('success', 'News id: ' . $id));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'News id: ' . $id));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 
@@ -140,10 +136,10 @@ class Admin_Controller_News extends Controller
         $errors = array();
 
         if (RequestMethods::post('performNewsAction')) {
-            if($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/news/');
             }
-            
+
             $ids = RequestMethods::post('newsids');
             $action = RequestMethods::post('action');
 

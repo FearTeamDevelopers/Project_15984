@@ -2,11 +2,13 @@
     {foreach $ref in $reference}
         <article class="transparentAbout reference">
             <div class="refPhoto">
-                <a data-lightbox="image{echo $ref_i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}"></a>
+                <a data-lightbox="image{echo $ref_i}" data-title="{echo $ref->title}" href="{echo $ref->imgMain}"> 
+                    <img alt="{echo $ref->title}-foto" src="{echo $ref->imgThumb}">
+                </a>
             </div>
             <div class="refText">
                 <h1>{echo $ref->title}</h1>
-                <div>{echo $ref->body}</div>
+                <div>{echo html_entity_decode($ref->body)}</div>
             </div>
         </article>
     {/foreach}

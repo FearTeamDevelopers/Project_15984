@@ -6,7 +6,7 @@
                 <span class="fs10">{echo $new->created}</span>
             </div>
             <div class="news-content">
-                <div>{echo $new->body}</div>
+                <div>{echo html_entity_decode($new->body)}</div>
             </div>
         </article>
     {/foreach}

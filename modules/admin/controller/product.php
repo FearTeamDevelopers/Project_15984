@@ -379,7 +379,6 @@ class Admin_Controller_Product extends Controller
                 self::redirect('/admin/product/');
             }
 
-            $cache = Registry::get('cache');
             $categoryArr = RequestMethods::post('rcat');
 
             if (empty($categoryArr)) {
@@ -413,7 +412,7 @@ class Admin_Controller_Product extends Controller
 
                 if (empty($this->_errors)) {
                     $view->successMessage('Produkt' . self::SUCCESS_MESSAGE_1);
-                    $cache->invalidate();
+                    Registry::get('cache')->invalidate();
                     self::redirect('/admin/product/');
                 } else {
                     $view->set('product', $product)
@@ -463,8 +462,6 @@ class Admin_Controller_Product extends Controller
             if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/product/');
             }
-
-            $cache = Registry::get('cache');
 
             if ($product->getProductType() == 'varianta') {
                 $product->sizeId = RequestMethods::post('size');
@@ -599,7 +596,7 @@ class Admin_Controller_Product extends Controller
                     if (empty($this->_errors)) {
                         Event::fire('admin.log', array('success', 'Product id: ' . $product->getId()));
                         $view->successMessage(self::SUCCESS_MESSAGE_2);
-                        $cache->invalidate();
+                        Registry::get('cache')->invalidate();
                         self::redirect('/admin/product/');
                     } else {
                         Event::fire('admin.log', array('fail', 'Product id: ' . $product->getId()));
@@ -638,8 +635,6 @@ class Admin_Controller_Product extends Controller
                 self::redirect('/admin/product/');
             }
 
-            $cache = Registry::get('cache');
-
             $product->deleted = true;
 
             if ($product->validate()) {
@@ -647,7 +642,8 @@ class Admin_Controller_Product extends Controller
 
                 Event::fire('admin.log', array('success', 'Product id: ' . $id));
                 $view->successMessage('Produkt' . self::SUCCESS_MESSAGE_3);
-                $cache->invalidate();
+
+                Registry::get('cache')->invalidate();
                 self::redirect('/admin/product/');
             } else {
                 Event::fire('admin.log', array('fail', 'Product id: ' . $id));
@@ -666,30 +662,24 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $cache = Registry::get('cache');
+        $product = App_Model_Product::first(
+                        array('id = ?' => (int) $id, 'deleted = ?' => true));
 
-            $product = App_Model_Product::first(
-                            array('id = ?' => (int) $id, 'deleted = ?' => true));
+        if (NULL === $product) {
+            echo self::ERROR_MESSAGE_2;
+            return;
+        }
 
-            if (NULL === $product) {
-                echo self::ERROR_MESSAGE_2;
-                return;
-            }
+        $product->deleted = false;
 
-            $product->deleted = false;
+        if ($product->validate()) {
+            $product->save();
+            Registry::get('cache')->invalidate();
 
-            if ($product->validate()) {
-                $product->save();
-                $cache->invalidate();
-
-                Event::fire('admin.log', array('success', 'Product id: ' . $id));
-                echo 'success';
-            } else {
-                Event::fire('admin.log', array('fail', 'Product id: ' . $id));
-                echo self::ERROR_MESSAGE_1;
-            }
+            Event::fire('admin.log', array('success', 'Product id: ' . $id));
+            echo 'success';
         } else {
+            Event::fire('admin.log', array('fail', 'Product id: ' . $id));
             echo self::ERROR_MESSAGE_1;
         }
     }
@@ -703,25 +693,21 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $product = App_Model_RecommendedProduct::first(array(
-                        'productId' => (int) $productId,
-                        'recommendedId = ?' => (int) $recommendedId
-            ));
+        $product = App_Model_RecommendedProduct::first(array(
+                    'productId' => (int) $productId,
+                    'recommendedId = ?' => (int) $recommendedId
+        ));
 
-            if (NULL === $product) {
-                echo self::ERROR_MESSAGE_2;
-            } else {
-                if ($product->delete()) {
-                    Event::fire('admin.log', array('success', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
-                    echo self::ERROR_MESSAGE_1;
-                }
-            }
+        if (NULL === $product) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
+            if ($product->delete()) {
+                Event::fire('admin.log', array('success', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'Recommended product ' . $recommendedId . ' for product ' . $productId));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 
@@ -824,28 +810,24 @@ class Admin_Controller_Product extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
+        $photo = App_Model_ProductPhoto::first(array('id = ?' => (int) $id));
 
-            if ($photo === null) {
-                echo self::ERROR_MESSAGE_2;
-            } else {
-                $mainPath = $photo->getUnlinkPath();
-                $thumbPath = $photo->getUnlinkThumbPath();
-
-                if ($photo->delete()) {
-                    @unlink($mainPath);
-                    @unlink($thumbPath);
-
-                    Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
-                    echo self::ERROR_MESSAGE_1;
-                }
-            }
+        if ($photo === null) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
+            $mainPath = $photo->getUnlinkPath();
+            $thumbPath = $photo->getUnlinkThumbPath();
+
+            if ($photo->delete()) {
+                @unlink($mainPath);
+                @unlink($thumbPath);
+
+                Event::fire('admin.log', array('success', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'Photo id: ' . $photo->getId() . ' for product ' . $photo->getProductId()));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 
@@ -898,7 +880,6 @@ class Admin_Controller_Product extends Controller
         if ($this->checkCSRFToken()) {
             $ids = RequestMethods::post('productsids');
             $action = RequestMethods::post('action');
-            $cache = Registry::get('cache');
 
             if (empty($ids)) {
                 echo 'Nějaký řádek musí být označen';
@@ -926,7 +907,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'Product ids: ' . join(',', $ids)));
-                        $cache->invalidate();
+                        Registry::get('cache')->invalidate();
                         echo self::SUCCESS_MESSAGE_6;
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -971,7 +952,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('overprice success', 'Product ids: ' . join(',', $ids)));
-                        $cache->invalidate();
+                        Registry::get('cache')->invalidate();
                         echo self::SUCCESS_MESSAGE_8;
                     } else {
                         Event::fire('admin.log', array('overprice fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -1000,7 +981,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'Product ids: ' . join(',', $ids)));
-                        $cache->invalidate();
+                        Registry::get('cache')->invalidate();
                         echo self::SUCCESS_MESSAGE_4;
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Product ids: ' . join(',', $errorsIds)));
@@ -1029,7 +1010,7 @@ class Admin_Controller_Product extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'Product ids: ' . join(',', $ids)));
-                        $cache->invalidate();
+                        Registry::get('cache')->invalidate();
                         echo self::SUCCESS_MESSAGE_5;
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Product ids: ' . join(',', $errorsIds)));

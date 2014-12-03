@@ -10,13 +10,19 @@ use THCFrame\Request\RequestMethods;
 class Cron_Controller_Backup extends Controller
 {
     
+    /**
+     * 
+     */
     public function databaseBackup()
     {
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
         
     }
-    
+   
+    /**
+     * 
+     */
     public function createSitemap()
     {
         $this->willRenderActionView = false;

@@ -15,8 +15,6 @@ class App_Controller_Category extends Controller
      */
     private function _checkMetaData($layoutView, \App_Model_Category $object)
     {
-        $host = RequestMethods::server('HTTP_HOST');
-        
         if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
@@ -26,10 +24,10 @@ class App_Controller_Category extends Controller
         }
 
         if ($object->getMetaImage() != '') {
-            $layoutView->set('metaogimage', "http://{$host}/public/images/meta_image.jpg");
+            $layoutView->set('metaogimage', "http://{$this->getServerHost()}/public/images/meta_image.jpg");
         }
 
-        $layoutView->set('metaogurl', "http://{$host}/kategorie/" . $object->getUrlKey() . '/');
+        $layoutView->set('metaogurl', "http://{$this->getServerHost()}/kategorie/" . $object->getUrlKey() . '/');
         $layoutView->set('metaogtype', 'article');
 
         return;
@@ -44,7 +42,6 @@ class App_Controller_Category extends Controller
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
         $session = Registry::get('session');
-        $cache = Registry::get('cache');
 
         $orderby = $session->get('catvieworderby', 'created');
         $order = $session->get('catvieworder', 'desc');
@@ -67,7 +64,7 @@ class App_Controller_Category extends Controller
             $session->set('catmaxpage_' . $urlKey, $maxCatPage);
         }
 
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1');
+        $products = $this->getCache()->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1');
 
         if ($products !== null) {
             $products = $products;
@@ -78,7 +75,7 @@ class App_Controller_Category extends Controller
             if ($products == null) {
                 $background = null;
             } else {
-                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);
+                $this->getCache()->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_1', $products);
                 $background = 1;
             }
         }
@@ -97,8 +94,7 @@ class App_Controller_Category extends Controller
             $layoutView->set('catrelnext', 2);
         }
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/kategorie/' . $urlKey . '/';
+        $canonical = 'http://' . $this->getServerHost() . '/kategorie/' . $urlKey . '/';
 
         $session->set('activecat', $urlKey)
                 ->set('activepage', 1);
@@ -123,7 +119,6 @@ class App_Controller_Category extends Controller
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
         $session = Registry::get('session');
-        $cache = Registry::get('cache');
 
         $urlKey = $session->get('activecat');
         $orderby = $session->get('catvieworderby', 'created');
@@ -136,7 +131,7 @@ class App_Controller_Category extends Controller
         }
 
         $page = (int) $session->get('activepage') + 1;
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page);
+        $products = $this->getCache()->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page);
 
         if ($products !== null) {
             $products = $products;
@@ -144,7 +139,7 @@ class App_Controller_Category extends Controller
             $products = App_Model_Product::fetchProductsByCategory($urlKey, 30, $page, $orderby, $order);
 
             if ($products !== null) {
-                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
+                $this->getCache()->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . $page, $products);
             }
         }
 
@@ -163,7 +158,6 @@ class App_Controller_Category extends Controller
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
         $session = Registry::get('session');
-        $cache = Registry::get('cache');
 
         $orderby = $session->get('catvieworderby', 'created');
         $order = $session->get('catvieworder', 'desc');
@@ -186,7 +180,7 @@ class App_Controller_Category extends Controller
             $session->set('catmaxpage_' . $urlKey, $maxCatPage);
         }
 
-        $products = $cache->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page);
+        $products = $this->getCache()->get('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page);
 
         if ($products !== null) {
             $products = $products;
@@ -197,7 +191,7 @@ class App_Controller_Category extends Controller
             if ($products == null) {
                 $background = null;
             } else {
-                $cache->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page, $products);
+                $this->getCache()->set('category_products_' . $urlKey . '_' . $orderby . '_' . $order . '_' . (int) $page, $products);
                 $background = 1;
             }
         }
@@ -221,8 +215,7 @@ class App_Controller_Category extends Controller
             $layoutView->set('catrelnext', $page + 1);
         }
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/kategorie/' . $urlKey . '/' . $page . '/';
+        $canonical = 'http://' . $this->getServerHost() . '/kategorie/' . $urlKey . '/' . $page . '/';
 
         $session->set('activecat', $urlKey)
                 ->set('activepage', (int) $page);
@@ -266,8 +259,7 @@ class App_Controller_Category extends Controller
     {
         $layoutView = $this->getLayoutView();
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/neznamakategorie';
+        $canonical = 'http://' . $this->getServerHost() . '/neznamakategorie';
 
         $layoutView->set('activecat', 'unknown')
                 ->set('parentcat', 'unknown')

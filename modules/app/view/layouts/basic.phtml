@@ -8,7 +8,7 @@
         <meta name="description" content="{echo $metadescription}" />
         <meta name="revisit-after" content="4 Days" />
         <meta name="robots" content="{echo $metarobots}">
-        <meta name="author" content="Tomas Hodan" />
+        <meta name="author" content="Tomas Hodan, Tomas Slama, Lukas Hodan" />
 
         {if isset($article)}
         <meta property="og:title" content="{echo $metatitle}" />
@@ -37,7 +37,7 @@
         <!--[if lt IE 9]><script type="text/javascript" src="/public/js/plugins/html5.js"></script><![endif]-->
         <script type="text/javascript" src="/public/js/plugins/modernizr.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js" async></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
         
         {if isset($catrelprev) && $catrelprev != 0}<link rel="prev" href="/kategorie/{echo $activecat}/{echo $catrelprev}/">{/if}
         {if isset($catrelnext) && $catrelnext != 0}<link rel="next" href="/kategorie/{echo $activecat}/{echo $catrelnext}/">{/if}
@@ -79,7 +79,7 @@
             Petr Vaněk, Grafico
         </footer>
         
-        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js" async></script> 
+        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script> 
         <script type="text/javascript" src="/public/js/custom/generalApp.min.js" async></script>
 
         <!-- Piwik -->

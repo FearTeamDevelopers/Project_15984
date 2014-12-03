@@ -10,7 +10,7 @@ use THCFrame\Registry\Registry;
  */
 class Admin_Controller_Category extends Controller
 {
-    
+
     /**
      * 
      * @param type $key
@@ -62,12 +62,11 @@ class Admin_Controller_Category extends Controller
                 ->set('submstoken', $this->mutliSubmissionProtectionToken());
 
         if (RequestMethods::post('submitAddCategory')) {
-            if($this->checkCSRFToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkCSRFToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/category/');
             }
-            
-            $cache = Registry::get('cache');
+
             $errors = array();
 
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
@@ -94,8 +93,8 @@ class Admin_Controller_Category extends Controller
                 $cid = $category->save();
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $cid));
-                $view->successMessage('Kategorie'.self::SUCCESS_MESSAGE_1);
-                $cache->invalidate();
+                $view->successMessage('Kategorie' . self::SUCCESS_MESSAGE_1);
+                Registry::get('cache')->invalidate();
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -127,11 +126,10 @@ class Admin_Controller_Category extends Controller
                 ->set('categories', $categories);
 
         if (RequestMethods::post('submitEditCategory')) {
-            if($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/category/');
             }
-            
-            $cache = Registry::get('cache');
+
             $errors = array();
 
             $urlKey = $this->_createUrlKey(RequestMethods::post('title'));
@@ -157,7 +155,7 @@ class Admin_Controller_Category extends Controller
 
                 Event::fire('admin.log', array('success', 'Category id: ' . $category->getId()));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
-                $cache->invalidate();
+                Registry::get('cache')->invalidate();
                 self::redirect('/admin/category/');
             } else {
                 Event::fire('admin.log', array('fail', 'Category id: ' . $category->getId()));
@@ -192,7 +190,7 @@ class Admin_Controller_Category extends Controller
                 $cat->rank = $value;
                 $cat->save();
             }
-            Event::fire('admin.log', array('success', 'Update subcategories rank in category '. $parentCat->getId() ));
+            Event::fire('admin.log', array('success', 'Update subcategories rank in category ' . $parentCat->getId()));
             $view->successMessage(self::SUCCESS_MESSAGE_8);
             self::redirect('/admin/category/');
         }
@@ -206,26 +204,21 @@ class Admin_Controller_Category extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $cache = Registry::get('cache');
-            $category = App_Model_Category::first(array(
-                        'id = ?' => (int) $id
-            ));
+        $category = App_Model_Category::first(array(
+                    'id = ?' => (int) $id
+        ));
 
-            if (NULL === $category) {
-                echo self::ERROR_MESSAGE_2;
-            } else {
-                if ($category->delete()) {
-                    Event::fire('admin.log', array('success', 'Category id: ' . $id));
-                    $cache->invalidate();
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'Category id: ' . $id));
-                    echo self::ERROR_MESSAGE_1;
-                }
-            }
+        if (NULL === $category) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
+            if ($category->delete()) {
+                Event::fire('admin.log', array('success', 'Category id: ' . $id));
+                Registry::get('cache')->invalidate();
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'Category id: ' . $id));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 

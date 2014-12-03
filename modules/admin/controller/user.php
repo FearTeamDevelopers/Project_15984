@@ -75,18 +75,12 @@ class Admin_Controller_User extends Controller
     public function index()
     {
         $view = $this->getActionView();
-        $security = Registry::get('security');
-
-        $superAdmin = $security->isGranted('role_superadmin');
 
         $users = App_Model_User::all(
-                    array('role <> ?' => 'role_superadmin'), 
-                    array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created'), 
-                    array('id' => 'asc')
+                        array('role <> ?' => 'role_superadmin'), array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created'), array('id' => 'asc')
         );
 
-        $view->set('users', $users)
-                ->set('superadmin', $superAdmin);
+        $view->set('users', $users);
     }
 
     /**
@@ -95,15 +89,15 @@ class Admin_Controller_User extends Controller
     public function add()
     {
         $view = $this->getActionView();
-        
+
         $view->set('submstoken', $this->mutliSubmissionProtectionToken());
-        
+
         if (RequestMethods::post('submitAddUser')) {
-            if($this->checkCSRFToken() !== true && 
-                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true){
+            if ($this->checkCSRFToken() !== true &&
+                    $this->checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
                 self::redirect('/admin/user/');
             }
-            
+
             $errors = array();
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
@@ -125,16 +119,14 @@ class Admin_Controller_User extends Controller
                 'email' => RequestMethods::post('email'),
                 'password' => $hash,
                 'salt' => $salt,
-                'role' => RequestMethods::post('role', 'role_member'),
-                'loginLockdownTime' => '',
-                'loginAttempCounter' => 0
+                'role' => RequestMethods::post('role', 'role_member')
             ));
 
             if (empty($errors) && $user->validate()) {
                 $id = $user->save();
 
-                Event::fire('admin.log', array('success', 'ID: ' . $id));
-                $view->successMessage('Účet'.self::SUCCESS_MESSAGE_1);
+                Event::fire('admin.log', array('success', 'User id: ' . $id));
+                $view->successMessage('Účet' . self::SUCCESS_MESSAGE_1);
                 self::redirect('/admin/user/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -154,7 +146,7 @@ class Admin_Controller_User extends Controller
         $loggedUser = $this->getUser();
 
         $user = App_Model_User::first(
-                array('active = ?' => true, 'id = ?' => $loggedUser->getId()));
+                        array('active = ?' => true, 'id = ?' => $loggedUser->getId()));
 
         if (NULL === $user) {
             $view->warningMessage(self::ERROR_MESSAGE_2);
@@ -163,7 +155,7 @@ class Admin_Controller_User extends Controller
         $view->set('user', $user);
 
         if (RequestMethods::post('submitUpdateProfile')) {
-            if($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/user/');
             }
             $errors = array();
@@ -174,8 +166,7 @@ class Admin_Controller_User extends Controller
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                                array('email = ?' => RequestMethods::post('email', $user->email)), 
-                                array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
                 );
 
                 if ($email) {
@@ -204,11 +195,11 @@ class Admin_Controller_User extends Controller
             if (empty($errors) && $user->validate()) {
                 $user->save();
 
-                Event::fire('admin.log', array('success', 'ID: ' . $user->getId()));
+                Event::fire('admin.log', array('success', 'User id: ' . $user->getId()));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
                 self::redirect('/admin/');
             } else {
-                Event::fire('admin.log', array('fail', 'ID: ' . $user->getId()));
+                Event::fire('admin.log', array('fail', 'User id: ' . $user->getId()));
                 $view->set('errors', $errors + $user->getErrors());
             }
         }
@@ -222,7 +213,7 @@ class Admin_Controller_User extends Controller
     {
         $view = $this->getActionView();
 
-        $user = App_Model_User::first(array('id = ?' => (int)$id));
+        $user = App_Model_User::first(array('id = ?' => (int) $id));
 
         if (NULL === $user) {
             $view->warningMessage(self::ERROR_MESSAGE_2);
@@ -235,10 +226,10 @@ class Admin_Controller_User extends Controller
         $view->set('user', $user);
 
         if (RequestMethods::post('submitEditUser')) {
-            if($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/user/');
             }
-            
+
             $errors = array();
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
@@ -247,8 +238,7 @@ class Admin_Controller_User extends Controller
 
             if (RequestMethods::post('email') != $user->email) {
                 $email = App_Model_User::first(
-                                array('email = ?' => RequestMethods::post('email', $user->email)), 
-                                array('email')
+                                array('email = ?' => RequestMethods::post('email', $user->email)), array('email')
                 );
 
                 if ($email) {
@@ -277,11 +267,11 @@ class Admin_Controller_User extends Controller
             if (empty($errors) && $user->validate()) {
                 $user->save();
 
-                Event::fire('admin.log', array('success', 'ID: ' . $id));
+                Event::fire('admin.log', array('success', 'User id: ' . $id));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
                 self::redirect('/admin/user/');
             } else {
-                Event::fire('admin.log', array('fail', 'ID: ' . $id));
+                Event::fire('admin.log', array('fail', 'User id: ' . $id));
                 $view->set('errors', $errors + $user->getErrors());
             }
         }
@@ -297,22 +287,18 @@ class Admin_Controller_User extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $user = App_Model_User::first(array('id = ?' => $id));
+        $user = App_Model_User::first(array('id = ?' => $id));
 
-            if (NULL === $user) {
-                echo self::ERROR_MESSAGE_2;
-            } else {
-                if ($user->delete()) {
-                    Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo self::ERROR_MESSAGE_1;
-                }
-            }
+        if (NULL === $user) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
+            if ($user->delete()) {
+                Event::fire('admin.log', array('success', 'User id: ' . $id));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'User id: ' . $id));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 

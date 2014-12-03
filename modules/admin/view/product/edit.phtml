@@ -9,7 +9,7 @@
         <h2 class="table"><span>Editovat produkt</span></h2>
     </div><!--contenttitle-->
 
-    <form class="stdform stdform2 uploadPhotoForm" method="post" action="#" enctype="multipart/form-data">
+    <form class="stdform stdform2 uploadForm" method="post" action="#" enctype="multipart/form-data">
         <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
         <input type="hidden" name="MAX_FILE_SIZE" value="5000000"/>
 
@@ -73,7 +73,7 @@
                     </span> 
 
                     <span class="field nodisplay" id="uploadLogo" >
-                        <input type="file" name="mainfile" />
+                        <input type="file" name="mainfile" accept="image/*"/>
                         {if isset($errors["mainfile"])}
                         <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                         {/if}
@@ -83,7 +83,7 @@
                     </span>
                     {/if}{else}
                     <span class="field" id="uploadLogo">
-                        <input type="file" name="mainfile" />
+                        <input type="file" name="mainfile" accept="image/*"/>
                         {if isset($errors["mainfile"])}
                         <label class="error">{echo join("<br/>", $errors["mainfile"])}</label>
                         {/if}
@@ -375,7 +375,7 @@
                             <td><img src="{echo $reproduct->getImgThumb()}" alt="" height="100px"/></td>
                             <td><a href="/admin/product/edit/{echo $reproduct->getId()}">{echo $reproduct->getTitle()}</a></td>
                             <td>{echo $reproduct->getProductCode()}</td>
-                            <td><a href="/admin/product/deleterecommended/{echo $product->getId()}/{echo $reproduct->getId()}" class="btn btn3 btn_trash deleteRow"></a></td>
+                            <td><a href="/admin/product/deleterecommended/{echo $product->getId()}/{echo $reproduct->getId()}" class="btn btn3 btn_trash ajaxDelete"></a></td>
                         </tr>
                         {/foreach}
                         {/if}
@@ -464,7 +464,7 @@
                             <td>{echo $variant->getProductCode()}</td>
                             <td>
                                 <a href="/admin/product/edit/{echo $variant->id}" class="btn btn3 btn_pencil" title="Editovat"></a>
-                                {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash deleteRow" title="Smazat"></a>{/if}
+                                {if $isAdmin}<a href="/admin/product/delete/{echo $variant->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>{/if}
                             </td>
                         </tr>
                         {/foreach}

@@ -9,6 +9,9 @@ use THCFrame\Events\Events as Event;
 class Cron_Controller_Search extends Controller
 {
 
+    /**
+     * 
+     */
     public function index()
     {
         $this->_willRenderActionView = false;

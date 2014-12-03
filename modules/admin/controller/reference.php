@@ -4,7 +4,6 @@ use Admin\Etc\Controller;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Filesystem\FileManager;
-use THCFrame\Core\ArrayMethods;
 use THCFrame\Registry\Registry;
 
 /**
@@ -38,7 +37,6 @@ class Admin_Controller_Reference extends Controller
                 self::redirect('/admin/reference/');
             }
 
-            $cache = Registry::get('cache');
             $errors = array();
             $cfg = Registry::get('configuration');
 
@@ -80,7 +78,7 @@ class Admin_Controller_Reference extends Controller
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
                 $view->successMessage('Reference' . self::SUCCESS_MESSAGE_1);
-                $cache->erase('reference');
+                Registry::get('cache')->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
                 Event::fire('admin.log', array('fail'));
@@ -112,7 +110,6 @@ class Admin_Controller_Reference extends Controller
                 self::redirect('/admin/reference/');
             }
 
-            $cache = Registry::get('cache');
             $errors = array();
 
             if ($reference->imgMain == '') {
@@ -162,7 +159,7 @@ class Admin_Controller_Reference extends Controller
 
                 Event::fire('admin.log', array('success', 'Reference id: ' . $id));
                 $view->successMessage(self::SUCCESS_MESSAGE_2);
-                $cache->erase('reference');
+                Registry::get('cache')->erase('reference');
                 self::redirect('/admin/reference/');
             } else {
                 Event::fire('admin.log', array('fail', 'Reference id: ' . $id));
@@ -179,36 +176,27 @@ class Admin_Controller_Reference extends Controller
         $this->willRenderActionView = false;
         $this->willRenderLayoutView = false;
 
-        if ($this->checkCSRFToken()) {
-            $cache = Registry::get('cache');
-            $reference = App_Model_Reference::first(
-                            array('id = ?' => $id), array('id')
-            );
+        $reference = App_Model_Reference::first(
+                        array('id = ?' => $id), array('id')
+        );
 
-            if (NULL === $reference) {
-                echo self::ERROR_MESSAGE_2;
-                return;
-            } else {
-                $unlinkMainImg = $reference->getUnlinkPath();
-                $unlinkThumbImg = $reference->getUnlinkThumbPath();
-
-                if ($reference->delete()) {
-                    @unlink($unlinkMainImg);
-                    @unlink($unlinkThumbImg);
-
-                    Event::fire('admin.log', array('success', 'ID: ' . $id));
-                    $cache->erase('reference');
-                    echo 'success';
-                    return;
-                } else {
-                    Event::fire('admin.log', array('fail', 'ID: ' . $id));
-                    echo self::ERROR_MESSAGE_1;
-                    return;
-                }
-            }
+        if (NULL === $reference) {
+            echo self::ERROR_MESSAGE_2;
         } else {
-            echo self::ERROR_MESSAGE_1;
-            return;
+            $unlinkMainImg = $reference->getUnlinkPath();
+            $unlinkThumbImg = $reference->getUnlinkThumbPath();
+
+            if ($reference->delete()) {
+                @unlink($unlinkMainImg);
+                @unlink($unlinkThumbImg);
+
+                Event::fire('admin.log', array('success', 'ID: ' . $id));
+                Registry::get('cache')->erase('reference');
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'ID: ' . $id));
+                echo self::ERROR_MESSAGE_1;
+            }
         }
     }
 
@@ -267,7 +255,6 @@ class Admin_Controller_Reference extends Controller
 
             $ids = RequestMethods::post('refids');
             $action = RequestMethods::post('action');
-            $cache = Registry::get('cache');
 
             switch ($action) {
                 case 'delete':
@@ -284,7 +271,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('delete success', 'IDs: ' . join(',', $ids)));
-                        $cache->erase('reference');
+                        Registry::get('cache')->erase('reference');
                         $view->successMessage(self::SUCCESS_MESSAGE_6);
                     } else {
                         Event::fire('admin.log', array('delete fail', 'Error count:' . count($errors)));
@@ -314,7 +301,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('activate success', 'IDs: ' . join(',', $ids)));
-                        $cache->erase('reference');
+                        Registry::get('cache')->erase('reference');
                         $view->successMessage(self::SUCCESS_MESSAGE_4);
                     } else {
                         Event::fire('admin.log', array('activate fail', 'Error count:' . count($errors)));
@@ -344,7 +331,7 @@ class Admin_Controller_Reference extends Controller
 
                     if (empty($errors)) {
                         Event::fire('admin.log', array('deactivate success', 'IDs: ' . join(',', $ids)));
-                        $cache->erase('reference');
+                        Registry::get('cache')->erase('reference');
                         $view->successMessage(self::SUCCESS_MESSAGE_5);
                     } else {
                         Event::fire('admin.log', array('deactivate fail', 'Error count:' . count($errors)));

@@ -16,8 +16,6 @@ class App_Controller_Index extends Controller
      */
     private function _checkMetaData($layoutView, Model $object)
     {
-        $host = RequestMethods::server('HTTP_HOST');
-
         if ($object->getMetaTitle() != '') {
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
@@ -27,8 +25,8 @@ class App_Controller_Index extends Controller
         }
 
         if ($object instanceof \App_Model_Product) {
-            $layoutView->set('metaogimage', "http://{$host}" . $object->getImgMain());
-            $layoutView->set('metaogurl', "http://{$host}/kostym/" . $object->getUrlKey() . '/');
+            $layoutView->set('metaogimage', "http://{$this->getServerHost()}" . $object->getImgMain());
+            $layoutView->set('metaogurl', "http://{$this->getServerHost()}/kostym/" . $object->getUrlKey() . '/');
         }
 
         $layoutView->set('metaogtype', 'article');
@@ -84,8 +82,7 @@ class App_Controller_Index extends Controller
     public function index()
     {
         $layoutView = $this->getLayoutView();
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host;
+        $canonical = 'http://' . $this->getServerHost();
 
         $layoutView->set('active', 99)
                 ->set('showmenu', 1)
@@ -101,20 +98,18 @@ class App_Controller_Index extends Controller
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $cache = Registry::get('cache');
 
-        $content = $cache->get('o-nas');
+        $content = $this->getCache()->get('o-nas');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'o-nas'));
-            $cache->set('o-nas', $content);
+            $this->getCache()->set('o-nas', $content);
         }
 
         $parsed = $this->_parseContentBody($content);
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/o-nas';
+        $canonical = 'http://' . $this->getServerHost() . '/o-nas';
 
         $view->set('content', $parsed);
 
@@ -132,9 +127,8 @@ class App_Controller_Index extends Controller
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $cache = Registry::get('cache');
 
-        $content = $cache->get('reference');
+        $content = $this->getCache()->get('reference');
 
         if (NULL !== $content) {
             $content = $content;
@@ -142,11 +136,10 @@ class App_Controller_Index extends Controller
             $content = App_Model_Reference::all(
                             array('active = ?' => true), array('*'), array('created' => 'desc'), 30);
 
-            $cache->set('reference', $content);
+            $this->getCache()->set('reference', $content);
         }
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/reference';
+        $canonical = 'http://' . $this->getServerHost() . '/reference';
 
         $view->set('reference', $content);
         $layoutView->set('active', 2)
@@ -163,9 +156,8 @@ class App_Controller_Index extends Controller
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $cache = Registry::get('cache');
 
-        $content = $cache->get('aktuality');
+        $content = $this->getCache()->get('aktuality');
 
         if (NULL !== $content) {
             $content = $content;
@@ -173,11 +165,10 @@ class App_Controller_Index extends Controller
             $content = App_Model_News::all(
                             array('active = ?' => true), array('*'), array('created' => 'desc'), 15);
 
-            $cache->set('aktuality', $content);
+            $this->getCache()->set('aktuality', $content);
         }
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/aktuality';
+        $canonical = 'http://' . $this->getServerHost() . '/aktuality';
 
         $view->set('news', $content);
         $layoutView->set('active', 3)
@@ -194,20 +185,18 @@ class App_Controller_Index extends Controller
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $cache = Registry::get('cache');
 
-        $content = $cache->get('cenik');
+        $content = $this->getCache()->get('cenik');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'cenik'));
-            $cache->set('cenik', $content);
+            $this->getCache()->set('cenik', $content);
         }
 
         $parsed = $this->_parseContentBody($content);
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/cenik';
+        $canonical = 'http://' . $this->getServerHost() . '/cenik';
 
         $view->set('content', $parsed);
 
@@ -225,20 +214,18 @@ class App_Controller_Index extends Controller
     {
         $view = $this->getActionView();
         $layoutView = $this->getLayoutView();
-        $cache = Registry::get('cache');
 
-        $content = $cache->get('kontakty');
+        $content = $this->getCache()->get('kontakty');
 
         if (NULL !== $content) {
             $content = $content;
         } else {
             $content = App_Model_PageContent::first(array('active = ?' => true, 'urlKey = ?' => 'kontakty'));
-            $cache->set('kontakty', $content);
+            $this->getCache()->set('kontakty', $content);
         }
 
         $parsed = $this->_parseContentBody($content);
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/kontakt';
+        $canonical = 'http://' . $this->getServerHost() . '/kontakt';
 
         $view->set('content', $parsed);
 
@@ -271,8 +258,7 @@ class App_Controller_Index extends Controller
 
         $view->set('product', $product);
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/kostym/' . $product->getUrlKey() . '/';
+        $canonical = 'http://' . $this->getServerHost() . '/kostym/' . $product->getUrlKey() . '/';
 
         $fblike = urlencode('http://' . RequestMethods::server('HTTP_HOST') . '/kostym/' . $product->getUrlKey() . '/');
 
@@ -311,8 +297,7 @@ class App_Controller_Index extends Controller
         $activeCat = $session->get('activecat', 'unknown');
         $parentCat = $session->get('parentcat', 'unknown');
 
-        $host = RequestMethods::server('HTTP_HOST');
-        $canonical = 'http://' . $host . '/neznamykostym';
+        $canonical = 'http://' . $this->getServerHost() . '/neznamykostym';
 
         $layoutView->set('activecat', $activeCat)
                 ->set('parentcat', $parentCat)
@@ -362,8 +347,7 @@ class App_Controller_Index extends Controller
                 $products = $categories = array();
             }
             
-            $host = RequestMethods::server('HTTP_HOST');
-            $canonical = 'http://' . $host . '/hledat';
+            $canonical = 'http://' . $this->getServerHost() . '/hledat';
             $activeCat = $session->get('activecat', 'unknown');
             $parentCat = $session->get('parentcat', 'unknown');
 

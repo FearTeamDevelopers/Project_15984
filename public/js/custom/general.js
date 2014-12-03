@@ -505,40 +505,25 @@ jQuery(document).ready(function() {
         jQuery('.headerinner2').remove();
     }
 
-
-
     /* ---------------------- UPLOAD FORMS --------------------------------*/
-    jQuery('.uploadPhotoForm .multi_upload').click(function() {
-        if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length < 7) {
-            jQuery('.uploadPhotoForm .file_inputs input[type=file]')
+    jQuery('.uploadForm .multi_upload').click(function () {
+        if (jQuery('.uploadForm .file_inputs input[type=file]').length < 7) {
+            jQuery('.uploadForm .file_inputs input[type=file]')
                     .last()
                     .after('<input type="file" name="secondfile[]" />');
         }
     });
 
-    jQuery('.uploadPhotoForm .multi_upload_dec').click(function() {
-        if (jQuery('.uploadPhotoForm .file_inputs input[type=file]').length > 1) {
-            jQuery('.uploadPhotoForm .file_inputs input[type=file]').last().remove();
+    jQuery('.uploadForm .multi_upload_dec').click(function () {
+        if (jQuery('.uploadForm .file_inputs input[type=file]').length > 1) {
+            jQuery('.uploadForm .file_inputs input[type=file]').last().remove();
         }
     });
 
-    jQuery('.uploadCollectionPhotoForm .multi_upload').click(function() {
-        if (jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').length < 7) {
-            jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]')
-                    .last()
-                    .after('<input type="file" name="secondfile[]" />');
-        }
-    });
-
-    jQuery('.uploadCollectionPhotoForm .multi_upload_dec').click(function() {
-        if (jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').length > 1) {
-            jQuery('.uploadCollectionPhotoForm .file_inputs input[type=file]').last().remove();
-        }
-    });
-
-    jQuery('.uploadPhotoForm, .uploadCollectionPhotoForm').submit(function() {
+    jQuery('.uploadForm').submit(function () {
         jQuery('#loader').show();
     });
+
 
     /* ---------------------- AJAX OPERATIONS --------------------------------*/
     jQuery('a#delImg').click(function() {
@@ -599,62 +584,95 @@ jQuery(document).ready(function() {
         return false;
     });
 
-    //delete image in table list
-    jQuery('.mediatable a.btn_trash').click(function() {
-        var c = confirm('Opravdu smazat?');
+    //delete individual row
+    jQuery('.ajaxDelete').click(function () {
         var parentTr = jQuery(this).parents('tr');
+        var url = jQuery(this).attr('href');
+        var csrf = jQuery('#csrf').val();
 
-        if (c) {
-            var url = jQuery(this).attr('href');
-            var token = jQuery('#csrf').val();
+        jQuery('#deleteDialog p').text('Opravdu chcete pokračovat v mazání?');
 
-            jQuery.post(url, {csrf: token}, function(msg) {
-                if (msg == 'success') {
-                    parentTr.fadeOut();
-                } else {
-                    alert(msg);
+        jQuery('#deleteDialog').dialog({
+            resizable: false,
+            width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+                "Smazat": function () {
+                    jQuery.post(url, {csrf: csrf}, function (msg) {
+                        if (msg == 'success') {
+                            parentTr.fadeOut();
+                        } else {
+                            alert(msg);
+                        }
+                    });
+                    jQuery(this).dialog("close");
+                },
+                "Zrušit": function () {
+                    jQuery(this).dialog("close");
                 }
-            });
-        }
-        return false;
-    });
-    
-        //delete individual row
-    jQuery('.stdtable a.deleteRow').click(function() {
-        var c = confirm('Opravdu smazat?');
-        var parentTr = jQuery(this).parents('tr');
-
-        if (c) {
-            var url = jQuery(this).attr('href');
-            var csrf = jQuery('#csrf').val();
-
-            jQuery.post(url, {csrf: csrf}, function(msg) {
-                if (msg == 'success') {
-                    parentTr.fadeOut();
-                } else {
-                    alert(msg);
-                }
-            });
-        }
+            }
+        });
         return false;
     });
 
-    jQuery('.stdtable a.undeleteRow').click(function() {
-        var c = confirm('Pokračovat v obnovení?');
-        var parentTr = jQuery(this).parents('tr');
+    jQuery('.ajaxReload').click(function () {
+        var url = jQuery(this).attr('href');
+        var csrf = jQuery('#csrf').val();
 
-        if (c) {
-            var url = jQuery(this).attr('href');
-            var csrf = jQuery('#csrf').val();
+        jQuery('#deleteDialog p').text('Opravdu chcete pokračovat?');
 
-            jQuery.post(url, {csrf: csrf}, function(msg) {
-                if (msg == 'success') {
-                    parentTr.fadeOut();
-                } else {
-                    alert(msg);
+        jQuery('#deleteDialog').dialog({
+            resizable: false,
+            width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+                "Ano": function () {
+                    jQuery.post(url, {csrf: csrf}, function (msg) {
+                        if (msg == 'success') {
+                            location.reload();
+                        } else {
+                            alert(msg);
+                        }
+                    });
+                },
+                "Ne": function () {
+                    jQuery(this).dialog("close");
                 }
-            });
-        }
+            }
+        });
+        return false;
+    });
+
+    jQuery('.ajaxUndelete').click(function () {
+        var parentTr = jQuery(this).parents('tr');
+        var url = jQuery(this).attr('href');
+        var csrf = jQuery('#csrf').val();
+
+        jQuery('#deleteDialog p').text('Pokračovat v obnovení?');
+
+        jQuery('#deleteDialog').dialog({
+            resizable: false,
+            width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+                "Smazat": function () {
+                    jQuery.post(url, {csrf: csrf}, function (msg) {
+                        if (msg == 'success') {
+                            parentTr.fadeOut();
+                        } else {
+                            alert(msg);
+                        }
+                    });
+                    jQuery(this).dialog("close");
+                },
+                "Zrušit": function () {
+                    jQuery(this).dialog("close");
+                }
+            }
+        });
         return false;
     });
 
