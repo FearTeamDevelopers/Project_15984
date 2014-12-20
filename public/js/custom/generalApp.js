@@ -5,9 +5,9 @@ jQuery(document).ready(function () {
     jQuery(window).load(function () {
         jQuery("#loader, .loader").hide();
 
-        jQuery.post('/app/system/showprofiler/', function (msg) {
-            jQuery('body').append(msg);
-        });
+//        jQuery.post('/app/system/showprofiler/', function (msg) {
+//            jQuery('body').append(msg);
+//        });
     });
 
     document.oncontextmenu = function (e) {

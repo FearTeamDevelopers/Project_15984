@@ -504,7 +504,8 @@ class App_Model_Product extends Model
         if ($product !== null) {
             if ($product->sizeId != 0) {
                 $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
+                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                                array('cb.title' => 'sizeTitle'))
                         ->where('pr.urlKey = ?', $urlKey)
                         ->where('pr.deleted = ?', false);
                 $productArr = App_Model_Product::initialize($productQuery);
@@ -528,12 +529,14 @@ class App_Model_Product extends Model
 
         if ($product->sizeId != 0) {
             $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
+                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                            array('cb.title' => 'sizeTitle'))
                     ->where('pr.id = ?', (int) $id)
                     ->where('pr.deleted = ?', false);
             $productArr = App_Model_Product::initialize($productQuery);
             $product = array_shift($productArr);
         }
+        
         return $product->getProductById();
     }
 
@@ -544,7 +547,8 @@ class App_Model_Product extends Model
     public function getProductByIdForUser()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                        array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
         $this->_variants = App_Model_Product::initialize($variantsQuery);
@@ -577,7 +581,8 @@ class App_Model_Product extends Model
     public function getProductById()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', array('cb.title' => 'sizeTitle'))
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                        array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
         $this->_variants = App_Model_Product::initialize($variantsQuery);
@@ -629,20 +634,21 @@ class App_Model_Product extends Model
     public static function fetchProductsByCategory($categoryUrlKey, $limit = 30, $page = 1, $orderby = 'created', $order = 'desc')
     {
         $productsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', array('productId', 'categoryId'))
-                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey',
-                    'isGrouped', 'isSelable', 'mainText',
-                    'ct.metaTitle' => 'catMetaTitle', 'ct.metaKeywords' => 'catMetaKeywords',
-                    'ct.metaDescription' => 'catMetaDescription'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                        array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
+                        array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey',
+                    'isGrouped', 'isSelable', 'mainText','ct.metaTitle' => 'catMetaTitle', 
+                    'ct.metaKeywords' => 'catMetaKeywords', 'ct.metaDescription' => 'catMetaDescription'))
                 ->where('ct.active = ?', true)
                 ->where('ct.urlKey = ?', $categoryUrlKey)
                 ->order('pr.' . $orderby, $order)
                 ->where('pr.active = ?', true)
                 ->where('pr.deleted = ?', false)
+                ->where('pr.variantFor = ?', 0)
                 ->limit($limit, $page);
-        $products = App_Model_Product::initialize($productsQuery);
-
-        return $products;
+        
+        return App_Model_Product::initialize($productsQuery);
     }
 
 }

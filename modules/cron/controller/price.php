@@ -23,7 +23,7 @@ class Cron_Controller_Price extends Controller
         $start = microtime(true);
         $errorCount = 0;
 
-        $file = './application/logs/croninfo.log';
+        $file = APP_PATH.'/application/logs/croninfo.log';
 
         if (file_exists($file)) {
             $info = unserialize(file_get_contents($file));
@@ -45,7 +45,7 @@ class Cron_Controller_Price extends Controller
             $page = $info['actualPage'];
         }
 
-        $products = App_Model_Product::all(array('variantFor = ?' => 0), array('*'), array(), $productsCountPerBadge, (int) $page);
+        $products = App_Model_Product::all(array('variantFor = ?' => 0), array('*'), null, $productsCountPerBadge, (int) $page);
 
         if ($products !== null) {
             foreach ($products as $product) {
@@ -61,7 +61,7 @@ class Cron_Controller_Price extends Controller
                     $product->save();
                 } else {
                     $errorCount++;
-                    Core::getLogger()->log(serialize($product->getErrors()), FILE_APPEND, true, 'cronlog.log');
+                    Core::getLogger()->log(serialize($product->getErrors()), 'cron', FILE_APPEND, true, 'cronlog.log');
                 }
             }
         }
@@ -80,7 +80,7 @@ class Cron_Controller_Price extends Controller
                 'actualPage' => (int) $page + 1);
         }
 
-        file_put_contents('./application/logs/croninfo.log', serialize($saveInfo));
+        file_put_contents(APP_PATH.'/application/logs/croninfo.log', serialize($saveInfo));
 
         if ($errorCount == 0) {
             Event::fire('cron.log', array('success', 'Total time: ' . gmdate('H:i:s', $time)));
