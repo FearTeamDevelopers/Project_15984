@@ -20,6 +20,10 @@ class App_Controller_Index extends Controller
             $layoutView->set('metatitle', $object->getMetaTitle());
         }
 
+        if($object->getMetaKeywords() != ''){
+            $layoutView->set('metakeywords', $object->getMetaKeywords());
+        }
+        
         if ($object->getMetaDescription() != '') {
             $layoutView->set('metadescription', $object->getMetaDescription());
         }

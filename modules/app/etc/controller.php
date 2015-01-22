@@ -63,6 +63,7 @@ class Controller extends BaseController
         } else {
             $metaData = array(
                 'metadescription' => $cfg->meta_description,
+                'metakeywords' => $cfg->meta_keywords,
                 'metarobots' => $cfg->meta_robots,
                 'metatitle' => $cfg->meta_title,
                 'metaogurl' => $cfg->meta_og_url,
@@ -77,6 +78,7 @@ class Controller extends BaseController
         $this->getLayoutView()
                 ->set('category', $categories)
                 ->set('metatitle', $metaData['metatitle'])
+                ->set('metakeywords', $metaData['metakeywords'])
                 ->set('metarobots', $metaData['metarobots'])
                 ->set('metadescription', $metaData['metadescription'])
                 ->set('metaogurl', $metaData['metaogurl'])

@@ -6,6 +6,7 @@
 
         <meta name="viewport" content="width=device-width, maximum-scale=2.0, minimum-scale=1.0, initial-scale=1.0" />
         <meta name="description" content="{echo $metadescription}" />
+        <meta name="keywords" content="{echo $metakeywords}" />
         <meta name="revisit-after" content="4 Days" />
         <meta name="robots" content="{echo $metarobots}">
         <meta name="author" content="Tomas Hodan, Tomas Slama, Lukas Hodan" />
@@ -88,7 +89,7 @@
             _paq.push(["trackPageView"]);
             _paq.push(["enableLinkTracking"]);
             (function () {
-                var u = "https://piwik.agenturakarneval.cz/";
+                var u = (("https:" == document.location.protocol) ? "https://piwik.agenturakarneval.cz/" : "http://piwik.agenturakarneval.cz/");
                 _paq.push(["setTrackerUrl", u + "piwik.php"]);
                 _paq.push(["setSiteId", 1]);
                 var d = document, g = d.createElement("script"), s = d.getElementsByTagName("script")[0];
@@ -99,7 +100,7 @@
                 s.parentNode.insertBefore(g, s);
             })();
         </script>
-        <noscript><p><img src="https://piwik.agenturakarneval.cz/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+        <noscript><p><img src="http://piwik.agenturakarneval.cz/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
         {/if}
     </body>
 </html>
