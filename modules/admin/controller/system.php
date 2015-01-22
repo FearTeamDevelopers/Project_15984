@@ -68,7 +68,7 @@ class Admin_Controller_System extends Controller
     public function showAdminLog()
     {
         $view = $this->getActionView();
-        $log = Admin_Model_AdminLog::all(array(), array('*'), array('created' => 'DESC'));
+        $log = Admin_Model_AdminLog::all(array(), array('*'), array('created' => 'DESC'), 250);
         $view->set('adminlog', $log);
     }
 

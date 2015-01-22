@@ -5,17 +5,41 @@ namespace Cron\Etc;
 use THCFrame\Events\Events as Events;
 use THCFrame\Registry\Registry;
 use THCFrame\Controller\Controller as BaseController;
+use THCFrame\Request\RequestMethods;
 
 /**
- * Description of Controller
  *
- * @author Tomy
  */
 class Controller extends BaseController
 {
-    
+
     private $_security;
 
+    /**
+     * Store server host name
+     * @var type 
+     * @read
+     */
+    protected $_serverHost;
+    
+    /**
+     * 
+     * @param type $options
+     */
+    public function __construct($options = array())
+    {
+        parent::__construct($options);
+
+        $this->_security = Registry::get('security');
+        $this->_serverHost = RequestMethods::server('HTTP_HOST');
+
+        // schedule disconnect from database 
+        Events::add('framework.controller.destruct.after', function($name) {
+            $database = Registry::get('database');
+            $database->disconnect();
+        });
+    }
+    
     /**
      * @protected
      */
@@ -28,7 +52,7 @@ class Controller extends BaseController
             self::redirect('/login');
         }
 
-        if (time() - $session->get('lastActive') <  1800) {
+        if (time() - $session->get('lastActive') < 1800) {
             $session->set('lastActive', time());
         } else {
             $view = $this->getActionView();
@@ -44,10 +68,25 @@ class Controller extends BaseController
      */
     public function _cron()
     {
-        $u_agent = $_SERVER['HTTP_USER_AGENT'];
+        $view = $this->getActionView();
 
-        if (!preg_match('/curl/i', $u_agent)) {
-            exit();
+        if (null !== RequestMethods::server('HTTP_HOST')) {
+            $view->warningMessage(self::ERROR_MESSAGE_6);
+            $this->_willRenderActionView = false;
+            self::redirect('/search/');
+        }
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    protected function isCron()
+    {
+        if (RequestMethods::server('HTTP_HOST') === null) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -56,7 +95,7 @@ class Controller extends BaseController
      */
     public function _superadmin()
     {
-        
+
         $view = $this->getActionView();
 
         if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') !== true) {
@@ -66,22 +105,7 @@ class Controller extends BaseController
         }
     }
 
-    /**
-     * 
-     * @param type $options
-     */
-    public function __construct($options = array())
-    {
-        parent::__construct($options);
-
-        $this->_security = Registry::get('security');
-        
-        // schedule disconnect from database 
-        Events::add('framework.controller.destruct.after', function($name) {
-            $database = Registry::get('database');
-            $database->disconnect();
-        });
-    }
+    
 
     /**
      * load user from security context

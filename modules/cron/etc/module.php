@@ -3,9 +3,7 @@
 use THCFrame\Module\Module as Module;
 
 /**
- * Description of Integration_Etc_Module
  *
- * @author Tomy
  */
 class Cron_Etc_Module extends Module
 {
@@ -37,6 +35,12 @@ class Cron_Etc_Module extends Module
             'module' => 'cron',
             'controller' => 'backup',
             'action' => 'createSitemap',
+        ),
+        array(
+            'pattern' => '/c/contentcheck',
+            'module' => 'cron',
+            'controller' => 'ContentCheck',
+            'action' => 'checkSellableCategory',
         )
     );
 
