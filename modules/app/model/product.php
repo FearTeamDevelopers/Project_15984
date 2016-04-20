@@ -27,7 +27,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type integer
-     *      
+     *
      * @validate numeric, max(8)
      * @label sizeId
      */
@@ -37,7 +37,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type integer
-     *      
+     *
      * @validate numeric, max(8)
      * @label variant for
      */
@@ -48,7 +48,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 30
-     *      
+     *
      * @validate alpha, max(30)
      * @label product type
      */
@@ -59,7 +59,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type boolean
      * @index
-     * 
+     *
      * @validate max(3)
      */
     protected $_active;
@@ -69,7 +69,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 250
-     * 
+     *
      * @validate required, alphanumeric, max(250)
      * @label url key
      */
@@ -80,7 +80,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 50
-     *      
+     *
      * @validate required, alphanumeric, max(50)
      * @label productCode
      */
@@ -91,7 +91,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 200
-     * 
+     *
      * @validate required, alphanumeric, max(200)
      * @label title
      */
@@ -102,7 +102,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 256
-     * 
+     *
      * @validate required, html, max(30000)
      * @label description
      */
@@ -172,7 +172,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type integer
-     *      
+     *
      * @validate numeric, max(3)
      * @label quantity
      */
@@ -182,7 +182,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type integer
-     *      
+     *
      * @validate numeric
      * @label discount
      */
@@ -193,7 +193,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 22
-     * 
+     *
      * @validate date, max(22)
      * @label discount From
      */
@@ -204,7 +204,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 22
-     * 
+     *
      * @validate date, max(22)
      * @label discount to
      */
@@ -214,7 +214,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type integer
-     *      
+     *
      * @validate numeric
      * @label ean
      */
@@ -224,7 +224,7 @@ class App_Model_Product extends Model
      * @column
      * @readwrite
      * @type decimal
-     *      
+     *
      * @validate numeric
      * @label weight
      */
@@ -235,7 +235,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type boolean
      * @index
-     * 
+     *
      * @validate max(3)
      */
     protected $_isInAction;
@@ -245,7 +245,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 22
-     * 
+     *
      * @validate date, max(22)
      * @label new from
      */
@@ -256,7 +256,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 22
-     * 
+     *
      * @validate date, max(22)
      * @label new to
      */
@@ -267,7 +267,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type boolean
      * @index
-     * 
+     *
      * @validate max(3)
      */
     protected $_hasGroupPhoto;
@@ -277,7 +277,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 250
-     * 
+     *
      * @validate path, max(250)
      * @label thumb path
      */
@@ -288,7 +288,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 250
-     * 
+     *
      * @validate path, max(250)
      * @label photo path
      */
@@ -299,7 +299,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 250
-     * 
+     *
      * @validate alphanumeric, max(250)
      * @label meta title
      */
@@ -310,7 +310,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 256
-     * 
+     *
      * @validate alphanumeric, max(5000)
      * @label meta keywords
      */
@@ -321,7 +321,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 256
-     * 
+     *
      * @validate html, max(30000)
      * @label meta description
      */
@@ -332,7 +332,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 150
-     * 
+     *
      * @validate alphanumeric, max(250)
      * @label rss feed title
      */
@@ -343,7 +343,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 256
-     * 
+     *
      * @validate html, max(30000)
      * @label rss feed description
      */
@@ -354,7 +354,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 250
-     * 
+     *
      * @validate path, max(250)
      * @label rss feed img
      */
@@ -365,7 +365,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type text
      * @length 40
-     * 
+     *
      * @validate alphanumeric, max(40)
      * @label overlay
      */
@@ -376,7 +376,7 @@ class App_Model_Product extends Model
      * @readwrite
      * @type boolean
      * @index
-     * 
+     *
      * @validate max(3)
      */
     protected $_deleted;
@@ -431,7 +431,7 @@ class App_Model_Product extends Model
     protected $_realPrice;
 
     /**
-     * 
+     *
      */
     public function preSave()
     {
@@ -447,7 +447,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      */
     public function isActive()
     {
@@ -455,7 +455,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @return type
      */
     public function getUnlinkPath($type = true)
@@ -474,7 +474,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @return type
      */
     public function getUnlinkThumbPath($type = true)
@@ -493,7 +493,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @param type $urlKey
      * @return type
      */
@@ -504,7 +504,7 @@ class App_Model_Product extends Model
         if ($product !== null) {
             if ($product->sizeId != 0) {
                 $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                        ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb',
                                 array('cb.title' => 'sizeTitle'))
                         ->where('pr.urlKey = ?', $urlKey)
                         ->where('pr.deleted = ?', false);
@@ -519,7 +519,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @param type $id
      * @return type
      */
@@ -528,26 +528,26 @@ class App_Model_Product extends Model
         $product = self::first(array('id = ?' => (int) $id, 'deleted = ?' => false));
 
         if ($product->sizeId != 0) {
-            $productQuery = App_Model_Product::getQuery(array('pr.*'))
-                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+            $productQuery = App_Model_Product::getQuery(array('pr.title'))
+                    ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb',
                             array('cb.title' => 'sizeTitle'))
                     ->where('pr.id = ?', (int) $id)
                     ->where('pr.deleted = ?', false);
             $productArr = App_Model_Product::initialize($productQuery);
             $product = array_shift($productArr);
         }
-        
+
         return $product->getProductById();
     }
 
     /**
-     * 
+     *
      * @return \App_Model_Product
      */
     public function getProductByIdForUser()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb',
                         array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
@@ -576,12 +576,12 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      */
     public function getProductById()
     {
         $variantsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb', 
+                ->join('tb_codebook', 'pr.sizeId = cb.id', 'cb',
                         array('cb.title' => 'sizeTitle'))
                 ->where('pr.variantFor = ?', $this->getId())
                 ->where('pr.deleted = ?', false);
@@ -610,7 +610,7 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @return type
      */
     public static function fetchLatestProducts()
@@ -628,17 +628,17 @@ class App_Model_Product extends Model
     }
 
     /**
-     * 
+     *
      * @param type $category
      */
     public static function fetchProductsByCategory($categoryUrlKey, $limit = 30, $page = 1, $orderby = 'created', $order = 'desc')
     {
         $productsQuery = App_Model_Product::getQuery(array('pr.*'))
-                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc', 
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc',
                         array('productId', 'categoryId'))
-                ->join('tb_category', 'pc.categoryId = ct.id', 'ct', 
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct',
                         array('ct.id' => 'catId', 'parentId', 'ct.title' => 'catTitle', 'ct.urlKey' => 'catUrlKey',
-                    'isGrouped', 'isSelable', 'mainText','ct.metaTitle' => 'catMetaTitle', 
+                    'isGrouped', 'isSelable', 'mainText','ct.metaTitle' => 'catMetaTitle',
                     'ct.metaKeywords' => 'catMetaKeywords', 'ct.metaDescription' => 'catMetaDescription'))
                 ->where('ct.active = ?', true)
                 ->where('ct.urlKey = ?', $categoryUrlKey)
@@ -647,7 +647,21 @@ class App_Model_Product extends Model
                 ->where('pr.deleted = ?', false)
                 ->where('pr.variantFor = ?', 0)
                 ->limit($limit, $page);
-        
+
+        return App_Model_Product::initialize($productsQuery);
+    }
+
+    public static function fetchCategoriesByProductId($productId)
+    {
+        $productsQuery = App_Model_Product::getQuery(array('pr.*'))
+                ->join('tb_productcategory', 'pr.id = pc.productId', 'pc',
+                        array('productId', 'categoryId'))
+                ->join('tb_category', 'pc.categoryId = ct.id', 'ct',
+                        array('isSelable', 'isGrouped'))
+                ->where('pr.active = ?', true)
+                ->where('pr.deleted = ?', false)
+                ->where('pr.id = ?', $productId);
+
         return App_Model_Product::initialize($productsQuery);
     }
 

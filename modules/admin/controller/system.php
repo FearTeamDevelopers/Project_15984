@@ -22,7 +22,7 @@ class Admin_Controller_System extends Controller
     {
         
     }
-    
+
     /**
      * @before _secured, _admin
      */
@@ -82,7 +82,7 @@ class Admin_Controller_System extends Controller
         $view->set('config', $config);
 
         if (RequestMethods::post('submitEditSet')) {
-            if ($this->checkCSRFToken() !== true){
+            if ($this->checkCSRFToken() !== true) {
                 self::redirect('/admin/');
             }
             $errors = array();
@@ -156,8 +156,7 @@ class Admin_Controller_System extends Controller
                 . "<url><loc>http://{$host}/reference</loc></url>" . PHP_EOL;
 
         $categories = App_Model_Category::all(
-                        array('active = ?' => true), 
-                        array('urlKey'));
+                        array('active = ?' => true), array('urlKey'));
 
         $categoryXml = '';
         foreach ($categories as $category) {
@@ -165,15 +164,14 @@ class Admin_Controller_System extends Controller
         }
 
         $products = App_Model_Product::all(
-                        array('active = ?' => true, 'deleted = ?' => false, 'variantFor = ?' => 0), 
-                        array('urlKey'));
+                        array('active = ?' => true, 'deleted = ?' => false, 'variantFor = ?' => 0), array('urlKey'));
 
         $productXml = '';
         foreach ($products as $product) {
             $productXml .= "<url><loc>http://{$host}/kostym/{$product->urlKey}/</loc></url>" . PHP_EOL;
         }
 
-        file_put_contents('./sitemap.xml', $xml . $pageContentXml . $categoryXml . $productXml . $xmlEnd);
+        @file_put_contents('./sitemap.xml', $xml . $pageContentXml . $categoryXml . $productXml . $xmlEnd);
 
         Event::fire('admin.log', array('success'));
         $view->successMessage('Soubor sitemap.xml byl aktualizován');

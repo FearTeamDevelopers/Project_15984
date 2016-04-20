@@ -272,7 +272,10 @@ class App_Controller_Index extends Controller
         if($activeCat != 'unknown'){
             $actualCat = App_Model_Category::first(array('urlKey = ?' => $activeCat));
         }else{
-            $actualCat = App_Model_Category::first(array('id = ?' => 1));;
+            $categories = App_Model_Product::fetchCategoriesByProductId($product->getId());
+            if(!empty($categories)){
+                $actualCat = array_shift($categories);
+            }
         }
 
         $view->set('product', $product)
@@ -357,11 +360,9 @@ class App_Controller_Index extends Controller
 
             $view->set('products', $products)
                     ->set('query', $query)
-                    ->set('category', array())
                     ->set('categories', $categories);
 
             $layoutView
-                    ->set('category', array())
                     ->set('active', 0)
                     ->set('activecat', $activeCat)
                     ->set('parentcat', $parentCat)
